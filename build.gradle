@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'idea'
+}
+apply plugin: 'net.minecraftforge.gradle'
+
+/**
+ * Version in dev is set to 'dev'
+ * Any builds produced by the github actions build script will have a version matching their tag.
+ * All version numbers should be Semantic Versioning 2.0 compliant
+ */
+if (System.getenv('VERSION') != null) {
+    version = System.getenv('VERSION')
+} else {
+    version = 'dev'
+}
+group = 'com.alcatrazescapee.primalwinter' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "primalwinter-forge-${mc_version}"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+minecraft {
+    mappings channel: 'snapshot', version: '20200408-1.15.1'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Run configurations
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                oreveins {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                oreveins {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+}
+
+// Puts the mod version into the jar for mods.toml to read from
+jar {
+    manifest {
+        attributes "Implementation-Version": "${version}"
+    }
+}
+
+curseforge {
+    def envApiKey = System.getenv('CURSEFORGE_API_KEY')
+    if (envApiKey == null) {
+        println 'Unable to locate api key in env variable'
+        return
+    }
+    def versionReleaseType = "release"
+    if (version.toString().contains("beta")) {
+        versionReleaseType = "beta"
+    } else if (version.toString().contains("alpha")) {
+        versionReleaseType = "alpha"
+    }
+    project {
+        apiKey = envApiKey
+        id = 'FIX ME'
+        changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version})"
+        changelogType = "markdown"
+        releaseType = versionReleaseType
+        addGameVersion "${mc_version}"
+    }
+}

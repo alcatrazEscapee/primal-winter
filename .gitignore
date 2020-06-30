@@ -1,0 +1,18 @@
+# Gradle
+*.bin
+/build/
+/.gradle/
+
+# IntelliJ
+/.idea/
+*.iml
+*.ipr
+*.iws
+
+# Python
+*.py
+
+# Production
+/out/
+/run/
+/libs/
