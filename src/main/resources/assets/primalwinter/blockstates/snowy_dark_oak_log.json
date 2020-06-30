@@ -1,0 +1,17 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "variants": {
+    "axis=y": {
+      "model": "primalwinter:block/snowy_dark_oak_log"
+    },
+    "axis=z": {
+      "model": "primalwinter:block/snowy_dark_oak_log",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "primalwinter:block/snowy_dark_oak_log",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

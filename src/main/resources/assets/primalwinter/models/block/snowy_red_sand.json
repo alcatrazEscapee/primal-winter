@@ -1,0 +1,9 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "primalwinter:block/snowy_red_sand",
+    "bottom": "minecraft:block/red_sand",
+    "top": "minecraft:block/snow"
+  }
+}
