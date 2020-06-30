@@ -10,7 +10,8 @@
 *.iws
 
 # Python
-*.py
+*.pyc
+__pycache__/
 
 # Production
 /out/
