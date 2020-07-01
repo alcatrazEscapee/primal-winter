@@ -6,7 +6,6 @@
 package com.alcatrazescapee.primalwinter.client;
 
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -33,7 +32,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
-
 import net.minecraftforge.client.SkyRenderHandler;
 import net.minecraftforge.client.WeatherRenderHandler;
 
@@ -44,23 +42,21 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 public class WinterWorldRenderer
 {
+    private static final ResourceLocation SNOW_TEXTURES = new ResourceLocation("textures/environment/snow.png");
+    private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation("textures/environment/moon_phases.png");
+    private static final ResourceLocation SUN_TEXTURES = new ResourceLocation("textures/environment/sun.png");
+    private static WinterWorldRenderer INSTANCE;
+
     public static WinterWorldRenderer get()
     {
         return INSTANCE == null ? INSTANCE = new WinterWorldRenderer() : INSTANCE;
     }
 
-    private static final ResourceLocation SNOW_TEXTURES = new ResourceLocation("textures/environment/snow.png");
-    private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation("textures/environment/moon_phases.png");
-    private static final ResourceLocation SUN_TEXTURES = new ResourceLocation("textures/environment/sun.png");
-
-    private static WinterWorldRenderer INSTANCE;
-
     private final float[] rainSizeX = new float[1024];
     private final float[] rainSizeZ = new float[1024];
+    private final VertexFormat skyVertexFormat = DefaultVertexFormats.POSITION;
     private int rainSoundTime, windSoundTime;
     private int ticks;
-
-    private final VertexFormat skyVertexFormat = DefaultVertexFormats.POSITION;
     private VertexBuffer starVBO;
     private VertexBuffer skyVBO;
     private VertexBuffer sky2VBO;
@@ -70,7 +66,7 @@ public class WinterWorldRenderer
         INSTANCE = this;
 
         // Copied from WorldRenderer - I have no idea what it does but let's not touch it shall we?
-        for(int i = 0; i < 32; ++i)
+        for (int i = 0; i < 32; ++i)
         {
             for (int j = 0; j < 32; ++j)
             {

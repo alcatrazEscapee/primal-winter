@@ -1,5 +1,5 @@
 /*
- * Part of the Realistic Ore Veins Mod by AlcatrazEscapee
+ * Part of the Primal Winter by AlcatrazEscapee
  * Work under Copyright. See the project LICENSE.md for details.
  */
 

@@ -13,8 +13,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.client.SkyRenderHandler;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -77,7 +75,7 @@ public final class ClientForgeEventHandler
                 // Calculate color based on time of day
                 float partialTicks = (float) event.getRenderPartialTicks();
                 float angle = player.world.getCelestialAngle(partialTicks);
-                float height = MathHelper.cos(angle * ((float)Math.PI * 2F));
+                float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
                 float red = 0.75f * delta + 0.05f * (1 - delta);

@@ -26,17 +26,17 @@ public final class Vec2i
     }
 
     @Override
+    public int hashCode()
+    {
+        return 31 * x + z;
+    }
+
+    @Override
     public boolean equals(Object other)
     {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         Vec2i vec2i = (Vec2i) other;
         return x == vec2i.x && z == vec2i.z;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return 31 * x + z;
     }
 }

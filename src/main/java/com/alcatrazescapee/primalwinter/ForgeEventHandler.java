@@ -1,5 +1,5 @@
 /*
- * Part of the Realistic Ore Veins Mod by AlcatrazEscapee
+ * Part of the Primal Winter by AlcatrazEscapee
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
@@ -7,29 +7,23 @@ package com.alcatrazescapee.primalwinter;
 
 import java.util.Optional;
 
-import com.google.common.collect.Iterables;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.EntityClassification;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ChunkHolder;
-import net.minecraft.world.server.ChunkManager;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.alcatrazescapee.primalwinter.util.VanillaHacks;
 
@@ -38,8 +32,6 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ForgeEventHandler
 {
-    private final Logger LOGGER = LogManager.getLogger();
-
     @SubscribeEvent
     public static void onServerStarting(FMLServerStartingEvent event)
     {
@@ -96,4 +88,6 @@ public final class ForgeEventHandler
             }
         }
     }
+
+    private final Logger LOGGER = LogManager.getLogger();
 }

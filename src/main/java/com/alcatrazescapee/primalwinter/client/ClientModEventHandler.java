@@ -5,15 +5,9 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.FoliageColors;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.biome.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;

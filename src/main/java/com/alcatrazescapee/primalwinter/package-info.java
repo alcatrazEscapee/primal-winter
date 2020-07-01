@@ -1,6 +1,6 @@
 /*
- * Work under Copyright. Licensed under the EUPL.
- * See the project README.md and LICENSE.txt for more information.
+ * Part of the Primal Winter by AlcatrazEscapee
+ * Work under Copyright. See the project LICENSE.md for details.
  */
 
 @MethodsReturnNonnullByDefault

@@ -1,5 +1,5 @@
 /*
- * Part of the Realistic Ore Veins Mod by AlcatrazEscapee
+ * Part of the Primal Winter by AlcatrazEscapee
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
@@ -8,6 +8,8 @@ package com.alcatrazescapee.primalwinter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityClassification;
@@ -20,18 +22,16 @@ import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
-import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
+import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.common.ModItems;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.BlockReplacingConfiguredFeature;

@@ -12,10 +12,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.*;
+import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.world.server.ChunkManager;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketManager;
 
 /**
  * This is a collection of vanilla internal methods that are either duplicated, AT'd, or modified in some manner
