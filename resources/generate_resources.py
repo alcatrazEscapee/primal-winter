@@ -34,28 +34,34 @@ def main():
                 'end': 'primalwinter:block/snowy_%s_log_top' % wood
             }, parent='block/cube_column') \
             .with_block_loot('minecraft:%s_log' % wood) \
-            .with_lang(lang('snowy %s log', wood))
+            .with_lang(lang('snowy %s log', wood)) \
+            .with_tag('minecraft:%s_logs' % wood) \
+            .with_tag('minecraft:logs')
         rm.blockstate('snowy_%s_leaves' % wood) \
             .with_block_model(textures={
                 'all': 'block/%s_leaves' % wood,
-                'overlay': 'primalalchemy:snowy_leaves_overlay'
+                'overlay': 'primalwinter:block/snowy_leaves_overlay'
             }, parent='primalwinter:block/snowy_leaves') \
             .with_item_model() \
             .with_block_loot({'entries': {
                 'type': 'loot_table',
-                'name': 'minecraft:block/%s_leaves' % wood
+                'name': 'minecraft:blocks/%s_leaves' % wood
             }}) \
-            .with_lang(lang('snowy %s leaves', wood))
+            .with_lang(lang('snowy %s leaves', wood)) \
+            .with_tag('minecraft:%s_leaves' % wood) \
+            .with_tag('minecraft:leaves')
 
     # Template leaves model
     rm.block_model('snowy_leaves', textures={
         'particle': '#all',
-        'elements': [{
+    }, elements=[{
             'from': [0, 0, 0],
             'to': [16, 16, 16],
             'faces': dict((face, {'uv': [0, 0, 16, 16], 'texture': '#all' if tint == 0 else '#overlay', 'tintindex': tint, 'cullface': face}) for face in ('down', 'up', 'north', 'south', 'east', 'west'))
-        } for tint in (0, None)]
-    })
+        } for tint in (0, None)
+    ])
+
+    rm.flush()
 
 
 def lang(key: str, *args) -> str:

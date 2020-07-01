@@ -8,7 +8,7 @@
       "entries": [
         {
           "type": "loot_table",
-          "name": "minecraft:block/acacia_leaves"
+          "name": "minecraft:blocks/acacia_leaves"
         }
       ],
       "conditions": [

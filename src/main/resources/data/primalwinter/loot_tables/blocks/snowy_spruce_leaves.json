@@ -8,7 +8,7 @@
       "entries": [
         {
           "type": "loot_table",
-          "name": "minecraft:block/spruce_leaves"
+          "name": "minecraft:blocks/spruce_leaves"
         }
       ],
       "conditions": [

@@ -3,6 +3,6 @@
   "parent": "primalwinter:block/snowy_leaves",
   "textures": {
     "all": "block/oak_leaves",
-    "overlay": "primalalchemy:snowy_leaves_overlay"
+    "overlay": "primalwinter:block/snowy_leaves_overlay"
   }
 }

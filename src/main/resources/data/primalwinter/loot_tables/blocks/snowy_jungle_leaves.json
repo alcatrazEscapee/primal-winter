@@ -8,7 +8,7 @@
       "entries": [
         {
           "type": "loot_table",
-          "name": "minecraft:block/jungle_leaves"
+          "name": "minecraft:blocks/jungle_leaves"
         }
       ],
       "conditions": [

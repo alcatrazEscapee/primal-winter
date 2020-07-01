@@ -8,7 +8,7 @@
       "entries": [
         {
           "type": "loot_table",
-          "name": "minecraft:block/oak_leaves"
+          "name": "minecraft:blocks/oak_leaves"
         }
       ],
       "conditions": [
