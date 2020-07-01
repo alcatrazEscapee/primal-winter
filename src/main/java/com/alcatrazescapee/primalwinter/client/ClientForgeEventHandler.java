@@ -9,11 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.IRenderHandler;
+import net.minecraftforge.client.SkyRenderHandler;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -32,7 +33,9 @@ public final class ClientForgeEventHandler
     {
         if (event.getWorld() instanceof ClientWorld && event.getWorld().getDimension().getType() == DimensionType.OVERWORLD)
         {
-            event.getWorld().getDimension().setWeatherRenderer(new WinterWeatherRenderer());
+            WinterWorldRenderer winterRenderer = WinterWorldRenderer.get();
+            event.getWorld().getDimension().setWeatherRenderer(winterRenderer.getWeatherHandler());
+            event.getWorld().getDimension().setSkyRenderer(winterRenderer.getSkyHandler());
         }
     }
 
@@ -41,13 +44,9 @@ public final class ClientForgeEventHandler
     {
         Minecraft mc = Minecraft.getInstance();
         ClientWorld world = mc.world;
-        if (world != null && mc.gameRenderer != null && !mc.isGamePaused())
+        if (world != null && mc.gameRenderer != null && !mc.isGamePaused() && world.getDimension().getType() == DimensionType.OVERWORLD)
         {
-            IRenderHandler renderHandler = world.getDimension().getWeatherRenderer();
-            if (renderHandler instanceof WinterWeatherRenderer)
-            {
-                ((WinterWeatherRenderer) renderHandler).addSnowParticlesAndSound(mc, world, mc.gameRenderer.getActiveRenderInfo());
-            }
+            WinterWorldRenderer.get().addSnowParticlesAndSound(mc, world, mc.gameRenderer.getActiveRenderInfo());
         }
     }
 
@@ -75,9 +74,17 @@ public final class ClientForgeEventHandler
             int light = player.world.getLightFor(LightType.SKY, player.getPosition());
             if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.dimension == DimensionType.OVERWORLD)
             {
-                event.setRed(1);
-                event.setBlue(1);
-                event.setGreen(1);
+                // Calculate color based on time of day
+                float partialTicks = (float) event.getRenderPartialTicks();
+                float angle = player.world.getCelestialAngle(partialTicks);
+                float height = MathHelper.cos(angle * ((float)Math.PI * 2F));
+                float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
+
+                float red = 0.75f * delta + 0.05f * (1 - delta);
+                float blueGreen = 0.85f * delta + 0.1f * (1 - delta);
+                event.setRed(red);
+                event.setBlue(blueGreen);
+                event.setGreen(blueGreen);
             }
         }
     }

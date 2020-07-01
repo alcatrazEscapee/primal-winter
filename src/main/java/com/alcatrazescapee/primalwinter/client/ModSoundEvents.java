@@ -13,14 +13,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
-public final class ModSounds
+public final class ModSoundEvents
 {
-    public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
 
     public static final RegistryObject<SoundEvent> WIND = register("wind");
 
     private static RegistryObject<SoundEvent> register(String name)
     {
-        return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(MOD_ID, name)));
+        return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(MOD_ID, name)));
     }
 }

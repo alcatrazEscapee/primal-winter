@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -22,7 +23,7 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModBlocks
 {
-    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
     public static final RegistryObject<Block> SNOWY_DIRT = register("snowy_dirt", () -> new Block(Block.Properties.from(Blocks.DIRT)));
     public static final RegistryObject<Block> SNOWY_COARSE_DIRT = register("snowy_coarse_dirt", () -> new Block(Block.Properties.from(Blocks.COARSE_DIRT)));
@@ -34,19 +35,19 @@ public final class ModBlocks
     public static final RegistryObject<Block> SNOWY_ANDESITE = register("snowy_andesite", () -> new Block(Block.Properties.from(Blocks.ANDESITE)));
     public static final RegistryObject<Block> SNOWY_DIORITE = register("snowy_diorite", () -> new Block(Block.Properties.from(Blocks.DIORITE)));
 
-    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> new Block(Block.Properties.from(Blocks.OAK_LOG)));
-    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> new Block(Block.Properties.from(Blocks.BIRCH_LOG)));
-    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> new Block(Block.Properties.from(Blocks.SPRUCE_LOG)));
-    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> new Block(Block.Properties.from(Blocks.JUNGLE_LOG)));
-    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> new Block(Block.Properties.from(Blocks.DARK_OAK_LOG)));
-    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> new Block(Block.Properties.from(Blocks.ACACIA_LOG)));
+    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> new LogBlock(MaterialColor.WOOD, Block.Properties.from(Blocks.OAK_LOG)));
+    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> new LogBlock(MaterialColor.SAND, Block.Properties.from(Blocks.BIRCH_LOG)));
+    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> new LogBlock(MaterialColor.OBSIDIAN, Block.Properties.from(Blocks.SPRUCE_LOG)));
+    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> new LogBlock(MaterialColor.DIRT, Block.Properties.from(Blocks.JUNGLE_LOG)));
+    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> new LogBlock(MaterialColor.BROWN, Block.Properties.from(Blocks.DARK_OAK_LOG)));
+    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> new LogBlock(MaterialColor.ADOBE, Block.Properties.from(Blocks.ACACIA_LOG)));
 
-    public static final RegistryObject<Block> SNOWY_OAK_LEAVES = register("snowy_oak_leaves", () -> new Block(Block.Properties.from(Blocks.OAK_LEAVES)));
-    public static final RegistryObject<Block> SNOWY_BIRCH_LEAVES = register("snowy_birch_leaves", () -> new Block(Block.Properties.from(Blocks.BIRCH_LEAVES)));
-    public static final RegistryObject<Block> SNOWY_SPRUCE_LEAVES = register("snowy_spruce_leaves", () -> new Block(Block.Properties.from(Blocks.SPRUCE_LEAVES)));
-    public static final RegistryObject<Block> SNOWY_JUNGLE_LEAVES = register("snowy_jungle_leaves", () -> new Block(Block.Properties.from(Blocks.JUNGLE_LEAVES)));
-    public static final RegistryObject<Block> SNOWY_DARK_OAK_LEAVES = register("snowy_dark_oak_leaves", () -> new Block(Block.Properties.from(Blocks.DARK_OAK_LEAVES)));
-    public static final RegistryObject<Block> SNOWY_ACACIA_LEAVES = register("snowy_acacia_leaves", () -> new Block(Block.Properties.from(Blocks.ACACIA_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_OAK_LEAVES = register("snowy_oak_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_BIRCH_LEAVES = register("snowy_birch_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.BIRCH_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_SPRUCE_LEAVES = register("snowy_spruce_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.SPRUCE_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_JUNGLE_LEAVES = register("snowy_jungle_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.JUNGLE_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_DARK_OAK_LEAVES = register("snowy_dark_oak_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.DARK_OAK_LEAVES)));
+    public static final RegistryObject<Block> SNOWY_ACACIA_LEAVES = register("snowy_acacia_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.ACACIA_LEAVES)));
 
     public static final Map<Block, Supplier<Block>> SNOWY_TERRAIN_BLOCKS = new HashMap<>(new ImmutableMap.Builder<Block, Supplier<Block>>()
         .put(Blocks.DIRT, SNOWY_DIRT)
@@ -80,7 +81,7 @@ public final class ModBlocks
 
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> blockFactory)
     {
-        return register(name, blockFactory, block -> new BlockItem(block, new Item.Properties()));
+        return register(name, blockFactory, block -> new BlockItem(block, new Item.Properties().group(ModItemGroup.ITEMS)));
     }
 
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> blockFactory, Function<T, ? extends BlockItem> blockItemFactory)

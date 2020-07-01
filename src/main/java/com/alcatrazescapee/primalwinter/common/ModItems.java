@@ -6,6 +6,8 @@
 package com.alcatrazescapee.primalwinter.common;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -13,5 +15,5 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModItems
 {
-    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 }

@@ -6,7 +6,10 @@
 package com.alcatrazescapee.primalwinter;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.biome.Biome;
@@ -18,7 +21,6 @@ import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +29,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
-import com.alcatrazescapee.primalwinter.client.ModSounds;
+import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
 import com.alcatrazescapee.primalwinter.common.ModItems;
+import com.alcatrazescapee.primalwinter.util.Helpers;
+import com.alcatrazescapee.primalwinter.world.BlockReplacingConfiguredFeature;
+import com.alcatrazescapee.primalwinter.world.BlockReplacingWorld;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -54,8 +60,11 @@ public final class PrimalWinter
         modEventBus.register(this);
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+
         ModFeatures.FEATURES.register(modEventBus);
-        ModSounds.SOUNDS.register(modEventBus);
+
+        ModSoundEvents.SOUND_EVENTS.register(modEventBus);
+        ModParticleTypes.PARTICLE_TYPES.register(modEventBus);
     }
 
     @SubscribeEvent
@@ -81,6 +90,23 @@ public final class PrimalWinter
             // Remove the original feature because it sucks
             biome.getFeatures(GenerationStage.Decoration.TOP_LAYER_MODIFICATION).removeIf(feature -> feature.config instanceof DecoratedFeatureConfig && ((DecoratedFeatureConfig) feature.config).feature.feature instanceof IceAndSnowFeature);
             biome.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, ModFeatures.FREEZE_EVERYTHING.get().withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOPE.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG)));
+
+            // Delegate all vegetation modifications through the block replacement
+            // This allows us to capture all tree features and force them to use snowy versions of all their blocks.
+            List<ConfiguredFeature<?, ?>> features = biome.getFeatures(GenerationStage.Decoration.VEGETAL_DECORATION);
+            BlockReplacingConfiguredFeature featureWrapper = new BlockReplacingConfiguredFeature(world -> new BlockReplacingWorld(world, stateIn -> {
+                Block replacementBlock = ModBlocks.SNOWY_TREE_BLOCKS.getOrDefault(stateIn.getBlock(), () -> null).get();
+                if (replacementBlock != null)
+                {
+                    BlockState replacementState = replacementBlock.getDefaultState();
+                    Helpers.copyProperties(stateIn, replacementState);
+                    return replacementState;
+                }
+                return stateIn;
+            }));
+            features.forEach(featureWrapper::addDelegate);
+            features.clear();
+            biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, featureWrapper);
 
             // Ice bergs have migrated
             if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OCEAN))

@@ -10,7 +10,7 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModFeatures
 {
-    public static final DeferredRegister<Feature<?>> FEATURES = new DeferredRegister<>(ForgeRegistries.FEATURES, MOD_ID);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
 
     public static final RegistryObject<WinterIceAndSnowFeature> FREEZE_EVERYTHING = FEATURES.register("freeze_everything", () -> new WinterIceAndSnowFeature(NoFeatureConfig::deserialize));
 }

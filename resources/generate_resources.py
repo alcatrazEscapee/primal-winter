@@ -61,6 +61,11 @@ def main():
         } for tint in (0, None)
     ])
 
+    # Snowy version of particles
+    rm.data(('particles', 'snow'), {
+        'textures': ['primalwinter:snow_%d' % i for i in range(4)]
+    }, 'assets')
+
     rm.flush()
 
 
