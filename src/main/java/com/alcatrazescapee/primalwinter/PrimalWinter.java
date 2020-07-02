@@ -38,6 +38,7 @@ import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.BlockReplacingConfiguredFeature;
 import com.alcatrazescapee.primalwinter.world.BlockReplacingWorld;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
+import com.alcatrazescapee.primalwinter.world.SnowPlacingConfiguredFeature;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
@@ -85,7 +86,6 @@ public final class PrimalWinter
             // Winter mobs
             biome.spawns.computeIfAbsent(EntityClassification.MONSTER, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.STRAY, 320, 4, 4));
             biome.spawns.computeIfAbsent(EntityClassification.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.POLAR_BEAR, 4, 1, 2));
-            biome.spawns.computeIfAbsent(EntityClassification.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.SNOW_GOLEM, 8, 1, 1));
 
             // Freeze a bit more than just the top layer
             // Remove the original feature because it sucks
@@ -116,8 +116,8 @@ public final class PrimalWinter
             }
 
             // Ice spikes (although less frequent)
-            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, Feature.ICE_SPIKE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(3))));
-            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, Feature.ICE_PATCH.withConfiguration(new FeatureRadiusConfig(2)).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(2))));
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, new SnowPlacingConfiguredFeature<>(Feature.ICE_SPIKE, IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(7))));
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, new SnowPlacingConfiguredFeature<>(Feature.ICE_PATCH, new FeatureRadiusConfig(2)).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(5))));
 
             // Igloos
             biome.addStructure(Feature.IGLOO.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));

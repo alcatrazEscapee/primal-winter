@@ -88,6 +88,8 @@ public final class ModBlocks
 
     public static final Map<Block, Supplier<Block>> SNOWY_SPECIAL_TERRAIN_BLOCKS = new HashMap<>(new ImmutableMap.Builder<Block, Supplier<Block>>()
         .put(Blocks.GRASS_PATH, SNOWY_GRASS_PATH)
+        .put(Blocks.BLUE_ICE, () -> Blocks.SNOW_BLOCK)
+        .put(Blocks.PACKED_ICE, () -> Blocks.SNOW_BLOCK)
         .build()
     );
 

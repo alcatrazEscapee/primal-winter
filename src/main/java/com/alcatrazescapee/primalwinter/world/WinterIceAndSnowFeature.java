@@ -105,6 +105,19 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         IFluidState fluidState = worldIn.getFluidState(pos);
         BlockPos posDown = pos.down();
         BlockState stateDown = worldIn.getBlockState(posDown);
+
+        // First, possibly replace the block below. This may have impacts on being able to add snow on top
+        if (state.isAir(worldIn, pos))
+        {
+            Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
+            if (replacementBlock != null)
+            {
+                BlockState replacementState = replacementBlock.getDefaultState();
+                worldIn.setBlockState(posDown, replacementState, 2);
+            }
+        }
+
+        // Then, try and place snow layers / ice at the current location
         if (fluidState.getFluid() == Fluids.WATER && (state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable()))
         {
             worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
@@ -120,10 +133,11 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         else if (Blocks.SNOW.getDefaultState().isValidPosition(worldIn, pos) && state.getMaterial().isReplaceable())
         {
             // Special exceptions
-            if (state.getBlock() instanceof DoublePlantBlock)
+            BlockPos posUp = pos.up();
+            if (state.getBlock() instanceof DoublePlantBlock && worldIn.getBlockState(posUp).getBlock() == state.getBlock())
             {
                 // Remove the above plant
-                worldIn.removeBlock(pos.up(), false);
+                worldIn.removeBlock(posUp, false);
             }
 
             int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
@@ -131,16 +145,6 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
 
             // Replace the below block as well
             Block replacementBlock = ModBlocks.SNOWY_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
-            if (replacementBlock != null)
-            {
-                BlockState replacementState = replacementBlock.getDefaultState();
-                worldIn.setBlockState(posDown, replacementState, 2);
-            }
-        }
-        else
-        {
-            // Try and replace the below block in cases where snow does not settle
-            Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
             if (replacementBlock != null)
             {
                 BlockState replacementState = replacementBlock.getDefaultState();
