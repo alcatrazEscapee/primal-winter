@@ -7,8 +7,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:stone"
+          "type": "loot_table",
+          "name": "minecraft:blocks/stone"
         }
       ],
       "conditions": [

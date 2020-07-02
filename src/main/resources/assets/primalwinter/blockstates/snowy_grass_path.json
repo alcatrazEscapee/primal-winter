@@ -1,0 +1,22 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "variants": {
+    "": [
+      {
+        "model": "primalwinter:block/snowy_grass_path"
+      },
+      {
+        "model": "primalwinter:block/snowy_grass_path",
+        "y": 90
+      },
+      {
+        "model": "primalwinter:block/snowy_grass_path",
+        "y": 180
+      },
+      {
+        "model": "primalwinter:block/snowy_grass_path",
+        "y": 270
+      }
+    ]
+  }
+}

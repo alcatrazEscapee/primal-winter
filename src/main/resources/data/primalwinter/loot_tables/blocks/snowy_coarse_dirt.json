@@ -7,8 +7,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:coarse_dirt"
+          "type": "loot_table",
+          "name": "minecraft:blocks/coarse_dirt"
         }
       ],
       "conditions": [

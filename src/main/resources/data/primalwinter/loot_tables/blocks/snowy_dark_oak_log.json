@@ -7,8 +7,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:dark_oak_log"
+          "type": "loot_table",
+          "name": "minecraft:blocks/dark_oak_log"
         }
       ],
       "conditions": [

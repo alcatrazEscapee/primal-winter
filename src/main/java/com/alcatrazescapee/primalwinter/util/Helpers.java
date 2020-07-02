@@ -10,7 +10,7 @@ import net.minecraft.state.IProperty;
 
 public final class Helpers
 {
-    public static void copyProperties(BlockState oldState, BlockState newState)
+    public static BlockState copyProperties(BlockState oldState, BlockState newState)
     {
         for (IProperty<?> property : oldState.getProperties())
         {
@@ -19,6 +19,7 @@ public final class Helpers
                 newState = copyProperty(property, oldState, newState);
             }
         }
+        return newState;
     }
 
     /**

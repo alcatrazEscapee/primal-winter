@@ -18,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeFeatures;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.placement.ChanceConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.BiomeDictionary;
@@ -99,8 +100,7 @@ public final class PrimalWinter
                 if (replacementBlock != null)
                 {
                     BlockState replacementState = replacementBlock.getDefaultState();
-                    Helpers.copyProperties(stateIn, replacementState);
-                    return replacementState;
+                    return Helpers.copyProperties(stateIn, replacementState);
                 }
                 return stateIn;
             }));
@@ -115,8 +115,14 @@ public final class PrimalWinter
                 DefaultBiomeFeatures.addBlueIce(biome);
             }
 
+            // Ice spikes (although less frequent)
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, Feature.ICE_SPIKE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(3))));
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, Feature.ICE_PATCH.withConfiguration(new FeatureRadiusConfig(2)).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(2))));
+
             // Igloos
             biome.addStructure(Feature.IGLOO.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
         }));
+
+        ModBlocks.setup();
     }
 }

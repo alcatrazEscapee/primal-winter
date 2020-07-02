@@ -122,7 +122,7 @@ public class WinterWorldRenderer
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             float[] sunriseSunsetColors = world.dimension.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks);
-            if (sunriseSunsetColors != null && world.getRainStrength(partialTicks) > 0 && world.getBiome(pos).getTemperature(pos) < 0.15) // Skip sunrise and sunset if snowing as the snow fog will be in place
+            if (sunriseSunsetColors != null && !(world.getRainStrength(partialTicks) > 0 && world.getBiome(pos).getTemperature(pos) < 0.15)) // Skip sunrise and sunset if snowing as the snow fog will be in place
             {
                 RenderSystem.disableTexture();
                 RenderSystem.shadeModel(7425);

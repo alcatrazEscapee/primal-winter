@@ -1,0 +1,9 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "primalwinter:block/snowy_light_gray_terracotta",
+    "bottom": "minecraft:block/light_gray_terracotta",
+    "top": "minecraft:block/snow"
+  }
+}

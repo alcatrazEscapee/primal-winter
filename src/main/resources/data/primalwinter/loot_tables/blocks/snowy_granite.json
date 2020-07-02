@@ -7,8 +7,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:granite"
+          "type": "loot_table",
+          "name": "minecraft:blocks/granite"
         }
       ],
       "conditions": [

@@ -8,10 +8,7 @@ package com.alcatrazescapee.primalwinter.world;
 import java.util.*;
 import java.util.function.Function;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.*;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -43,7 +40,7 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
         // First, find the highest and lowest exposed y pos in the chunk
-        int maxY = 0, minY = Integer.MAX_VALUE;
+        int maxY = 0;
         for (int x = 0; x < 16; ++x)
         {
             for (int z = 0; z < 16; ++z)
@@ -76,7 +73,6 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
                     }
                     if (skyLight > 0)
                     {
-                        //replaceTreeBlocks(worldIn, mutablePos, state);
                         placeSnowAndIce(worldIn, mutablePos, state, rand, skyLight);
                     }
                 }
@@ -104,37 +100,52 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         return true;
     }
 
-    private void placeSnowAndIce(IWorld worldIn, BlockPos.Mutable mutablePos, BlockState state, Random random, int skyLight)
+    private void placeSnowAndIce(IWorld worldIn, BlockPos pos, BlockState state, Random random, int skyLight)
     {
-        IFluidState fluidState = worldIn.getFluidState(mutablePos);
-        if (fluidState.getFluid() == Fluids.WATER && state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable())
+        IFluidState fluidState = worldIn.getFluidState(pos);
+        BlockPos posDown = pos.down();
+        BlockState stateDown = worldIn.getBlockState(posDown);
+        if (fluidState.getFluid() == Fluids.WATER && (state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable()))
         {
+            worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
             if (!(state.getBlock() instanceof FlowingFluidBlock))
             {
-                worldIn.destroyBlock(mutablePos, false);
+                worldIn.getPendingBlockTicks().scheduleTick(pos, Blocks.ICE, 0);
             }
-            worldIn.setBlockState(mutablePos, Blocks.ICE.getDefaultState(), 2);
         }
         else if (fluidState.getFluid() == Fluids.LAVA && state.getBlock() instanceof FlowingFluidBlock)
         {
-            worldIn.setBlockState(mutablePos, Blocks.OBSIDIAN.getDefaultState(), 2);
+            worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 2);
         }
-        else if (Blocks.SNOW.getDefaultState().isValidPosition(worldIn, mutablePos) && state.getMaterial().isReplaceable())
+        else if (Blocks.SNOW.getDefaultState().isValidPosition(worldIn, pos) && state.getMaterial().isReplaceable())
         {
-            int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, mutablePos), 1, 7);
-            worldIn.destroyBlock(mutablePos, false);
-            worldIn.setBlockState(mutablePos, Blocks.SNOW.getDefaultState().with(BlockStateProperties.LAYERS_1_8, layers), 3);
+            // Special exceptions
+            if (state.getBlock() instanceof DoublePlantBlock)
+            {
+                // Remove the above plant
+                worldIn.removeBlock(pos.up(), false);
+            }
+
+            int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
+            worldIn.setBlockState(pos, Blocks.SNOW.getDefaultState().with(BlockStateProperties.LAYERS_1_8, layers), 3);
 
             // Replace the below block as well
-            mutablePos.move(Direction.DOWN);
-            BlockState stateDown = worldIn.getBlockState(mutablePos);
             Block replacementBlock = ModBlocks.SNOWY_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
             if (replacementBlock != null)
             {
                 BlockState replacementState = replacementBlock.getDefaultState();
-                worldIn.setBlockState(mutablePos, replacementState, 2);
+                worldIn.setBlockState(posDown, replacementState, 2);
             }
-            mutablePos.move(Direction.UP); // move back
+        }
+        else
+        {
+            // Try and replace the below block in cases where snow does not settle
+            Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
+            if (replacementBlock != null)
+            {
+                BlockState replacementState = replacementBlock.getDefaultState();
+                worldIn.setBlockState(posDown, replacementState, 2);
+            }
         }
     }
 

@@ -7,8 +7,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:birch_log"
+          "type": "loot_table",
+          "name": "minecraft:blocks/birch_log"
         }
       ],
       "conditions": [

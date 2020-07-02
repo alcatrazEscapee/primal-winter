@@ -1,0 +1,8 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "parent": "block/grass_path",
+  "textures": {
+    "top": "minecraft:block/snow",
+    "side": "primalwinter:block/snowy_grass_path_side"
+  }
+}
