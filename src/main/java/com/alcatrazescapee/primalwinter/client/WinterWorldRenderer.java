@@ -415,11 +415,11 @@ public class WinterWorldRenderer
                 rainSoundTime = 0;
                 if (posY > (double) (blockpos.getY() + 1) && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
                 {
-                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.05f, 0.05f, false);
+                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.03f, 0.05f, false);
                 }
                 else
                 {
-                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.1f, 0.1f, false);
+                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
                 }
             }
             if (j > 0 && windSoundTime-- < 0 && Config.CLIENT.windSounds.get())

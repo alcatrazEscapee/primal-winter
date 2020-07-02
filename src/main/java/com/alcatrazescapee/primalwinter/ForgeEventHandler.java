@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -45,10 +44,10 @@ public final class ForgeEventHandler
     @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load event)
     {
-        IWorld world = event.getWorld();
-        if (world instanceof ServerWorld && world.getDimension().getType() == DimensionType.OVERWORLD)
+        if (event.getWorld() instanceof ServerWorld && event.getWorld().getDimension().getType() == DimensionType.OVERWORLD)
         {
-            ((ServerWorld) world).getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, ((ServerWorld) world).getServer());
+            ServerWorld world = (ServerWorld) event.getWorld();
+            world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
             world.getWorldInfo().setClearWeatherTime(0);
             world.getWorldInfo().setRainTime(Integer.MAX_VALUE);
             world.getWorldInfo().setThunderTime(Integer.MAX_VALUE);

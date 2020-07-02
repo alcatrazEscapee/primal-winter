@@ -62,7 +62,7 @@ public final class ModBlocks
     public static final RegistryObject<Block> SNOWY_DARK_OAK_LEAVES = register("snowy_dark_oak_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.DARK_OAK_LEAVES)));
     public static final RegistryObject<Block> SNOWY_ACACIA_LEAVES = register("snowy_acacia_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.ACACIA_LEAVES)));
 
-    public static final RegistryObject<Block> SNOWY_VINE = register("snowy_vine", () -> new VineBlock(Block.Properties.from(Blocks.VINE)));
+    public static final RegistryObject<Block> SNOWY_VINE = register("snowy_vine", () -> new WinterVineBlock(Block.Properties.from(Blocks.VINE)));
 
     public static final Map<Block, Supplier<Block>> SNOWY_TERRAIN_BLOCKS = new HashMap<>(new ImmutableMap.Builder<Block, Supplier<Block>>()
         .put(Blocks.DIRT, SNOWY_DIRT)
