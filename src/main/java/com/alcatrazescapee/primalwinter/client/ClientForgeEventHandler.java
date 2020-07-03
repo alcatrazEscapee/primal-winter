@@ -84,11 +84,11 @@ public final class ClientForgeEventHandler
                 float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
-                float red = 0.75f * delta + 0.05f * (1 - delta);
-                float blueGreen = 0.85f * delta + 0.1f * (1 - delta);
-                event.setRed(red);
-                event.setBlue(blueGreen);
-                event.setGreen(blueGreen);
+                float redGreen = 0.75f * delta + 0.05f * (1 - delta);
+                float blue = 0.85f * delta + 0.1f * (1 - delta);
+                event.setRed(redGreen);
+                event.setBlue(blue);
+                event.setGreen(redGreen);
             }
         }
     }
