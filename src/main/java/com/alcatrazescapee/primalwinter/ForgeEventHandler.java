@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraft.command.Commands;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
@@ -38,6 +40,10 @@ public final class ForgeEventHandler
         {
             // Vanilla weather command... NOT ALLOWED
             event.getCommandDispatcher().getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
+            event.getCommandDispatcher().register(Commands.literal("weather").executes(source -> {
+                source.getSource().sendFeedback(new StringTextComponent("Not even a command can overcome this storm... (This command is disabled by Primal Winter)"), false);
+                return 0;
+            }));
         }
     }
 

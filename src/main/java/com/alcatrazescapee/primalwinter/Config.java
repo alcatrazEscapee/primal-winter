@@ -25,7 +25,6 @@ public final class Config
 {
     public static final Common COMMON = register(ModConfig.Type.COMMON, Common::new);
     public static final Client CLIENT = register(ModConfig.Type.CLIENT, Client::new);
-    public static final Server SERVER = register(ModConfig.Type.SERVER, Server::new);
 
     static void init() {}
 
@@ -42,6 +41,8 @@ public final class Config
         public final ForgeConfigSpec.IntValue snowDensity;
         public final ForgeConfigSpec.BooleanValue snowSounds;
         public final ForgeConfigSpec.BooleanValue windSounds;
+        public final ForgeConfigSpec.BooleanValue weatherRenderChanges;
+        public final ForgeConfigSpec.BooleanValue skyRenderChanges;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -52,15 +53,10 @@ public final class Config
             snowSounds = builder.comment("Enable snow (actually rain) weather sounds.").define("snowSounds", true);
             windSounds = builder.comment("Enable wind / snow storm weather sounds.").define("windSounds", true);
 
+            weatherRenderChanges = builder.comment("Changes the weather renderer to one which renders faster, denser snow. Note: this requires a world reload to take effect.").define("weatherRenderChanges", true);
+            skyRenderChanges = builder.comment("Changes the sky renderer to one which does not render sunrise or sunset effects during a snowstorm. Note: this requires a world reload to take effect.").define("skyRenderChanges", true);
+
             builder.pop();
-        }
-    }
-
-    public static final class Server
-    {
-        Server(ForgeConfigSpec.Builder builder)
-        {
-
         }
     }
 

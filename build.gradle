@@ -83,7 +83,7 @@ curseforge {
     }
     project {
         apiKey = envApiKey
-        id = 'FIX ME'
+        id = '393321'
         changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version})"
         changelogType = "markdown"
         releaseType = versionReleaseType

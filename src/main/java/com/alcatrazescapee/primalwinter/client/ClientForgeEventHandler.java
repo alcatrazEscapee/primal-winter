@@ -32,8 +32,14 @@ public final class ClientForgeEventHandler
         if (event.getWorld() instanceof ClientWorld && event.getWorld().getDimension().getType() == DimensionType.OVERWORLD)
         {
             WinterWorldRenderer winterRenderer = WinterWorldRenderer.get();
-            event.getWorld().getDimension().setWeatherRenderer(winterRenderer.getWeatherHandler());
-            event.getWorld().getDimension().setSkyRenderer(winterRenderer.getSkyHandler());
+            if (Config.CLIENT.weatherRenderChanges.get())
+            {
+                event.getWorld().getDimension().setWeatherRenderer(winterRenderer.getWeatherHandler());
+            }
+            if (Config.CLIENT.skyRenderChanges.get())
+            {
+                event.getWorld().getDimension().setSkyRenderer(winterRenderer.getSkyHandler());
+            }
         }
     }
 

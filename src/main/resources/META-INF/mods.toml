@@ -1,7 +1,7 @@
 
 # Loader Metadata
 modLoader="javafml" # mandatory
-loaderVersion="[31,)" # mandatory
+loaderVersion="[31.1.39,)" # mandatory
 issueTrackerURL="https://github.com/alcatrazEscapee/primal-winter/issues" # optional
 
 # Ore Veins
@@ -22,7 +22,7 @@ issueTrackerURL="https://github.com/alcatrazEscapee/primal-winter/issues" # opti
 [[dependencies.primalwinter]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="[31.1.39,)"
     ordering="NONE"
     side="BOTH"
 
