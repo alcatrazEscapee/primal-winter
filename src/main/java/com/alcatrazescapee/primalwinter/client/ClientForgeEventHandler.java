@@ -84,11 +84,15 @@ public final class ClientForgeEventHandler
                 float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
-                float redGreen = 0.75f * delta + 0.05f * (1 - delta);
-                float blue = 0.85f * delta + 0.1f * (1 - delta);
-                event.setRed(redGreen);
-                event.setBlue(blue);
-                event.setGreen(redGreen);
+                int colorDay = Config.CLIENT.fogColorDay.get();
+                int colorNight = Config.CLIENT.fogColorNight.get();
+                float red = ((colorDay >> 16) & 0xFF) * delta + ((colorNight >> 16) & 0xFF) * (1 - delta);
+                float green = ((colorDay >> 8) & 0xFF) * delta + ((colorNight >> 8) & 0xFF) * (1 - delta);
+                float blue = (colorDay & 0xFF) * delta + (colorNight & 0xFF) * (1 - delta);
+
+                event.setRed(red / 255f);
+                event.setGreen(green / 255f);
+                event.setBlue(blue / 255f);
             }
         }
     }
