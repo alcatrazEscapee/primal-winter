@@ -113,6 +113,9 @@ def main():
         'textures': ['primalwinter:snow_%d' % i for i in range(4)]
     }, 'assets')
 
+    rm.block_tag('animal_spawns_on', 'minecraft:grass', 'minecraft:sand', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
+    rm.block_tag('turtle_spawns_on', 'minecraft:sand', 'primalwinter:snowy_sand')
+
     rm.flush()
 
 
