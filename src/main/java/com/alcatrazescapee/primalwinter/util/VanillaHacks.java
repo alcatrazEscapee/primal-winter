@@ -115,6 +115,7 @@ public final class VanillaHacks
             // Winter mobs
             biome.spawns.computeIfAbsent(EntityClassification.MONSTER, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.STRAY, 320, 4, 4));
             biome.spawns.computeIfAbsent(EntityClassification.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.POLAR_BEAR, 4, 1, 2));
+            biome.spawns.computeIfAbsent(EntityClassification.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.SNOW_GOLEM, 4, 4, 8));
 
             // Freeze a bit more than just the top layer
             // Remove the original feature because it sucks
@@ -171,9 +172,7 @@ public final class VanillaHacks
         replaceSpawnEntry(EntityType.POLAR_BEAR, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canPolarBearSpawn);
         replaceSpawnEntry(EntityType.RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canAnimalSpawn);
         replaceSpawnEntry(EntityType.SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canAnimalSpawn);
-        //register(EntityType.SNOW_GOLEM, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canSnowGolemSpawnOn);
         replaceSpawnEntry(EntityType.TURTLE, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canTurtleSpawnOn);
-        //register(EntityType.VILLAGER, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MobEntity::canSpawnOn);
         replaceSpawnEntry(EntityType.WOLF, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canAnimalSpawn);
         replaceSpawnEntry(EntityType.CAT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canAnimalSpawn);
         replaceSpawnEntry(EntityType.FOX, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, VanillaHacks::canAnimalSpawn);
