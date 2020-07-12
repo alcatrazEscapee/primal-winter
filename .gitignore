@@ -1,19 +1,24 @@
-# Gradle
-*.bin
-/build/
-/.gradle/
+# Reverse gitignore - explicitly include files
+*
+!*/
+!.gitignore
+!.editorconfig
 
-# IntelliJ
-/.idea/
-*.iml
-*.ipr
-*.iws
+# Source code and build script
+!.github/**
+!gradle/**
+!src/**
 
-# Python
-*.pyc
-__pycache__/
+# Resource generation
+!resources/*.py
 
-# Production
-/out/
-/run/
-/libs/
+# Images
+!img/*.png
+
+# Metadata
+!build.gradle
+!gradle.properties
+!gradlew
+!gradlew.bat
+!LICENSE.md
+!README.md
