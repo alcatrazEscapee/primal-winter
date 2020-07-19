@@ -1,3 +1,8 @@
+/*
+ * Part of the Primal Winter by AlcatrazEscapee
+ * Work under Copyright. See the project LICENSE.md for details.
+ */
+
 package com.alcatrazescapee.primalwinter.mixin.client;
 
 import net.minecraft.client.render.BackgroundRenderer;
