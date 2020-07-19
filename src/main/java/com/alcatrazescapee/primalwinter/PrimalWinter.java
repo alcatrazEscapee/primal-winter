@@ -5,60 +5,32 @@
 
 package com.alcatrazescapee.primalwinter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.text.LiteralText;
 
-import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
-import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
-import com.alcatrazescapee.primalwinter.common.ModItems;
-import com.alcatrazescapee.primalwinter.util.VanillaHacks;
-import com.alcatrazescapee.primalwinter.world.ModFeatures;
+import com.alcatrazescapee.primalwinter.util.Helpers;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
-import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
-
-@Mod(MOD_ID)
-public final class PrimalWinter
+public final class PrimalWinter implements ModInitializer
 {
     public static final String MOD_ID = "primalwinter";
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public PrimalWinter()
+    @Override
+    public void onInitialize()
     {
-        LOGGER.debug("Constructing");
-
-        // Setup config
-        Config.init();
-
-        // Register event handlers
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modEventBus.register(this);
-        ModBlocks.BLOCKS.register(modEventBus);
-        ModItems.ITEMS.register(modEventBus);
-
-        ModFeatures.FEATURES.register(modEventBus);
-
-        ModSoundEvents.SOUND_EVENTS.register(modEventBus);
-        ModParticleTypes.PARTICLE_TYPES.register(modEventBus);
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings("deprecation")
-    public void setup(final FMLCommonSetupEvent event)
-    {
-        LOGGER.debug("Setup");
-
-        DeferredWorkQueue.runLater(VanillaHacks::hackWinterBiomes);
-        DeferredWorkQueue.runLater(VanillaHacks::hackEntitySpawnPlacementRegistry);
-
         ModBlocks.setup();
+        Helpers.hackWinterBiomes();
+
+        // todo: config?
+        // Vanilla weather command... NOT ALLOWED
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            dispatcher.getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
+            dispatcher.register(CommandManager.literal("weather").executes(source -> {
+                source.getSource().sendFeedback(new LiteralText("Not even a command can overcome this storm... (This command is disabled by Primal Winter)") {}, false);
+                return 0;
+            }));
+        });
     }
 }

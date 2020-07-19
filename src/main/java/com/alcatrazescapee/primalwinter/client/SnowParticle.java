@@ -5,33 +5,34 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.RainParticle;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
+import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.particle.RainSplashParticle;
+import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particle.DefaultParticleType;
 
-public class SnowParticle extends RainParticle
+public class SnowParticle extends RainSplashParticle
 {
-    protected SnowParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn)
+    protected SnowParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn)
     {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn);
     }
 
-    public static class Factory implements IParticleFactory<BasicParticleType>
+    public static class Factory implements ParticleFactory<DefaultParticleType>
     {
-        private final IAnimatedSprite spriteSet;
+        private final SpriteProvider spriteProvider;
 
-        public Factory(IAnimatedSprite spriteSet)
+        public Factory(SpriteProvider spriteProvider)
         {
-            this.spriteSet = spriteSet;
+            this.spriteProvider = spriteProvider;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        @Override
+        public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ)
         {
-            SnowParticle particle = new SnowParticle(worldIn, x, y, z);
-            particle.selectSpriteRandomly(this.spriteSet);
+            SnowParticle particle = new SnowParticle(world, x, y, z);
+            particle.setSprite(this.spriteProvider);
             return particle;
         }
     }

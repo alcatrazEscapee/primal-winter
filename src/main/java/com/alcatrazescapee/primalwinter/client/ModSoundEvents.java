@@ -5,22 +5,19 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModSoundEvents
 {
-    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
+    public static final SoundEvent WIND = register("wind");
 
-    public static final RegistryObject<SoundEvent> WIND = register("wind");
-
-    private static RegistryObject<SoundEvent> register(String name)
+    private static SoundEvent register(String id)
     {
-        return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(MOD_ID, name)));
+        return Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(MOD_ID, id)));
     }
 }

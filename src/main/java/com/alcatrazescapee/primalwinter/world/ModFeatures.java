@@ -5,17 +5,19 @@
 
 package com.alcatrazescapee.primalwinter.world;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModFeatures
 {
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
+    public static final FreezeEverythingFeature FREEZE_EVERYTHING = register("freeze_everything", new FreezeEverythingFeature(DefaultFeatureConfig.CODEC));
 
-    public static final RegistryObject<WinterIceAndSnowFeature> FREEZE_EVERYTHING = FEATURES.register("freeze_everything", () -> new WinterIceAndSnowFeature(NoFeatureConfig::deserialize));
+    private static <F extends Feature<?>> F register(String name, F feature)
+    {
+        return Registry.register(Registry.FEATURE, new Identifier(MOD_ID, name), feature);
+    }
 }

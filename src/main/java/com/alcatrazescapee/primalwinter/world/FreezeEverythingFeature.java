@@ -6,36 +6,36 @@
 package com.alcatrazescapee.primalwinter.world;
 
 import java.util.*;
-import java.util.function.Function;
 
 import net.minecraft.block.*;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.util.Vec2i;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
-public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
+public class FreezeEverythingFeature extends Feature<DefaultFeatureConfig>
 {
-    public WinterIceAndSnowFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
+    public FreezeEverythingFeature(Codec<DefaultFeatureConfig> codec)
     {
-        super(configFactoryIn);
+        super(codec);
     }
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
+    public boolean generate(ServerWorldAccess worldIn, StructureAccessor accessor, ChunkGenerator generator, Random random, BlockPos pos, DefaultFeatureConfig config)
     {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
@@ -45,7 +45,7 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         {
             for (int z = 0; z < 16; ++z)
             {
-                int y = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING, pos.getX() + x, pos.getZ() + z);
+                int y = worldIn.getTopY(Heightmap.Type.MOTION_BLOCKING, pos.getX() + x, pos.getZ() + z);
                 if (maxY < y)
                 {
                     maxY = y;
@@ -55,6 +55,7 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
 
         // Then, step downwards, tracking the exposure to sky at each step
         int[] skyLights = new int[16 * 16], prevSkyLights = new int[16 * 16];
+        Biome[] biomes = new Biome[16 * 16];
         Arrays.fill(prevSkyLights, 7);
         for (int y = maxY; y >= 0; y--)
         {
@@ -63,9 +64,9 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
                 for (int z = 0; z < 16; ++z)
                 {
                     int skyLight = prevSkyLights[x + 16 * z];
-                    mutablePos.setPos(pos.getX() + x, y, pos.getZ() + z);
+                    mutablePos.set(pos.getX() + x, y, pos.getZ() + z);
                     BlockState state = worldIn.getBlockState(mutablePos);
-                    if (state.isAir(worldIn, mutablePos))
+                    if (state.isAir())
                     {
                         // Continue sky light downwards
                         skyLights[x + 16 * z] = prevSkyLights[x + 16 * z];
@@ -73,7 +74,11 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
                     }
                     if (skyLight > 0)
                     {
-                        placeSnowAndIce(worldIn, mutablePos, state, rand, skyLight);
+                        if (biomes[x + 16 * z] == null)
+                        {
+                            biomes[x + 16 * z] = worldIn.getBiome(mutablePos);
+                        }
+                        placeSnowAndIce(worldIn, biomes[x + 16 * z], mutablePos, state, random, skyLight);
                     }
                 }
             }
@@ -100,16 +105,16 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         return true;
     }
 
-    private void placeSnowAndIce(IWorld worldIn, BlockPos pos, BlockState state, Random random, int skyLight)
+    private void placeSnowAndIce(ServerWorldAccess worldIn, Biome biome, BlockPos pos, BlockState state, Random random, int skyLight)
     {
-        IFluidState fluidState = worldIn.getFluidState(pos);
+        FluidState fluidState = worldIn.getFluidState(pos);
         BlockPos posDown = pos.down();
         BlockState stateDown = worldIn.getBlockState(posDown);
 
         // First, possibly replace the block below. This may have impacts on being able to add snow on top
-        if (state.isAir(worldIn, pos))
+        if (state.isAir())
         {
-            Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
+            Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.get(stateDown.getBlock());
             if (replacementBlock != null)
             {
                 BlockState replacementState = replacementBlock.getDefaultState();
@@ -118,33 +123,29 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         }
 
         // Then, try and place snow layers / ice at the current location
-        if (fluidState.getFluid() == Fluids.WATER && (state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable()))
+        if (biome.canSetIce(worldIn, pos, false))
         {
             worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
-            if (!(state.getBlock() instanceof FlowingFluidBlock))
-            {
-                worldIn.getPendingBlockTicks().scheduleTick(pos, Blocks.ICE, 0);
-            }
         }
-        else if (fluidState.getFluid() == Fluids.LAVA && state.getBlock() instanceof FlowingFluidBlock)
+        else if (fluidState.getFluid() == Fluids.LAVA && state.getBlock() instanceof FluidBlock)
         {
             worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 2);
         }
-        else if (Blocks.SNOW.getDefaultState().isValidPosition(worldIn, pos) && state.getMaterial().isReplaceable())
+        else if (Blocks.SNOW.getDefaultState().canPlaceAt(worldIn, pos) && state.getMaterial().isReplaceable())
         {
             // Special exceptions
             BlockPos posUp = pos.up();
-            if (state.getBlock() instanceof DoublePlantBlock && worldIn.getBlockState(posUp).getBlock() == state.getBlock())
+            if (state.getBlock() instanceof TallPlantBlock && worldIn.getBlockState(posUp).getBlock() == state.getBlock())
             {
                 // Remove the above plant
                 worldIn.removeBlock(posUp, false);
             }
 
             int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
-            worldIn.setBlockState(pos, Blocks.SNOW.getDefaultState().with(BlockStateProperties.LAYERS_1_8, layers), 3);
+            worldIn.setBlockState(pos, Blocks.SNOW.getDefaultState().with(Properties.LAYERS, layers), 3);
 
             // Replace the below block as well
-            Block replacementBlock = ModBlocks.SNOWY_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
+            Block replacementBlock = ModBlocks.SNOWY_TERRAIN_BLOCKS.get(stateDown.getBlock());
             if (replacementBlock != null)
             {
                 BlockState replacementState = replacementBlock.getDefaultState();
@@ -153,13 +154,13 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         }
     }
 
-    private int countExposedFaces(IWorld world, BlockPos pos)
+    private int countExposedFaces(ServerWorldAccess world, BlockPos pos)
     {
         int count = 0;
-        for (Direction direction : Direction.Plane.HORIZONTAL)
+        for (Direction direction : Direction.Type.HORIZONTAL)
         {
             BlockPos posAt = pos.offset(direction);
-            if (!world.getBlockState(posAt).isSolidSide(world, posAt, direction.getOpposite()))
+            if (!world.getBlockState(posAt).isSideSolidFullSquare(world, posAt, direction.getOpposite()))
             {
                 count++;
             }
@@ -179,10 +180,10 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         while (!positions.isEmpty())
         {
             Vec3i position = positions.remove(0);
-            for (Direction direction : Direction.Plane.HORIZONTAL)
+            for (Direction direction : Direction.Type.HORIZONTAL)
             {
-                int nextX = position.getX() + direction.getXOffset();
-                int nextZ = position.getZ() + direction.getZOffset();
+                int nextX = position.getX() + direction.getOffsetX();
+                int nextZ = position.getZ() + direction.getOffsetZ();
                 int nextSkyLight = position.getY() - 1;
                 if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
                 {

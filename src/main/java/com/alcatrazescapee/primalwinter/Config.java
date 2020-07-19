@@ -6,23 +6,8 @@
 
 package com.alcatrazescapee.primalwinter;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.ForgeRegistries;
-
 public final class Config
-{
+{/*
     public static final Common COMMON = register(ModConfig.Type.COMMON, Common::new);
     public static final Client CLIENT = register(ModConfig.Type.CLIENT, Client::new);
 
@@ -100,4 +85,5 @@ public final class Config
             ).collect(Collectors.toList());
         }
     }
+*/
 }

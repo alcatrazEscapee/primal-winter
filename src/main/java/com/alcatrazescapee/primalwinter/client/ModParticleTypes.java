@@ -5,17 +5,13 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModParticleTypes
 {
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = new DeferredRegister<>(ForgeRegistries.PARTICLE_TYPES, MOD_ID);
-
-    public static final RegistryObject<BasicParticleType> SNOW = PARTICLE_TYPES.register("snow", () -> new BasicParticleType(false));
+    public static final DefaultParticleType SNOW = Registry.register(Registry.PARTICLE_TYPE, new Identifier(MOD_ID, "snow"), new DefaultParticleType(false) {});
 }
