@@ -11,12 +11,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * Ensures that the conditions that {@link net.minecraft.world.gen.feature.IceSpikeFeature} and {@link net.minecraft.world.gen.feature.IcePathFeature} both pass in non-ice spikes biomes.
@@ -28,8 +28,9 @@ public class SnowPlacingConfiguredFeature<FC extends IFeatureConfig, F extends F
         super(featureIn, configIn);
     }
 
+    // place
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos)
+    public boolean func_236265_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator generator, Random rand, BlockPos pos)
     {
         while (worldIn.isAirBlock(pos) && pos.getY() > 2)
         {
@@ -40,6 +41,6 @@ public class SnowPlacingConfiguredFeature<FC extends IFeatureConfig, F extends F
         {
             worldIn.setBlockState(pos, Blocks.SNOW_BLOCK.getDefaultState(), 2);
         }
-        return super.place(worldIn, generator, rand, pos);
+        return super.func_236265_a_(worldIn, structureManager, generator, rand, pos);
     }
 }

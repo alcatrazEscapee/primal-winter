@@ -18,7 +18,8 @@ import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.settings.ParticleStatus;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
@@ -27,8 +28,10 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
@@ -42,6 +45,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 public class WinterWorldRenderer
 {
+    private static final ResourceLocation RAIN_TEXTURES = new ResourceLocation("textures/environment/rain.png");
     private static final ResourceLocation SNOW_TEXTURES = new ResourceLocation("textures/environment/snow.png");
     private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation("textures/environment/moon_phases.png");
     private static final ResourceLocation SUN_TEXTURES = new ResourceLocation("textures/environment/sun.png");
@@ -96,22 +100,28 @@ public class WinterWorldRenderer
         return this::renderSky;
     }
 
+    /**
+     * This is a modified version of {@link WorldRenderer#renderSky(MatrixStack, float)}
+     * Changes:
+     * - This only contains the overworld render path
+     * - The sunrise and sunset sky colors are not shown when the weather is stormy
+     */
+    @SuppressWarnings("deprecation")
     public void renderSky(int ticks, float partialTicks, MatrixStack matrixStackIn, ClientWorld world, @Nullable Minecraft mc)
     {
         this.ticks = ticks;
         if (mc != null && mc.gameRenderer != null && mc.player != null)
         {
             RenderSystem.disableTexture();
-            BlockPos pos = mc.gameRenderer.getActiveRenderInfo().getBlockPos();
-            Vec3d vec3d = world.getSkyColor(mc.gameRenderer.getActiveRenderInfo().getBlockPos(), partialTicks);
-            float posX = (float) vec3d.x;
-            float posY = (float) vec3d.y;
-            float posZ = (float) vec3d.z;
+            Vector3d vector3d = world.getSkyColor(mc.gameRenderer.getActiveRenderInfo().getBlockPos(), partialTicks);
+            float f = (float) vector3d.x;
+            float f1 = (float) vector3d.y;
+            float f2 = (float) vector3d.z;
             FogRenderer.applyFog();
             BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
             RenderSystem.depthMask(false);
             RenderSystem.enableFog();
-            RenderSystem.color3f(posX, posY, posZ);
+            RenderSystem.color3f(f, f1, f2);
             this.skyVBO.bindBuffer();
             this.skyVertexFormat.setupBufferState(0L);
             this.skyVBO.draw(matrixStackIn.getLast().getMatrix(), 7);
@@ -121,8 +131,9 @@ public class WinterWorldRenderer
             RenderSystem.disableAlphaTest();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            float[] sunriseSunsetColors = world.dimension.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks);
-            if (sunriseSunsetColors != null && !(world.getRainStrength(partialTicks) > 0 && world.getBiome(pos).getTemperature(pos) < 0.15)) // Skip sunrise and sunset if snowing as the snow fog will be in place
+            float[] skyColors = world.func_239132_a_().func_230492_a_(world.getCelestialAngle(partialTicks), partialTicks);
+            BlockPos pos = new BlockPos(vector3d);
+            if (skyColors != null && !(world.getRainStrength(partialTicks) > 0 && world.getBiome(pos).getTemperature(pos) < 0.15)) // Skip sunrise and sunset if snowing as the snow fog will be in place)
             {
                 RenderSystem.disableTexture();
                 RenderSystem.shadeModel(7425);
@@ -131,19 +142,20 @@ public class WinterWorldRenderer
                 float f3 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F;
                 matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f3));
                 matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(90.0F));
-                float f4 = sunriseSunsetColors[0];
-                float f5 = sunriseSunsetColors[1];
-                float f6 = sunriseSunsetColors[2];
+                float f4 = skyColors[0];
+                float f5 = skyColors[1];
+                float f6 = skyColors[2];
                 Matrix4f matrix4f = matrixStackIn.getLast().getMatrix();
                 bufferbuilder.begin(6, DefaultVertexFormats.POSITION_COLOR);
-                bufferbuilder.pos(matrix4f, 0.0F, 100.0F, 0.0F).color(f4, f5, f6, sunriseSunsetColors[3]).endVertex();
+                bufferbuilder.pos(matrix4f, 0.0F, 100.0F, 0.0F).color(f4, f5, f6, skyColors[3]).endVertex();
+                int i = 16;
 
                 for (int j = 0; j <= 16; ++j)
                 {
                     float f7 = (float) j * ((float) Math.PI * 2F) / 16.0F;
                     float f8 = MathHelper.sin(f7);
                     float f9 = MathHelper.cos(f7);
-                    bufferbuilder.pos(matrix4f, f8 * 120.0F, f9 * 120.0F, -f9 * 40.0F * sunriseSunsetColors[3]).color(sunriseSunsetColors[0], sunriseSunsetColors[1], sunriseSunsetColors[2], 0.0F).endVertex();
+                    bufferbuilder.pos(matrix4f, f8 * 120.0F, f9 * 120.0F, -f9 * 40.0F * skyColors[3]).color(skyColors[0], skyColors[1], skyColors[2], 0.0F).endVertex();
                 }
 
                 bufferbuilder.finishDrawing();
@@ -151,7 +163,6 @@ public class WinterWorldRenderer
                 matrixStackIn.pop();
                 RenderSystem.shadeModel(7424);
             }
-
             RenderSystem.enableTexture();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             matrixStackIn.push();
@@ -161,7 +172,7 @@ public class WinterWorldRenderer
             matrixStackIn.rotate(Vector3f.XP.rotationDegrees(world.getCelestialAngle(partialTicks) * 360.0F));
             Matrix4f matrix4f1 = matrixStackIn.getLast().getMatrix();
             float f12 = 30.0F;
-            mc.getTextureManager().bindTexture(SUN_TEXTURES);
+            mc.textureManager.bindTexture(SUN_TEXTURES);
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
             bufferbuilder.pos(matrix4f1, -f12, 100.0F, -f12).tex(0.0F, 0.0F).endVertex();
             bufferbuilder.pos(matrix4f1, f12, 100.0F, -f12).tex(1.0F, 0.0F).endVertex();
@@ -170,7 +181,7 @@ public class WinterWorldRenderer
             bufferbuilder.finishDrawing();
             WorldVertexBufferUploader.draw(bufferbuilder);
             f12 = 20.0F;
-            mc.getTextureManager().bindTexture(MOON_PHASES_TEXTURES);
+            mc.textureManager.bindTexture(MOON_PHASES_TEXTURES);
             int k = world.getMoonPhase();
             int l = k % 4;
             int i1 = k / 4 % 2;
@@ -196,7 +207,6 @@ public class WinterWorldRenderer
                 VertexBuffer.unbindBuffer();
                 this.skyVertexFormat.clearBufferState();
             }
-
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.disableBlend();
             RenderSystem.enableAlphaTest();
@@ -204,7 +214,7 @@ public class WinterWorldRenderer
             matrixStackIn.pop();
             RenderSystem.disableTexture();
             RenderSystem.color3f(0.0F, 0.0F, 0.0F);
-            double d0 = mc.player.getEyePosition(partialTicks).y - world.getHorizonHeight();
+            double d0 = mc.player.getEyePosition(partialTicks).y - world.getWorldInfo().func_239159_f_();
             if (d0 < 0.0D)
             {
                 matrixStackIn.push();
@@ -216,16 +226,14 @@ public class WinterWorldRenderer
                 this.skyVertexFormat.clearBufferState();
                 matrixStackIn.pop();
             }
-
-            if (world.dimension.isSkyColored())
+            if (world.func_239132_a_().func_239216_b_())
             {
-                RenderSystem.color3f(posX * 0.2F + 0.04F, posY * 0.2F + 0.04F, posZ * 0.6F + 0.1F);
+                RenderSystem.color3f(f * 0.2F + 0.04F, f1 * 0.2F + 0.04F, f2 * 0.6F + 0.1F);
             }
             else
             {
-                RenderSystem.color3f(posX, posY, posZ);
+                RenderSystem.color3f(f, f1, f2);
             }
-
             RenderSystem.enableTexture();
             RenderSystem.depthMask(true);
             RenderSystem.disableFog();
@@ -233,7 +241,12 @@ public class WinterWorldRenderer
     }
 
     /**
-     * This is essentially a hardcoded rain renderer from {@link net.minecraft.client.renderer.WorldRenderer#renderRainSnow(LightTexture, float, double, double, double)}, except using the snow textures
+     * This is a modified version of {@link WorldRenderer#renderRainSnow(LightTexture, float, double, double, double)}
+     * Changes:
+     * - The {@code LightTexture lightmapIn} is accessed via {@code mc.gameRenderer.getLightTexture()}
+     * - The x, y, z positions in are accessed via {@code Vector3d vec3d = mc.gameRenderer.getActiveRenderInfo().getProjectedView();}
+     * - The rain amount, in vanilla controlled by fast / fancy graphics, is set via config option
+     * - The rain / snow branch is condensed into one branch using the rain logic, except with rain / snow textures
      */
     @SuppressWarnings("deprecation")
     public void renderRainSnow(int ticks, float partialTicks, ClientWorld world, @Nullable Minecraft mc)
@@ -242,80 +255,94 @@ public class WinterWorldRenderer
         if (mc != null && mc.gameRenderer != null)
         {
             float rainStrength = world.getRainStrength(partialTicks);
-            Vec3d vec3d = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
-            double xIn = vec3d.getX();
-            double yIn = vec3d.getY();
-            double zIn = vec3d.getZ();
-
             if (rainStrength > 0)
             {
                 mc.gameRenderer.getLightTexture().enableLightmap();
-                int xPos = MathHelper.floor(xIn);
-                int yPos = MathHelper.floor(yIn);
-                int zPos = MathHelper.floor(zIn);
+                Vector3d vec3d = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
+                double xIn = vec3d.getX();
+                double yIn = vec3d.getY();
+                double zIn = vec3d.getZ();
+                int xPos = MathHelper.floor(vec3d.getX());
+                int yPos = MathHelper.floor(vec3d.getY());
+                int zPos = MathHelper.floor(vec3d.getZ());
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder bufferbuilder = tessellator.getBuffer();
+                RenderSystem.enableAlphaTest();
                 RenderSystem.disableCull();
                 RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.defaultAlphaFunc();
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-
+                RenderSystem.enableDepthTest();
                 int weatherAmount = Config.CLIENT.snowDensity.get();
+                RenderSystem.depthMask(Minecraft.func_238218_y_());
                 int flag = -1;
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
                 for (int z = zPos - weatherAmount; z <= zPos + weatherAmount; ++z)
                 {
                     for (int x = xPos - weatherAmount; x <= xPos + weatherAmount; ++x)
                     {
-                        int rainSizeIndex = (z - zPos + 16) * 32 + (x - xPos + 16);
-                        double rainSizeXValue = (double) this.rainSizeX[rainSizeIndex] * 0.5D;
-                        double rainSizeZValue = (double) this.rainSizeZ[rainSizeIndex] * 0.5D;
+                        int l1 = (z - zPos + 16) * 32 + x - xPos + 16;
+                        double d0 = (double) this.rainSizeX[l1] * 0.5D;
+                        double d1 = (double) this.rainSizeZ[l1] * 0.5D;
                         mutablePos.setPos(x, 0, z);
-                        int topYPos = world.getHeight(Heightmap.Type.MOTION_BLOCKING, mutablePos).getY();
-                        int lowestYPos = yPos - weatherAmount;
-                        int highestYPos = yPos + weatherAmount;
-                        if (lowestYPos < topYPos)
+                        Biome biome = world.getBiome(mutablePos);
+                        if (biome.getPrecipitation() != Biome.RainType.NONE)
                         {
-                            lowestYPos = topYPos;
-                        }
-
-                        if (highestYPos < topYPos)
-                        {
-                            highestYPos = topYPos;
-                        }
-
-                        int y = topYPos;
-                        if (topYPos < yPos)
-                        {
-                            y = yPos;
-                        }
-
-                        if (lowestYPos != highestYPos)
-                        {
-                            Random random = new Random(x * x * 3121 + x * 45238971 ^ z * z * 418711 + z * 13761);
-                            mutablePos.setPos(x, lowestYPos, z);
-                            if (flag != 1)
+                            int i2 = world.getHeight(Heightmap.Type.MOTION_BLOCKING, mutablePos).getY();
+                            int y = yPos - weatherAmount;
+                            int k2 = yPos + weatherAmount;
+                            if (y < i2)
                             {
-                                flag = 1;
-                                mc.getTextureManager().bindTexture(SNOW_TEXTURES);
-                                bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+                                y = i2;
                             }
 
-                            int i3 = ticks + x * x * 3121 + x * 45238971 + z * z * 418711 + z * 13761 & 31;
-                            float f3 = -((float) i3 + partialTicks) / 32.0F * (3.0F + random.nextFloat());
-                            double d2 = (double) ((float) x + 0.5F) - xIn;
-                            double d4 = (double) ((float) z + 0.5F) - zIn;
-                            float f4 = MathHelper.sqrt(d2 * d2 + d4 * d4) / (float) weatherAmount;
-                            float f5 = ((1.0F - f4 * f4) * 0.5F + 0.5F) * rainStrength;
-                            mutablePos.setPos(x, y, z);
-                            int light = WorldRenderer.getCombinedLight(world, mutablePos);
-                            bufferbuilder.pos((double) x - xIn - rainSizeXValue + 0.5D, (double) highestYPos - yIn, (double) z - zIn - rainSizeZValue + 0.5D).tex(0.0F, (float) lowestYPos * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(light).endVertex();
-                            bufferbuilder.pos((double) x - xIn + rainSizeXValue + 0.5D, (double) highestYPos - yIn, (double) z - zIn + rainSizeZValue + 0.5D).tex(1.0F, (float) lowestYPos * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(light).endVertex();
-                            bufferbuilder.pos((double) x - xIn + rainSizeXValue + 0.5D, (double) lowestYPos - yIn, (double) z - zIn + rainSizeZValue + 0.5D).tex(1.0F, (float) highestYPos * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(light).endVertex();
-                            bufferbuilder.pos((double) x - xIn - rainSizeXValue + 0.5D, (double) lowestYPos - yIn, (double) z - zIn - rainSizeZValue + 0.5D).tex(0.0F, (float) highestYPos * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(light).endVertex();
+                            if (k2 < i2)
+                            {
+                                k2 = i2;
+                            }
+
+                            int l2 = i2;
+                            if (i2 < yPos)
+                            {
+                                l2 = yPos;
+                            }
+
+                            if (y != k2)
+                            {
+                                Random random = new Random(x * x * 3121 + x * 45238971 ^ z * z * 418711 + z * 13761);
+                                mutablePos.setPos(x, y, z);
+                                float temperature = biome.getTemperature(mutablePos);
+                                if (flag != 0)
+                                {
+                                    flag = 0;
+                                    if (temperature > 0.15)
+                                    {
+                                        mc.getTextureManager().bindTexture(RAIN_TEXTURES);
+                                    }
+                                    else
+                                    {
+                                        mc.getTextureManager().bindTexture(SNOW_TEXTURES);
+                                    }
+                                    bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+                                }
+
+                                int i3 = this.ticks + x * x * 3121 + x * 45238971 + z * z * 418711 + z * 13761 & 31;
+                                float f3 = -((float) i3 + partialTicks) / 32.0F * (3.0F + random.nextFloat());
+                                double d2 = (double) ((float) x + 0.5F) - xIn;
+                                double d4 = (double) ((float) z + 0.5F) - zIn;
+                                float f4 = MathHelper.sqrt(d2 * d2 + d4 * d4) / (float) weatherAmount;
+                                float f5 = ((1.0F - f4 * f4) * 0.5F + 0.5F) * rainStrength;
+                                mutablePos.setPos(x, l2, z);
+                                int j3 = WorldRenderer.getCombinedLight(world, mutablePos);
+                                bufferbuilder.pos((double) x - xIn - d0 + 0.5D, (double) k2 - yIn, (double) z - zIn - d1 + 0.5D).tex(0.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(j3).endVertex();
+                                bufferbuilder.pos((double) x - xIn + d0 + 0.5D, (double) k2 - yIn, (double) z - zIn + d1 + 0.5D).tex(1.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(j3).endVertex();
+                                bufferbuilder.pos((double) x - xIn + d0 + 0.5D, (double) y - yIn, (double) z - zIn + d1 + 0.5D).tex(1.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(j3).endVertex();
+                                bufferbuilder.pos((double) x - xIn - d0 + 0.5D, (double) y - yIn, (double) z - zIn - d1 + 0.5D).tex(0.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).lightmap(j3).endVertex();
+
+                            }
                         }
                     }
                 }
@@ -328,113 +355,78 @@ public class WinterWorldRenderer
                 RenderSystem.enableCull();
                 RenderSystem.disableBlend();
                 RenderSystem.defaultAlphaFunc();
+                RenderSystem.disableAlphaTest();
                 mc.gameRenderer.getLightTexture().disableLightmap();
             }
         }
     }
 
     /**
-     * Similar to {@link WorldRenderer#addRainParticles(ActiveRenderInfo)}
+     * This is a modified version of {@link WorldRenderer#addRainParticles(ActiveRenderInfo)}
+     * Changes:
+     * - Applies sounds when temperature < 0.15 instead of above
+     * - Rain particles are exchanged for snow particles
+     * - Applies two sounds: the wind sound, using a custom timer, and a lower pitch rain sound
      */
     public void addSnowParticlesAndSound(Minecraft mc, World world, ActiveRenderInfo activeRenderInfo)
     {
-        float rainStrength = world.getRainStrength(1);
-        if (!mc.gameSettings.fancyGraphics)
+        float rainStrength = world.getRainStrength(1.0F) / (Minecraft.isFancyGraphicsEnabled() ? 1.0F : 2.0F);
+        if (rainStrength > 0)
         {
-            rainStrength /= 2;
-        }
-        if (rainStrength != 0)
-        {
-            Random random = new Random((long) ticks * 312987231L);
+            Random random = new Random((long) this.ticks * 312987231L);
             BlockPos blockpos = new BlockPos(activeRenderInfo.getProjectedView());
-            double posX = 0.0D;
-            double posY = 0.0D;
-            double posZ = 0.0D;
-            int j = 0;
-            int k = (int) (100.0F * rainStrength * rainStrength);
-            if (mc.gameSettings.particles == ParticleStatus.DECREASED)
+            BlockPos blockpos1 = null;
+            int i = (int) (100.0F * rainStrength * rainStrength) / (mc.gameSettings.particles == ParticleStatus.DECREASED ? 2 : 1);
+            for (int j = 0; j < i; ++j)
             {
-                k >>= 1;
-            }
-            else if (mc.gameSettings.particles == ParticleStatus.MINIMAL)
-            {
-                k = 0;
-            }
-
-            for (int l = 0; l < k; ++l)
-            {
-                BlockPos topPos = world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos.add(random.nextInt(10) - random.nextInt(10), 0, random.nextInt(10) - random.nextInt(10)));
-                Biome biome = world.getBiome(topPos);
-                BlockPos underPos = topPos.down();
-                if (topPos.getY() <= blockpos.getY() + 10 && topPos.getY() >= blockpos.getY() - 10 && biome.getPrecipitation() == Biome.RainType.SNOW && biome.getTemperature(topPos) < 0.15F)
+                int k = random.nextInt(21) - 10;
+                int l = random.nextInt(21) - 10;
+                BlockPos blockpos2 = world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos.add(k, 0, l)).down();
+                Biome biome = world.getBiome(blockpos2);
+                if (blockpos2.getY() > 0 && blockpos2.getY() <= blockpos.getY() + 10 && blockpos2.getY() >= blockpos.getY() - 10 && biome.getPrecipitation() == Biome.RainType.RAIN && biome.getTemperature(blockpos2) < 0.15F)
                 {
-                    double d3 = random.nextDouble();
-                    double d4 = random.nextDouble();
-                    BlockState blockstate = world.getBlockState(underPos);
-                    IFluidState ifluidstate = world.getFluidState(topPos);
-                    VoxelShape voxelshape = blockstate.getCollisionShape(world, underPos);
-                    double d7 = voxelshape.max(Direction.Axis.Y, d3, d4);
-                    double d8 = ifluidstate.getActualHeight(world, topPos);
-                    double d5;
-                    double d6;
-                    if (d7 >= d8)
+                    blockpos1 = blockpos2;
+                    if (mc.gameSettings.particles == ParticleStatus.MINIMAL)
                     {
-                        d5 = d7;
-                        d6 = voxelshape.min(Direction.Axis.Y, d3, d4);
+                        break;
                     }
-                    else
-                    {
-                        d5 = 0.0D;
-                        d6 = 0.0D;
-                    }
-
-                    if (d5 > -Double.MAX_VALUE)
-                    {
-                        if (!ifluidstate.isTagged(FluidTags.LAVA) && blockstate.getBlock() != Blocks.MAGMA_BLOCK && (blockstate.getBlock() != Blocks.CAMPFIRE || !blockstate.get(CampfireBlock.LIT)))
-                        {
-                            ++j;
-                            if (random.nextInt(j) == 0)
-                            {
-                                posX = (double) underPos.getX() + d3;
-                                posY = (double) ((float) underPos.getY() + 0.1F) + d5 - 1.0D;
-                                posZ = (double) underPos.getZ() + d4;
-                            }
-
-                            world.addParticle(ModParticleTypes.SNOW.get(), (double) underPos.getX() + d3, (double) ((float) underPos.getY() + 0.1F) + d5, (double) underPos.getZ() + d4, 0.0D, 0.0D, 0.0D);
-                        }
-                        else
-                        {
-                            world.addParticle(ParticleTypes.SMOKE, (double) topPos.getX() + d3, (double) ((float) topPos.getY() + 0.1F) - d6, (double) topPos.getZ() + d4, 0.0D, 0.0D, 0.0D);
-                        }
-                    }
+                    double d0 = random.nextDouble();
+                    double d1 = random.nextDouble();
+                    BlockState blockstate = world.getBlockState(blockpos2);
+                    FluidState fluidstate = world.getFluidState(blockpos2);
+                    VoxelShape voxelshape = blockstate.getCollisionShape(world, blockpos2);
+                    double d2 = voxelshape.max(Direction.Axis.Y, d0, d1);
+                    double d3 = fluidstate.getActualHeight(world, blockpos2);
+                    double d4 = Math.max(d2, d3);
+                    IParticleData iparticledata = !fluidstate.isTagged(FluidTags.LAVA) && !blockstate.isIn(Blocks.MAGMA_BLOCK) && !CampfireBlock.func_226915_i_(blockstate) ? ModParticleTypes.SNOW.get() : ParticleTypes.SMOKE;
+                    world.addParticle(iparticledata, (double) blockpos2.getX() + d0, (double) blockpos2.getY() + d4, (double) blockpos2.getZ() + d1, 0.0D, 0.0D, 0.0D);
                 }
             }
 
-            if (j > 0 && random.nextInt(3) < rainSoundTime++ && Config.CLIENT.snowSounds.get())
+            if (blockpos1 != null && windSoundTime-- < 0 && Config.CLIENT.windSounds.get())
             {
-                rainSoundTime = 0;
-                if (posY > (double) (blockpos.getY() + 1) && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
+                if (blockpos1.getY() > blockpos.getY() + 1 && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
                 {
-                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.03f, 0.05f, false);
+                    ((ClientWorld) world).playSound(blockpos1, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.2F, 0.5F, false);
                 }
                 else
                 {
-                    world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
+                    ((ClientWorld) world).playSound(blockpos1, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.3F, 0.7F, false);
                 }
-            }
-            if (j > 0 && windSoundTime-- < 0 && Config.CLIENT.windSounds.get())
-            {
                 windSoundTime = 20 * 3 + random.nextInt(30);
-                if (posY > (double) (blockpos.getY() + 1) && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
+            }
+            if (blockpos1 != null && random.nextInt(3) < this.rainSoundTime++)
+            {
+                this.rainSoundTime = 0;
+                if (blockpos1.getY() > blockpos.getY() + 1 && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
                 {
-                    world.playSound(posX, posY, posZ, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.2f, 0.5f, false);
+                    ((ClientWorld) world).playSound(blockpos1, SoundEvents.WEATHER_RAIN_ABOVE, SoundCategory.WEATHER, 0.03f, 0.05f, false);
                 }
                 else
                 {
-                    world.playSound(posX, posY, posZ, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.3f, 0.7f, false);
+                    ((ClientWorld) world).playSound(blockpos1, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
                 }
             }
-
         }
     }
 

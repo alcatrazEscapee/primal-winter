@@ -7,11 +7,12 @@ package com.alcatrazescapee.primalwinter.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.LightType;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
@@ -29,16 +30,19 @@ public final class ClientForgeEventHandler
     @SubscribeEvent
     public static void onClientWorldLoad(WorldEvent.Load event)
     {
-        if (event.getWorld() instanceof ClientWorld && event.getWorld().getDimension().getType() == DimensionType.OVERWORLD)
+        if (event.getWorld() instanceof ClientWorld && ((ClientWorld) event.getWorld()).func_234922_V_() == DimensionType.field_235999_c_)
         {
+            DimensionRenderInfo renderInfo = ((ClientWorld) event.getWorld()).func_239132_a_();
             WinterWorldRenderer winterRenderer = WinterWorldRenderer.get();
             if (Config.CLIENT.weatherRenderChanges.get())
             {
-                event.getWorld().getDimension().setWeatherRenderer(winterRenderer.getWeatherHandler());
+                // todo: needs MinecraftForge#6994
+                //renderInfo.setWeatherRenderer(winterRenderer.getWeatherHandler());
             }
             if (Config.CLIENT.skyRenderChanges.get())
             {
-                event.getWorld().getDimension().setSkyRenderer(winterRenderer.getSkyHandler());
+                // todo: needs MinecraftForge#6994
+                //renderInfo.setSkyRenderer(winterRenderer.getSkyHandler());
             }
         }
     }
@@ -48,7 +52,7 @@ public final class ClientForgeEventHandler
     {
         Minecraft mc = Minecraft.getInstance();
         ClientWorld world = mc.world;
-        if (world != null && mc.gameRenderer != null && !mc.isGamePaused() && world.getDimension().getType() == DimensionType.OVERWORLD)
+        if (world != null && mc.gameRenderer != null && !mc.isGamePaused() && world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionTypeKey() == DimensionType.OVERWORLD
         {
             WinterWorldRenderer.get().addSnowParticlesAndSound(mc, world, mc.gameRenderer.getActiveRenderInfo());
         }
@@ -60,8 +64,8 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.getPosition());
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.dimension == DimensionType.OVERWORLD)
+            int light = player.world.getLightFor(LightType.SKY, player.func_233580_cy_()); // getPosition
+            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionKey() == DimensionType.OVERWORLD
             {
                 event.setCanceled(true);
                 event.setDensity((light - 3) * Config.CLIENT.fogDensity.get().floatValue() / 13f);
@@ -75,8 +79,8 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.getPosition());
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.dimension == DimensionType.OVERWORLD)
+            int light = player.world.getLightFor(LightType.SKY, player.func_233580_cy_());
+            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionKey() == DimensionType.OVERWORLD
             {
                 // Calculate color based on time of day
                 float partialTicks = (float) event.getRenderPartialTicks();

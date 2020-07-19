@@ -31,7 +31,7 @@ archivesBaseName = "primalwinter-forge-${mc_version}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200408-1.15.1'
+    mappings channel: 'snapshot', version: '20200707-1.16.1'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Run configurations
@@ -70,23 +70,12 @@ jar {
 }
 
 curseforge {
-    def envApiKey = System.getenv('CURSEFORGE_API_KEY')
-    if (envApiKey == null) {
-        println 'Unable to locate api key in env variable'
-        return
-    }
-    def versionReleaseType = "release"
-    if (version.toString().contains("beta")) {
-        versionReleaseType = "beta"
-    } else if (version.toString().contains("alpha")) {
-        versionReleaseType = "alpha"
-    }
     project {
-        apiKey = envApiKey
+        apiKey = System.getenv('CURSEFORGE_API_KEY')
         id = '393321'
         changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version})"
-        changelogType = "markdown"
-        releaseType = versionReleaseType
+        changelogType = 'markdown'
+        releaseType = 'release'
         addGameVersion "${mc_version}"
     }
 }

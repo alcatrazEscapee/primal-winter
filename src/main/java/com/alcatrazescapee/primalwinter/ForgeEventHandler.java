@@ -7,24 +7,19 @@ package com.alcatrazescapee.primalwinter;
 
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.minecraft.command.Commands;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import com.alcatrazescapee.primalwinter.util.VanillaHacks;
 
@@ -34,13 +29,13 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 public final class ForgeEventHandler
 {
     @SubscribeEvent
-    public static void onServerStarting(FMLServerStartingEvent event)
+    public static void onRegisterCommands(RegisterCommandsEvent event)
     {
         if (Config.COMMON.disableWeatherCommand.get())
         {
             // Vanilla weather command... NOT ALLOWED
-            event.getCommandDispatcher().getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
-            event.getCommandDispatcher().register(Commands.literal("weather").executes(source -> {
+            event.getDispatcher().getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
+            event.getDispatcher().register(Commands.literal("weather").executes(source -> {
                 source.getSource().sendFeedback(new StringTextComponent("Not even a command can overcome this storm... (This command is disabled by Primal Winter)"), false);
                 return 0;
             }));
@@ -50,15 +45,12 @@ public final class ForgeEventHandler
     @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load event)
     {
-        if (event.getWorld() instanceof ServerWorld && event.getWorld().getDimension().getType() == DimensionType.OVERWORLD)
+        // todo: check dimension == overworld
+        if (event.getWorld() instanceof ServerWorld)
         {
             ServerWorld world = (ServerWorld) event.getWorld();
             world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
-            world.getWorldInfo().setClearWeatherTime(0);
-            world.getWorldInfo().setRainTime(Integer.MAX_VALUE);
-            world.getWorldInfo().setThunderTime(Integer.MAX_VALUE);
-            world.getWorldInfo().setRaining(true);
-            world.getWorldInfo().setThundering(true);
+            world.func_241113_a_(0, Integer.MAX_VALUE, true, true); // setAllWeather(clearWeatherTime, rainAndThunderTime, raining, thundering)
         }
     }
 
@@ -72,8 +64,7 @@ public final class ForgeEventHandler
         {
             // Simulate ice and snow
             ServerWorld world = (ServerWorld) event.world;
-            WorldInfo worldInfo = world.getWorldInfo();
-            if (worldInfo.getGenerator() != WorldType.DEBUG_ALL_BLOCK_STATES)
+            if (!world.func_234925_Z_()) // isDebugWorld
             {
                 ServerChunkProvider chunkProvider = world.getChunkProvider();
                 VanillaHacks.getLoadedChunksIterable(chunkProvider.chunkManager).forEach(chunkHolder -> {
@@ -93,6 +84,4 @@ public final class ForgeEventHandler
             }
         }
     }
-
-    private final Logger LOGGER = LogManager.getLogger();
 }

@@ -7,8 +7,8 @@ package com.alcatrazescapee.primalwinter.world;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -20,15 +20,19 @@ import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
@@ -36,23 +40,106 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.lighting.WorldLightManager;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.IWorldInfo;
 
 /**
- * A simple extension of {@link IWorld} that allows custom implementations without the bulk of changing every single method
+ * A simple extension of {@link ISeedReader} (which should really be called server world) that allows custom implementations without the bulk of changing every single method
  */
-public interface IWorldDelegate extends IWorld
+public interface IServerWorldDelegate extends ISeedReader
 {
-    IWorld getDelegate();
+    ISeedReader getDelegate();
 
     @Override
     default long getSeed()
     {
         return getDelegate().getSeed();
+    }
+
+    @Override
+    default float func_230487_a_(Direction p_230487_1_, boolean p_230487_2_)
+    {
+        return getDelegate().func_230487_a_(p_230487_1_, p_230487_2_);
+    }
+
+    @Override
+    default boolean func_234865_b_(@Nullable Entity p_234865_1_, AxisAlignedBB p_234865_2_, Predicate<Entity> p_234865_3_)
+    {
+        return getDelegate().func_234865_b_(p_234865_1_, p_234865_2_, p_234865_3_);
+    }
+
+    @Override
+    default Stream<VoxelShape> func_234867_d_(@Nullable Entity p_234867_1_, AxisAlignedBB p_234867_2_, Predicate<Entity> p_234867_3_)
+    {
+        return getDelegate().func_234867_d_(p_234867_1_, p_234867_2_, p_234867_3_);
+    }
+
+    @Override
+    default Stream<VoxelShape> func_241457_a_(@Nullable Entity p_241457_1_, AxisAlignedBB p_241457_2_, BiPredicate<BlockState, BlockPos> p_241457_3_)
+    {
+        return getDelegate().func_241457_a_(p_241457_1_, p_241457_2_, p_241457_3_);
+    }
+
+    @Override
+    default <T extends Entity> List<T> getLoadedEntitiesWithinAABB(Class<? extends T> p_225317_1_, AxisAlignedBB p_225317_2_)
+    {
+        return getDelegate().getLoadedEntitiesWithinAABB(p_225317_1_, p_225317_2_);
+    }
+
+    @Override
+    default Stream<BlockState> func_234939_c_(AxisAlignedBB p_234939_1_)
+    {
+        return getDelegate().func_234939_c_(p_234939_1_);
+    }
+
+    @Override
+    default DimensionType func_230315_m_()
+    {
+        return getDelegate().func_230315_m_();
+    }
+
+    @Override
+    default boolean func_241211_a_(BlockPos p_241211_1_, BlockState p_241211_2_, int p_241211_3_, int p_241211_4_)
+    {
+        return getDelegate().func_241211_a_(p_241211_1_, p_241211_2_, p_241211_3_, p_241211_4_);
+    }
+
+    @Override
+    default boolean func_241212_a_(BlockPos p_241212_1_, boolean p_241212_2_, @Nullable Entity p_241212_3_, int p_241212_4_)
+    {
+        return getDelegate().func_241212_a_(p_241212_1_, p_241212_2_, p_241212_3_, p_241212_4_);
+    }
+
+    @Override
+    default IWorldInfo getWorldInfo()
+    {
+        return getDelegate().getWorldInfo();
+    }
+
+    @Override
+    default void func_230547_a_(BlockPos p_230547_1_, Block p_230547_2_)
+    {
+        getDelegate().func_230547_a_(p_230547_1_, p_230547_2_);
+    }
+
+    @Override
+    default int func_234938_ad_()
+    {
+        return getDelegate().func_234938_ad_();
+    }
+
+    @Override
+    default Stream<VoxelShape> func_230318_c_(@Nullable Entity p_230318_1_, AxisAlignedBB p_230318_2_, Predicate<Entity> p_230318_3_)
+    {
+        return getDelegate().func_230318_c_(p_230318_1_, p_230318_2_, p_230318_3_);
+    }
+
+    @Override
+    default FluidState getFluidState(BlockPos pos)
+    {
+        return getDelegate().getFluidState(pos);
     }
 
     @Override
@@ -92,9 +179,9 @@ public interface IWorldDelegate extends IWorld
     }
 
     @Override
-    default WorldInfo getWorldInfo()
+    default Stream<BlockState> func_234853_a_(AxisAlignedBB p_234853_1_)
     {
-        return getDelegate().getWorldInfo();
+        return getDelegate().func_234853_a_(p_234853_1_);
     }
 
     @Override
@@ -128,18 +215,6 @@ public interface IWorldDelegate extends IWorld
     }
 
     @Override
-    default void notifyNeighbors(BlockPos pos, Block blockIn)
-    {
-        getDelegate().notifyNeighbors(pos, blockIn);
-    }
-
-    @Override
-    default BlockPos getSpawnPoint()
-    {
-        return getDelegate().getSpawnPoint();
-    }
-
-    @Override
     default void playSound(@Nullable PlayerEntity player, BlockPos pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
     {
         getDelegate().playSound(player, pos, soundIn, category, volume, pitch);
@@ -161,12 +236,6 @@ public interface IWorldDelegate extends IWorld
     default void playEvent(int type, BlockPos pos, int data)
     {
         getDelegate().playEvent(type, pos, data);
-    }
-
-    @Override
-    default Stream<VoxelShape> getEmptyCollisionShapes(@Nullable Entity entityIn, AxisAlignedBB aabb, Set<Entity> entitiesToIgnore)
-    {
-        return getDelegate().getEmptyCollisionShapes(entityIn, aabb, entitiesToIgnore);
     }
 
     @Override
@@ -218,18 +287,6 @@ public interface IWorldDelegate extends IWorld
     }
 
     @Override
-    default boolean hasNoCollisions(@Nullable Entity p_226662_1_, AxisAlignedBB p_226662_2_, Set<Entity> p_226662_3_)
-    {
-        return getDelegate().hasNoCollisions(p_226662_1_, p_226662_2_, p_226662_3_);
-    }
-
-    @Override
-    default Stream<VoxelShape> getCollisionShapes(@Nullable Entity p_226667_1_, AxisAlignedBB p_226667_2_, Set<Entity> p_226667_3_)
-    {
-        return getDelegate().getCollisionShapes(p_226667_1_, p_226667_2_, p_226667_3_);
-    }
-
-    @Override
     default Stream<VoxelShape> getCollisionShapes(@Nullable Entity p_226666_1_, AxisAlignedBB p_226666_2_)
     {
         return getDelegate().getCollisionShapes(p_226666_1_, p_226666_2_);
@@ -248,10 +305,11 @@ public interface IWorldDelegate extends IWorld
         return getDelegate().getBlockState(pos);
     }
 
+    @Nullable
     @Override
-    default IFluidState getFluidState(BlockPos pos)
+    default BlockRayTraceResult rayTraceBlocks(Vector3d p_217296_1_, Vector3d p_217296_2_, BlockPos p_217296_3_, VoxelShape p_217296_4_, BlockState p_217296_5_)
     {
-        return getDelegate().getFluidState(pos);
+        return getDelegate().rayTraceBlocks(p_217296_1_, p_217296_2_, p_217296_3_, p_217296_4_, p_217296_5_);
     }
 
     @Override
@@ -276,13 +334,6 @@ public interface IWorldDelegate extends IWorld
     default BlockRayTraceResult rayTraceBlocks(RayTraceContext context)
     {
         return getDelegate().rayTraceBlocks(context);
-    }
-
-    @Nullable
-    @Override
-    default BlockRayTraceResult rayTraceBlocks(Vec3d p_217296_1_, Vec3d p_217296_2_, BlockPos p_217296_3_, VoxelShape p_217296_4_, BlockState p_217296_5_)
-    {
-        return getDelegate().rayTraceBlocks(p_217296_1_, p_217296_2_, p_217296_3_, p_217296_4_, p_217296_5_);
     }
 
     @Override
@@ -321,12 +372,6 @@ public interface IWorldDelegate extends IWorld
         return getDelegate().getEntitiesWithinAABB(p_217357_1_, p_217357_2_);
     }
 
-    @Override
-    default <T extends Entity> List<T> func_225317_b(Class<? extends T> p_225317_1_, AxisAlignedBB p_225317_2_)
-    {
-        return getDelegate().func_225317_b(p_225317_1_, p_225317_2_);
-    }
-
     @Nullable
     @Override
     default PlayerEntity getClosestPlayer(double x, double y, double z, double distance, @Nullable Predicate<Entity> predicate)
@@ -346,13 +391,6 @@ public interface IWorldDelegate extends IWorld
     default PlayerEntity getClosestPlayer(double x, double y, double z, double distance, boolean creativePlayers)
     {
         return getDelegate().getClosestPlayer(x, y, z, distance, creativePlayers);
-    }
-
-    @Nullable
-    @Override
-    default PlayerEntity getClosestPlayer(double x, double y, double z)
-    {
-        return getDelegate().getClosestPlayer(x, y, z);
     }
 
     @Override
@@ -481,12 +519,6 @@ public interface IWorldDelegate extends IWorld
     default int getSeaLevel()
     {
         return getDelegate().getSeaLevel();
-    }
-
-    @Override
-    default Dimension getDimension()
-    {
-        return getDelegate().getDimension();
     }
 
     @Override
@@ -652,11 +684,5 @@ public interface IWorldDelegate extends IWorld
     default boolean hasBlockState(BlockPos pos, Predicate<BlockState> filter)
     {
         return getDelegate().hasBlockState(pos, filter);
-    }
-
-    @Override
-    default int getMaxHeight()
-    {
-        return getDelegate().getMaxHeight();
     }
 }

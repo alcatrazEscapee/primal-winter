@@ -1,7 +1,7 @@
 
 # Loader Metadata
 modLoader="javafml" # mandatory
-loaderVersion="[31.1.39,)" # mandatory
+loaderVersion="[32,)" # mandatory
 issueTrackerURL="https://github.com/alcatrazEscapee/primal-winter/issues" # optional
 
 # Ore Veins
@@ -15,20 +15,20 @@ issueTrackerURL="https://github.com/alcatrazEscapee/primal-winter/issues" # opti
     #credits="" #optional
     authors="AlcatrazEscapee" #optional
     description='''
-    FIX ME
+    A horrible accident has left the world - the entire world - a frozen wasteland. Unending snowstorms rage across the land, from forests, to plains, to jungles, to deserts. The air is thick with fog and wind howls across the landscape. Will you be able to survive in this primordial winter?
     '''
 
 # dependencies
 [[dependencies.primalwinter]]
     modId="forge"
     mandatory=true
-    versionRange="[31.1.39,)"
+    versionRange="[32.0.70,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.primalwinter]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2,)"
+    versionRange="[1.16.1,)"
     ordering="NONE"
     side="BOTH"

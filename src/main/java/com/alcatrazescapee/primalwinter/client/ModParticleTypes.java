@@ -15,7 +15,7 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModParticleTypes
 {
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = new DeferredRegister<>(ForgeRegistries.PARTICLE_TYPES, MOD_ID);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MOD_ID);
 
     public static final RegistryObject<BasicParticleType> SNOW = PARTICLE_TYPES.register("snow", () -> new BasicParticleType(false));
 }

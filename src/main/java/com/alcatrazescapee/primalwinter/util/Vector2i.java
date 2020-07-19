@@ -5,11 +5,11 @@
 
 package com.alcatrazescapee.primalwinter.util;
 
-public final class Vec2i
+public final class Vector2i
 {
     private final int x, z;
 
-    public Vec2i(int x, int z)
+    public Vector2i(int x, int z)
     {
         this.x = x;
         this.z = z;
@@ -36,7 +36,7 @@ public final class Vec2i
     {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
-        Vec2i vec2i = (Vec2i) other;
+        Vector2i vec2i = (Vector2i) other;
         return x == vec2i.x && z == vec2i.z;
     }
 }

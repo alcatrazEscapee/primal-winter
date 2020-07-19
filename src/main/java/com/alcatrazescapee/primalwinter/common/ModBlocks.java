@@ -48,12 +48,12 @@ public final class ModBlocks
 
     public static final RegistryObject<Block> SNOWY_GRASS_PATH = register("snowy_grass_path", () -> new GrassPathBlock(Block.Properties.from(Blocks.GRASS_PATH)) {});
 
-    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> new LogBlock(MaterialColor.WOOD, Block.Properties.from(Blocks.OAK_LOG)));
-    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> new LogBlock(MaterialColor.SAND, Block.Properties.from(Blocks.BIRCH_LOG)));
-    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> new LogBlock(MaterialColor.OBSIDIAN, Block.Properties.from(Blocks.SPRUCE_LOG)));
-    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> new LogBlock(MaterialColor.DIRT, Block.Properties.from(Blocks.JUNGLE_LOG)));
-    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> new LogBlock(MaterialColor.BROWN, Block.Properties.from(Blocks.DARK_OAK_LOG)));
-    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> new LogBlock(MaterialColor.ADOBE, Block.Properties.from(Blocks.ACACIA_LOG)));
+    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> Blocks.func_235430_a_(MaterialColor.WOOD, MaterialColor.OBSIDIAN));
+    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> Blocks.func_235430_a_(MaterialColor.SAND, MaterialColor.QUARTZ));
+    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> Blocks.func_235430_a_(MaterialColor.OBSIDIAN, MaterialColor.BROWN));
+    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> Blocks.func_235430_a_(MaterialColor.DIRT, MaterialColor.OBSIDIAN));
+    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> Blocks.func_235430_a_(MaterialColor.BROWN, MaterialColor.BROWN));
+    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> Blocks.func_235430_a_(MaterialColor.ADOBE, MaterialColor.STONE));
 
     public static final RegistryObject<Block> SNOWY_OAK_LEAVES = register("snowy_oak_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
     public static final RegistryObject<Block> SNOWY_BIRCH_LEAVES = register("snowy_birch_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.BIRCH_LEAVES)));

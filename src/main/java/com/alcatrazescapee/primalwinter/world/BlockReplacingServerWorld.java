@@ -9,21 +9,21 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 
-public class BlockReplacingWorld implements IWorldDelegate
+public class BlockReplacingServerWorld implements IServerWorldDelegate
 {
-    private final IWorld delegate;
+    private final ISeedReader delegate;
     private final UnaryOperator<BlockState> replacementStrategy;
 
-    public BlockReplacingWorld(IWorld delegate, UnaryOperator<BlockState> replacementStrategy)
+    public BlockReplacingServerWorld(ISeedReader delegate, UnaryOperator<BlockState> replacementStrategy)
     {
         this.delegate = delegate;
         this.replacementStrategy = replacementStrategy;
     }
 
     @Override
-    public IWorld getDelegate()
+    public ISeedReader getDelegate()
     {
         return delegate;
     }
@@ -31,6 +31,6 @@ public class BlockReplacingWorld implements IWorldDelegate
     @Override
     public boolean setBlockState(BlockPos pos, BlockState newState, int flags)
     {
-        return IWorldDelegate.super.setBlockState(pos, replacementStrategy.apply(newState), flags);
+        return IServerWorldDelegate.super.setBlockState(pos, replacementStrategy.apply(newState), flags);
     }
 }

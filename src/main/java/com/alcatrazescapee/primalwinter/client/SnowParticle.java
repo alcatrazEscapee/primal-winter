@@ -9,12 +9,12 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.RainParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 
 public class SnowParticle extends RainParticle
 {
-    protected SnowParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn)
+    protected SnowParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn)
     {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn);
     }
@@ -28,7 +28,7 @@ public class SnowParticle extends RainParticle
             this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
             SnowParticle particle = new SnowParticle(worldIn, x, y, z);
             particle.selectSpriteRandomly(this.spriteSet);

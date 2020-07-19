@@ -91,7 +91,11 @@ public final class Config
         private List<? extends String> getDefaultNonWinterBiomes()
         {
             return Stream.of(
-                ForgeRegistries.BIOMES.getKey(Biomes.NETHER).toString(),
+                ForgeRegistries.BIOMES.getKey(Biomes.field_235254_j_).toString(), // Nether wastes
+                ForgeRegistries.BIOMES.getKey(Biomes.field_235252_ay_).toString(), // Soul Sand Valley
+                ForgeRegistries.BIOMES.getKey(Biomes.field_235253_az_).toString(), // Crimson forest
+                ForgeRegistries.BIOMES.getKey(Biomes.field_235250_aA_).toString(), // Warped forest
+                ForgeRegistries.BIOMES.getKey(Biomes.field_235251_aB_).toString(), // Basalt deltas
                 ForgeRegistries.BIOMES.getKey(Biomes.END_BARRENS).toString(),
                 ForgeRegistries.BIOMES.getKey(Biomes.END_HIGHLANDS).toString(),
                 ForgeRegistries.BIOMES.getKey(Biomes.END_MIDLANDS).toString(),

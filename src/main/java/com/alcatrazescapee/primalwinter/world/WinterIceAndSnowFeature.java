@@ -6,36 +6,37 @@
 package com.alcatrazescapee.primalwinter.world;
 
 import java.util.*;
-import java.util.function.Function;
 
 import net.minecraft.block.*;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
-import com.alcatrazescapee.primalwinter.util.Vec2i;
-import com.mojang.datafixers.Dynamic;
+import com.alcatrazescapee.primalwinter.util.Vector2i;
+import com.mojang.serialization.Codec;
 
 public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
 {
-    public WinterIceAndSnowFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
+    public WinterIceAndSnowFeature(Codec<NoFeatureConfig> codec)
     {
-        super(configFactoryIn);
+        super(codec);
     }
 
+    // place
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
+    public boolean func_230362_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config)
     {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
@@ -102,7 +103,7 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
 
     private void placeSnowAndIce(IWorld worldIn, BlockPos pos, BlockState state, Random random, int skyLight)
     {
-        IFluidState fluidState = worldIn.getFluidState(pos);
+        FluidState fluidState = worldIn.getFluidState(pos);
         BlockPos posDown = pos.down();
         BlockState stateDown = worldIn.getBlockState(posDown);
 
@@ -172,13 +173,13 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
      */
     private void extendSkyLights(int[] skyLights, int startX, int startZ)
     {
-        List<Vec3i> positions = new ArrayList<>();
-        Set<Vec2i> visited = new HashSet<>();
-        positions.add(new Vec3i(startX, skyLights[startX + 16 * startZ], startZ));
-        visited.add(new Vec2i(startX, startZ));
+        List<Vector3i> positions = new ArrayList<>();
+        Set<Vector2i> visited = new HashSet<>();
+        positions.add(new Vector3i(startX, skyLights[startX + 16 * startZ], startZ));
+        visited.add(new Vector2i(startX, startZ));
         while (!positions.isEmpty())
         {
-            Vec3i position = positions.remove(0);
+            Vector3i position = positions.remove(0);
             for (Direction direction : Direction.Plane.HORIZONTAL)
             {
                 int nextX = position.getX() + direction.getXOffset();
@@ -186,11 +187,11 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
                 int nextSkyLight = position.getY() - 1;
                 if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
                 {
-                    Vec2i nextVisited = new Vec2i(nextX, nextZ);
+                    Vector2i nextVisited = new Vector2i(nextX, nextZ);
                     if (!visited.contains(nextVisited))
                     {
                         skyLights[nextX + 16 * nextZ] = nextSkyLight;
-                        positions.add(new Vec3i(nextX, nextSkyLight, nextZ));
+                        positions.add(new Vector3i(nextX, nextSkyLight, nextZ));
                         visited.add(nextVisited);
                     }
                 }

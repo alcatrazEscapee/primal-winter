@@ -41,7 +41,7 @@ import com.alcatrazescapee.primalwinter.Config;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.common.ModTags;
 import com.alcatrazescapee.primalwinter.world.BlockReplacingConfiguredFeature;
-import com.alcatrazescapee.primalwinter.world.BlockReplacingWorld;
+import com.alcatrazescapee.primalwinter.world.BlockReplacingServerWorld;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
 import com.alcatrazescapee.primalwinter.world.SnowPlacingConfiguredFeature;
 
@@ -91,11 +91,11 @@ public final class VanillaHacks
         boolean isRaining = world.isRaining();
         int blockX = chunkPos.getXStart();
         int blockZ = chunkPos.getZStart();
-        if (world.dimension.canDoRainSnowIce(chunkIn) && world.rand.nextInt(16) == 0)
+        if (isRaining && world.rand.nextInt(16) == 0)
         {
             BlockPos pos = world.getHeight(Heightmap.Type.MOTION_BLOCKING, world.getBlockRandomPos(blockX, 0, blockZ, 15));
             BlockState state = world.getBlockState(pos);
-            if (isRaining && state.getBlock() == Blocks.SNOW && state.get(BlockStateProperties.LAYERS_1_8) < 5)
+            if (state.getBlock() == Blocks.SNOW && state.get(BlockStateProperties.LAYERS_1_8) < 5)
             {
                 world.setBlockState(pos, state.with(BlockStateProperties.LAYERS_1_8, state.get(BlockStateProperties.LAYERS_1_8) + 1));
             }
@@ -109,8 +109,8 @@ public final class VanillaHacks
             // Everything is winter now
             biome.temperature = -0.5f;
             biome.precipitation = Biome.RainType.SNOW;
-            biome.waterColor = 0x3938C9;
-            biome.waterFogColor = 0x050533;
+            biome.func_235089_q_().field_235206_c_ = 0x3938C9; // Water color
+            biome.func_235089_q_().field_235207_d_ = 0x050533; // Water fog color
 
             // Winter mobs
             biome.spawns.computeIfAbsent(EntityClassification.MONSTER, key -> new ArrayList<>()).add(new Biome.SpawnListEntry(EntityType.STRAY, 320, 4, 4));
@@ -125,7 +125,7 @@ public final class VanillaHacks
             // Delegate all vegetation modifications through the block replacement
             // This allows us to capture all tree features and force them to use snowy versions of all their blocks.
             List<ConfiguredFeature<?, ?>> features = biome.getFeatures(GenerationStage.Decoration.VEGETAL_DECORATION);
-            BlockReplacingConfiguredFeature featureWrapper = new BlockReplacingConfiguredFeature(world -> new BlockReplacingWorld(world, stateIn -> {
+            BlockReplacingConfiguredFeature featureWrapper = new BlockReplacingConfiguredFeature(world -> new BlockReplacingServerWorld(world, stateIn -> {
                 Block replacementBlock = ModBlocks.SNOWY_TREE_BLOCKS.getOrDefault(stateIn.getBlock(), () -> null).get();
                 if (replacementBlock != null)
                 {
@@ -150,7 +150,8 @@ public final class VanillaHacks
             biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, new SnowPlacingConfiguredFeature<>(Feature.ICE_PATCH, new FeatureRadiusConfig(2)).withPlacement(Placement.CHANCE_HEIGHTMAP.configure(new ChanceConfig(5))));
 
             // Igloos
-            biome.addStructure(Feature.IGLOO.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+            // addStructure(DefaultBiomeFeatures.IGLOO)
+            biome.func_235063_a_(DefaultBiomeFeatures.field_235169_g_);
 
             // Add cold specific biome dictionary tags
             BiomeDictionary.addTypes(biome, BiomeDictionary.Type.COLD, BiomeDictionary.Type.SNOWY);
