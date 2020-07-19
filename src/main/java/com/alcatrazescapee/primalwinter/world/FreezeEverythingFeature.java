@@ -127,6 +127,11 @@ public class FreezeEverythingFeature extends Feature<DefaultFeatureConfig>
         {
             worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
         }
+        else if (state.isOf(Blocks.TALL_SEAGRASS) && state.getFluidState().getFluid() == Fluids.WATER)
+        {
+            worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
+            worldIn.removeBlock(posDown, false);
+        }
         else if (fluidState.getFluid() == Fluids.LAVA && state.getBlock() instanceof FluidBlock)
         {
             worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 2);

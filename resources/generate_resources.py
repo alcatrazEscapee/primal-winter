@@ -7,7 +7,7 @@ def main():
     rm = ResourceManager('primalwinter', resource_path)
 
     rm.lang({
-        'itemGroup.primalwinter.items': 'Primal Winter',
+        'itemGroup.primalwinter.blocks': 'Primal Winter',
         'primalwinter.subtitle.wind': 'Wind Blows'
     })
 

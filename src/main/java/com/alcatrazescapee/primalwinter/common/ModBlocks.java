@@ -12,15 +12,12 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import com.alcatrazescapee.primalwinter.mixin.item.IAxeItem;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -108,8 +105,6 @@ public final class ModBlocks
         .build()
     );
 
-    public static final ItemGroup PRIMAL_WINTER_ITEMS = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "items"), () -> new ItemStack(SNOWY_OAK_LEAVES));
-
     public static void setup()
     {
         // Fire properties - leaves and vines are lowered from vanilla
@@ -142,7 +137,7 @@ public final class ModBlocks
 
     private static <T extends Block> T register(String id, T block)
     {
-        return register(id, block, new BlockItem(block, new Item.Settings().group(PRIMAL_WINTER_ITEMS)));
+        return register(id, block, new BlockItem(block, new Item.Settings().group(ModItemGroups.BLOCKS)));
     }
 
     private static <T extends Block> T register(String id, T block, BlockItem blockItem)

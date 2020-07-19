@@ -1,13 +1,21 @@
+/*
+ * Part of the Primal Winter by AlcatrazEscapee
+ * Work under Copyright. See the project LICENSE.md for details.
+ */
+
 package com.alcatrazescapee.primalwinter.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.FoliageColors;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.item.BlockItem;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
@@ -40,5 +48,7 @@ public class PrimalWinterClient implements ClientModInitializer
         }, ModBlocks.SNOWY_VINE, ModBlocks.SNOWY_OAK_LEAVES, ModBlocks.SNOWY_SPRUCE_LEAVES, ModBlocks.SNOWY_BIRCH_LEAVES, ModBlocks.SNOWY_JUNGLE_LEAVES, ModBlocks.SNOWY_ACACIA_LEAVES, ModBlocks.SNOWY_DARK_OAK_LEAVES);
 
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.SNOW, SnowParticle.Factory::new);
+
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SNOWY_VINE, RenderLayer.getCutout());
     }
 }
