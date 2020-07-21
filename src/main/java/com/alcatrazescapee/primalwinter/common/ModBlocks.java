@@ -7,6 +7,7 @@ package com.alcatrazescapee.primalwinter.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import com.alcatrazescapee.primalwinter.mixin.item.IAxeItem;
+import com.alcatrazescapee.primalwinter.mixin.item.IShovelItem;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -105,6 +107,7 @@ public final class ModBlocks
         .build()
     );
 
+    @SuppressWarnings("ConstantConditions")
     public static void init()
     {
         // Fire properties - leaves and vines are lowered from vanilla
@@ -124,15 +127,23 @@ public final class ModBlocks
         fireBlocks.add(SNOWY_VINE, 5, 30);
 
         // Block stripping - first we need to hack in mutability, then we can add special stripping "recipes"
-        //noinspection ConstantConditions
-        Map<Block, Block> blockStrippingMap = new HashMap<>(IAxeItem.primalwinter_getStrippedBlocks());
-        blockStrippingMap.put(SNOWY_ACACIA_LOG, Blocks.ACACIA_LOG);
-        blockStrippingMap.put(SNOWY_OAK_LOG, Blocks.OAK_LOG);
-        blockStrippingMap.put(SNOWY_DARK_OAK_LOG, Blocks.DARK_OAK_LOG);
-        blockStrippingMap.put(SNOWY_JUNGLE_LOG, Blocks.JUNGLE_LOG);
-        blockStrippingMap.put(SNOWY_BIRCH_LOG, Blocks.BIRCH_LOG);
-        blockStrippingMap.put(SNOWY_SPRUCE_LOG, Blocks.SPRUCE_LOG);
-        IAxeItem.primalwinter_setStrippedBlocks(blockStrippingMap);
+        Map<Block, Block> blockStripping = new HashMap<>(IAxeItem.primalwinter_getStrippedBlocks());
+        blockStripping.put(SNOWY_ACACIA_LOG, Blocks.ACACIA_LOG);
+        blockStripping.put(SNOWY_OAK_LOG, Blocks.OAK_LOG);
+        blockStripping.put(SNOWY_DARK_OAK_LOG, Blocks.DARK_OAK_LOG);
+        blockStripping.put(SNOWY_JUNGLE_LOG, Blocks.JUNGLE_LOG);
+        blockStripping.put(SNOWY_BIRCH_LOG, Blocks.BIRCH_LOG);
+        blockStripping.put(SNOWY_SPRUCE_LOG, Blocks.SPRUCE_LOG);
+        IAxeItem.primalwinter_setStrippedBlocks(blockStripping);
+
+        // Shovel effectiveness, because it's not material based
+        Set<Block> shovelEffectiveBlocks = IShovelItem.primalwinter_getEffectiveBlocks();
+        shovelEffectiveBlocks.add(SNOWY_DIRT);
+        shovelEffectiveBlocks.add(SNOWY_COARSE_DIRT);
+        shovelEffectiveBlocks.add(SNOWY_SAND);
+        shovelEffectiveBlocks.add(SNOWY_RED_SAND);
+        shovelEffectiveBlocks.add(SNOWY_GRAVEL);
+        shovelEffectiveBlocks.add(SNOWY_GRASS_PATH);
     }
 
     private static <T extends Block> T register(String id, T block)
