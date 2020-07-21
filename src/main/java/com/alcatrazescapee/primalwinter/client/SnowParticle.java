@@ -12,6 +12,10 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public class SnowParticle extends RainSplashParticle
 {
     protected SnowParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn)

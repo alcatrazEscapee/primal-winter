@@ -105,7 +105,7 @@ public final class ModBlocks
         .build()
     );
 
-    public static void setup()
+    public static void init()
     {
         // Fire properties - leaves and vines are lowered from vanilla
         FlammableBlockRegistry fireBlocks = FlammableBlockRegistry.getDefaultInstance();

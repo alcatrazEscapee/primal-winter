@@ -6,7 +6,13 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -14,6 +20,7 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
@@ -26,6 +33,7 @@ import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.level.ServerWorldProperties;
 
+import com.alcatrazescapee.primalwinter.ModConfig;
 import com.alcatrazescapee.primalwinter.mixin.world.IBiome;
 import com.alcatrazescapee.primalwinter.mixin.world.IBiomeEffects;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
@@ -33,14 +41,27 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 public final class Helpers
 {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /**
      * Make egregious modifications to biomes
      */
     public static void hackWinterBiomes()
     {
-        // todo: config whitelist?
-        Registry.BIOME.forEach(Helpers::hackWinterBiome);
-        RegistryEntryAddedCallback.event(Registry.BIOME).register((i, identifier, biome) -> hackWinterBiome(biome));
+        Set<Identifier> blacklistedBiomes = Arrays.stream(ModConfig.INSTANCE.nonWinterBiomes.split(",")).map(Identifier::new).collect(Collectors.toSet());
+        Predicate<Biome> blacklist = biome -> blacklistedBiomes.contains(Registry.BIOME.getId(biome));
+        Registry.BIOME.forEach(biome -> {
+            if (!blacklist.test(biome))
+            {
+                hackWinterBiome(biome);
+            }
+        });
+        RegistryEntryAddedCallback.event(Registry.BIOME).register((rawId, identifier, biome) -> {
+            if (!blacklist.test(biome))
+            {
+                hackWinterBiome(biome);
+            }
+        });
     }
 
     /**
@@ -50,13 +71,8 @@ public final class Helpers
     {
         if (world.getLevelProperties() instanceof ServerWorldProperties)
         {
-            ServerWorldProperties properties = ((ServerWorldProperties) world.getLevelProperties());
+            world.method_27910(0, Integer.MAX_VALUE, true, true); // setWeather
             world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
-            properties.setClearWeatherTime(0);
-            properties.setRainTime(Integer.MAX_VALUE);
-            properties.setThunderTime(Integer.MAX_VALUE);
-            properties.setRaining(true);
-            properties.setThundering(true);
         }
     }
 

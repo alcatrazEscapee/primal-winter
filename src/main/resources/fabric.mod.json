@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/primal-winter",
-    "sources": "https://github.com/alcatrazEscapee/primal-winter"
+    "sources": "https://github.com/alcatrazEscapee/primal-winter",
+    "issues": "https://github.com/alcatrazEscapee/primal-winter/issues"
   },
   "license": "MIT",
   "icon": "assets/primalwinter/icon.png",
@@ -19,7 +20,10 @@
       "com.alcatrazescapee.primalwinter.PrimalWinter"
     ],
     "client": [
-      "com.alcatrazescapee.primalwinter.client.PrimalWinterClient"
+      "com.alcatrazescapee.primalwinter.client.PrimalWinterClientInit"
+    ],
+    "modmenu": [
+      "com.alcatrazescapee.primalwinter.client.ModMenuClientInit"
     ]
   },
   "mixins": [

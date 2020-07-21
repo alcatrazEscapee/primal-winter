@@ -16,7 +16,6 @@ import net.minecraft.client.options.ParticlesOption;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.particle.ParticleEffect;
@@ -25,7 +24,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -33,10 +34,12 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 
+import com.alcatrazescapee.primalwinter.ModConfig;
 import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
 import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin
 {
@@ -78,7 +82,7 @@ public abstract class WorldRendererMixin
     @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
     public void primalwinter_renderWeather(LightmapTextureManager manager, float f, double d, double e, double g, CallbackInfo ci)
     {
-        if (this.client.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
+        if (ModConfig.INSTANCE.enableWeatherRenderChanges && this.client.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
         {
             float h = this.client.world.getRainGradient(f);
             if (h > 0.0F)
@@ -97,20 +101,15 @@ public abstract class WorldRendererMixin
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.defaultAlphaFunc();
                 RenderSystem.enableDepthTest();
-                int l = 5;
-                if (MinecraftClient.isFancyGraphicsOrBetter())
-                {
-                    l = 10;
-                }
-
+                int particleDensity = MathHelper.clamp(ModConfig.INSTANCE.snowParticleDensity, 1, 15);
                 RenderSystem.depthMask(MinecraftClient.isFabulousGraphicsOrBetter());
                 int m = -1;
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-                for (int o = k - l; o <= k + l; ++o)
+                for (int o = k - particleDensity; o <= k + particleDensity; ++o)
                 {
-                    for (int p = i - l; p <= i + l; ++p)
+                    for (int p = i - particleDensity; p <= i + particleDensity; ++p)
                     {
                         int q = (o - k + 16) * 32 + p - i + 16;
                         double r = (double) this.field_20794[q] * 0.5D;
@@ -120,8 +119,8 @@ public abstract class WorldRendererMixin
                         if (biome.getPrecipitation() != Biome.Precipitation.NONE)
                         {
                             int t = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, mutable).getY();
-                            int u = j - l;
-                            int v = j + l;
+                            int u = j - particleDensity;
+                            int v = j + particleDensity;
                             if (u < t)
                             {
                                 u = t;
@@ -163,7 +162,7 @@ public abstract class WorldRendererMixin
                                 z = -((float) y + f) / 32.0F * (3.0F + random.nextFloat());
                                 double aa = (double) ((float) p + 0.5F) - d;
                                 double ab = (double) ((float) o + 0.5F) - g;
-                                float ac = MathHelper.sqrt(aa * aa + ab * ab) / (float) l;
+                                float ac = MathHelper.sqrt(aa * aa + ab * ab) / (float) particleDensity;
                                 ad = ((1.0F - ac * ac) * 0.5F + 0.5F) * h;
                                 mutable.set(p, w, o);
                                 int ae = WorldRenderer.getLightmapCoordinates(world, mutable);
@@ -197,11 +196,11 @@ public abstract class WorldRendererMixin
      * - If this is the overworld, and normal sky type, we cancel the original method
      * - The sunrise and sunset sky colors are not shown when the weather is stormy
      */
-    @SuppressWarnings({"deprecation", "ConstantConditions"})
+    /*@SuppressWarnings({"deprecation", "ConstantConditions"})
     @Inject(method = "renderSky", at = @At("INVOKE_ASSIGN"), cancellable = true)
     public void primalwinter_renderSky(MatrixStack matrices, float tickDelta, CallbackInfo ci)
     {
-        if (this.client.world.getSkyProperties().getSkyType() == SkyProperties.SkyType.NORMAL && this.client.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
+        if (ModConfig.INSTANCE.enableSkyRenderChanges && this.client.world.getSkyProperties().getSkyType() == SkyProperties.SkyType.NORMAL && this.client.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
         {
             RenderSystem.disableTexture();
             Vec3d vec3d = this.world.method_23777(this.client.gameRenderer.getCamera().getBlockPos(), tickDelta);
@@ -334,6 +333,7 @@ public abstract class WorldRendererMixin
             ci.cancel();
         }
     }
+     */
 
     /**
      * This is a modified version of {@link WorldRenderer#tickRainSplashing(Camera)}
@@ -384,7 +384,7 @@ public abstract class WorldRendererMixin
                 }
             }
 
-            if (blockPos2 != null && windSoundTime-- < 0)
+            if (blockPos2 != null && windSoundTime-- < 0 && ModConfig.INSTANCE.enableWindSounds)
             {
                 windSoundTime = 20 * 3 + random.nextInt(30);
                 if (blockPos2.getY() > blockPos.getY() + 1 && worldView.getTopPosition(Heightmap.Type.MOTION_BLOCKING, blockPos).getY() > MathHelper.floor((float) blockPos.getY()))
@@ -397,7 +397,7 @@ public abstract class WorldRendererMixin
                 }
             }
 
-            if (blockPos2 != null && random.nextInt(3) < this.rainSoundTime++)
+            if (blockPos2 != null && random.nextInt(3) < this.rainSoundTime++ && ModConfig.INSTANCE.enableSnowSounds)
             {
                 this.rainSoundTime = 0;
                 if (blockPos2.getY() > blockPos.getY() + 1 && worldView.getTopPosition(Heightmap.Type.MOTION_BLOCKING, blockPos).getY() > MathHelper.floor((float) blockPos.getY()))

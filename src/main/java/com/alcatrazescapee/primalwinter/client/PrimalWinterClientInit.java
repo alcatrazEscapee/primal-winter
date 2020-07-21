@@ -14,12 +14,15 @@ import net.minecraft.item.BlockItem;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
 @SuppressWarnings("unused")
-public class PrimalWinterClient implements ClientModInitializer
+@Environment(EnvType.CLIENT)
+public class PrimalWinterClientInit implements ClientModInitializer
 {
     private static final int NOPE = 0xFFFFFF;
 

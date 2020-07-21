@@ -15,19 +15,30 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
 import net.minecraft.world.dimension.DimensionType;
 
+import com.alcatrazescapee.primalwinter.ModConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin
 {
-    @Inject(method = "render", at = @At("RETURN"), cancellable = true)
+    //@formatter:off
+    @Shadow private static float red;
+    @Shadow private static float green;
+    @Shadow private static float blue;
+    //@formatter:on
+
+    @Inject(method = "render", at = @At("RETURN"))
     private static void primalwinter_render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
     {
-        if (camera.getFocusedEntity() instanceof PlayerEntity)
+        if (camera.getFocusedEntity() instanceof PlayerEntity && ModConfig.INSTANCE.enableSkyRenderChanges)
         {
             PlayerEntity player = (PlayerEntity) camera.getFocusedEntity();
             BlockPos pos = player.getBlockPos();
@@ -39,14 +50,13 @@ public abstract class BackgroundRendererMixin
                 float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
-                // todo: config
-                int colorDay = 0xbfbfd8;
-                int colorNight = 0x0c0c19;
-                float red = ((colorDay >> 16) & 0xFF) * delta + ((colorNight >> 16) & 0xFF) * (1 - delta);
-                float green = ((colorDay >> 8) & 0xFF) * delta + ((colorNight >> 8) & 0xFF) * (1 - delta);
-                float blue = (colorDay & 0xFF) * delta + (colorNight & 0xFF) * (1 - delta);
+                int colorDay = ModConfig.INSTANCE.fogColorDay;
+                int colorNight = ModConfig.INSTANCE.fogColorNight;
+                red = (((colorDay >> 16) & 0xFF) * delta + ((colorNight >> 16) & 0xFF) * (1 - delta)) / 255f;
+                green = (((colorDay >> 8) & 0xFF) * delta + ((colorNight >> 8) & 0xFF) * (1 - delta)) / 255f;
+                blue = ((colorDay & 0xFF) * delta + (colorNight & 0xFF) * (1 - delta)) / 255f;
 
-                RenderSystem.clearColor(red / 255f, green / 255f, blue / 255f, 0f);
+                RenderSystem.clearColor(red, green, blue, 0f);
             }
         }
     }
@@ -65,8 +75,7 @@ public abstract class BackgroundRendererMixin
             int light = player.world.getLightLevel(LightType.SKY, pos);
             if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY && player.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
             {
-                // todo: config
-                float densityConfigValue = 0.2f;
+                float densityConfigValue = (float) ModConfig.INSTANCE.fogDensity;
                 float density = ((light - 3) * densityConfigValue / 13f);
                 RenderSystem.fogDensity(density);
                 ci.cancel();

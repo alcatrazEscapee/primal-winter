@@ -8,7 +8,19 @@ def main():
 
     rm.lang({
         'itemGroup.primalwinter.blocks': 'Primal Winter',
-        'primalwinter.subtitle.wind': 'Wind Blows'
+        'primalwinter.subtitle.wind': 'Wind Blows',
+        'text.autoconfig.primalwinter.title': 'Primal Winter Config',
+        **dict(('text.autoconfig.primalwinter.option.%s' % option, name) for option, name in {
+            'fogDensity': 'Fog Density',
+            'snowParticleDensity': 'Snow Particle Density',
+            'enableSnowSounds': 'Enable Snow Sounds',
+            'enableWindSounds': 'Enable Wind Sounds',
+            'enableWeatherRenderChanges': 'Enable Weather Render Changes',
+            'enableSkyRenderChanges': 'Enable Sky Render Changes',
+            'fogColorDay': 'Fog Color (Day)',
+            'fogColorNight': 'Fog Color (Night)',
+            'nonWinterBiomes': 'Winter Biome Blacklist'
+        }.items())
     })
 
     for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel', 'stone', 'granite', 'diorite', 'andesite', 'white_terracotta', 'orange_terracotta', 'terracotta', 'yellow_terracotta', 'brown_terracotta', 'red_terracotta', 'light_gray_terracotta'):
