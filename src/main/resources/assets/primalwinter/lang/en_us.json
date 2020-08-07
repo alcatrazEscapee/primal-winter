@@ -12,6 +12,7 @@
   "text.autoconfig.primalwinter.option.fogColorDay": "Fog Color (Day)",
   "text.autoconfig.primalwinter.option.fogColorNight": "Fog Color (Night)",
   "text.autoconfig.primalwinter.option.nonWinterBiomes": "Winter Biome Blacklist",
+  "text.autoconfig.primalwinter.option.enableGrossBiomeHacks": "Enable Gross Biome Hacks",
   "block.primalwinter.snowy_dirt": "Snowy Dirt",
   "block.primalwinter.snowy_coarse_dirt": "Snowy Coarse Dirt",
   "block.primalwinter.snowy_sand": "Snowy Sand",

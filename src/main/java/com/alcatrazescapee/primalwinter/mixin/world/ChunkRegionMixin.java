@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class ChunkRegionMixin
 {
     @ModifyVariable(method = "setBlockState", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private BlockState primalwinter_setBlockState(BlockState stateIn)
+    private BlockState setBlockState(BlockState stateIn)
     {
         Block replacementBlock = ModBlocks.SNOWY_TREE_BLOCKS.get(stateIn.getBlock());
         if (replacementBlock != null)

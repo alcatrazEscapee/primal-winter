@@ -19,7 +19,8 @@ def main():
             'enableSkyRenderChanges': 'Enable Sky Render Changes',
             'fogColorDay': 'Fog Color (Day)',
             'fogColorNight': 'Fog Color (Night)',
-            'nonWinterBiomes': 'Winter Biome Blacklist'
+            'nonWinterBiomes': 'Winter Biome Blacklist',
+            'enableGrossBiomeHacks': 'Enable Gross Biome Hacks'
         }.items())
     })
 

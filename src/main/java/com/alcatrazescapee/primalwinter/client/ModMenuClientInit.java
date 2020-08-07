@@ -5,12 +5,7 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import net.minecraft.client.gui.screen.Screen;
-
-import com.alcatrazescapee.primalwinter.ModConfig;
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -18,9 +13,12 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class ModMenuClientInit implements ModMenuApi
 {
+    /*
+    // todo: needs autoconfig update
     @Override
     public ConfigScreenFactory<Screen> getModConfigScreenFactory()
     {
         return parent -> AutoConfig.getConfigScreen(ModConfig.ModConfigData.class, parent).get();
     }
+     */
 }

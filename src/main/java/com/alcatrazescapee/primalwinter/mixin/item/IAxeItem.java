@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface IAxeItem
 {
     @Accessor(value = "STRIPPED_BLOCKS")
-    static void primalwinter_setStrippedBlocks(Map<Block, Block> map) {}
+    static Map<Block, Block> getStrippedBlocks() { return null; }
 
     @Accessor(value = "STRIPPED_BLOCKS")
-    static Map<Block, Block> primalwinter_getStrippedBlocks() { return null; }
+    static void setStrippedBlocks(Map<Block, Block> map) {}
 }

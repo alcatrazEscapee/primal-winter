@@ -16,9 +16,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -35,7 +34,7 @@ public class FreezeEverythingFeature extends Feature<DefaultFeatureConfig>
     }
 
     @Override
-    public boolean generate(ServerWorldAccess worldIn, StructureAccessor accessor, ChunkGenerator generator, Random random, BlockPos pos, DefaultFeatureConfig config)
+    public boolean generate(StructureWorldAccess worldIn, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DefaultFeatureConfig featureConfig)
     {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
@@ -105,7 +104,7 @@ public class FreezeEverythingFeature extends Feature<DefaultFeatureConfig>
         return true;
     }
 
-    private void placeSnowAndIce(ServerWorldAccess worldIn, Biome biome, BlockPos pos, BlockState state, Random random, int skyLight)
+    private void placeSnowAndIce(StructureWorldAccess worldIn, Biome biome, BlockPos pos, BlockState state, Random random, int skyLight)
     {
         FluidState fluidState = worldIn.getFluidState(pos);
         BlockPos posDown = pos.down();
@@ -159,7 +158,7 @@ public class FreezeEverythingFeature extends Feature<DefaultFeatureConfig>
         }
     }
 
-    private int countExposedFaces(ServerWorldAccess world, BlockPos pos)
+    private int countExposedFaces(StructureWorldAccess world, BlockPos pos)
     {
         int count = 0;
         for (Direction direction : Direction.Type.HORIZONTAL)

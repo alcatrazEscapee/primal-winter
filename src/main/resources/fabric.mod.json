@@ -26,6 +26,7 @@
       "com.alcatrazescapee.primalwinter.client.ModMenuClientInit"
     ]
   },
+  "accessWidener": "primalwinter.accesswidener",
   "mixins": [
     "primalwinter.mixins.json"
   ],

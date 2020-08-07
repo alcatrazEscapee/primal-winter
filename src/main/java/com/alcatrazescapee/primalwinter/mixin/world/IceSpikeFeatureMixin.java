@@ -11,8 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -33,7 +32,7 @@ public abstract class IceSpikeFeatureMixin extends Feature<DefaultFeatureConfig>
     }
 
     @Inject(method = "generate", at = @At("HEAD"))
-    private void primalwinter_generate(ServerWorldAccess worldIn, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DefaultFeatureConfig defaultFeatureConfig, CallbackInfoReturnable<Boolean> cir)
+    private void generate(StructureWorldAccess worldIn, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DefaultFeatureConfig defaultFeatureConfig, CallbackInfoReturnable<Boolean> cir)
     {
         while (worldIn.isAir(pos) && pos.getY() > 2)
         {

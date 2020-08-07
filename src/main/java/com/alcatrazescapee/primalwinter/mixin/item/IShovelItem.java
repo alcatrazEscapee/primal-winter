@@ -17,5 +17,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface IShovelItem
 {
     @Accessor(value = "EFFECTIVE_BLOCKS")
-    static Set<Block> primalwinter_getEffectiveBlocks() { return null; }
+    static Set<Block> getEffectiveBlocks() { return null; }
 }

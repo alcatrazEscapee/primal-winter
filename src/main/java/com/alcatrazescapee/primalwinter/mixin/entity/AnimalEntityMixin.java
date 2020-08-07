@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class AnimalEntityMixin extends PassiveEntity
 {
     @Inject(method = "isValidNaturalSpawn", at = @At("HEAD"), cancellable = true)
-    private static void primalwinter_isValidNaturalSpawn(EntityType<? extends AnimalEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    private static void isValidNaturalSpawn(EntityType<? extends AnimalEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
         cir.setReturnValue(ModTags.Blocks.ANIMAL_SPAWNS_ON.contains(world.getBlockState(pos.down()).getBlock()) && world.getBaseLightLevel(pos, 0) > 8);
     }

@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PolarBearEntityMixin extends AnimalEntity
 {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
-    private static void primalwinter_canSpawn(EntityType<PolarBearEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    private static void canSpawn(EntityType<PolarBearEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
         Biome biome = world.getBiome(pos);
         if (biome.getCategory() != Biome.Category.OCEAN)

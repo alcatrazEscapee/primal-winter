@@ -127,17 +127,17 @@ public final class ModBlocks
         fireBlocks.add(SNOWY_VINE, 5, 30);
 
         // Block stripping - first we need to hack in mutability, then we can add special stripping "recipes"
-        Map<Block, Block> blockStripping = new HashMap<>(IAxeItem.primalwinter_getStrippedBlocks());
+        Map<Block, Block> blockStripping = new HashMap<>(IAxeItem.getStrippedBlocks());
         blockStripping.put(SNOWY_ACACIA_LOG, Blocks.ACACIA_LOG);
         blockStripping.put(SNOWY_OAK_LOG, Blocks.OAK_LOG);
         blockStripping.put(SNOWY_DARK_OAK_LOG, Blocks.DARK_OAK_LOG);
         blockStripping.put(SNOWY_JUNGLE_LOG, Blocks.JUNGLE_LOG);
         blockStripping.put(SNOWY_BIRCH_LOG, Blocks.BIRCH_LOG);
         blockStripping.put(SNOWY_SPRUCE_LOG, Blocks.SPRUCE_LOG);
-        IAxeItem.primalwinter_setStrippedBlocks(blockStripping);
+        IAxeItem.setStrippedBlocks(blockStripping);
 
         // Shovel effectiveness, because it's not material based
-        Set<Block> shovelEffectiveBlocks = IShovelItem.primalwinter_getEffectiveBlocks();
+        Set<Block> shovelEffectiveBlocks = IShovelItem.getEffectiveBlocks();
         shovelEffectiveBlocks.add(SNOWY_DIRT);
         shovelEffectiveBlocks.add(SNOWY_COARSE_DIRT);
         shovelEffectiveBlocks.add(SNOWY_SAND);

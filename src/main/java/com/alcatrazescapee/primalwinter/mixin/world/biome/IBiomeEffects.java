@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.world;
+package com.alcatrazescapee.primalwinter.mixin.world.biome;
 
 import net.minecraft.world.biome.BiomeEffects;
 
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface IBiomeEffects
 {
     @Accessor(value = "waterColor")
-    void primalwinter_setWaterColor(int waterColor);
+    void setWaterColor(int waterColor);
 
     @Accessor(value = "waterFogColor")
-    void primalwinter_setFogWaterColor(int waterFogColor);
+    void setFogWaterColor(int waterFogColor);
 }

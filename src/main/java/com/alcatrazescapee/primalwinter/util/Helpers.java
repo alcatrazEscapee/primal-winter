@@ -5,73 +5,26 @@
 
 package com.alcatrazescapee.primalwinter.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
-import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.level.ServerWorldProperties;
-
-import com.alcatrazescapee.primalwinter.ModConfig;
-import com.alcatrazescapee.primalwinter.mixin.world.IBiome;
-import com.alcatrazescapee.primalwinter.mixin.world.IBiomeEffects;
-import com.alcatrazescapee.primalwinter.world.ModFeatures;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 public final class Helpers
 {
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    /**
-     * Make egregious modifications to biomes
-     */
-    public static void hackWinterBiomes()
-    {
-        Set<Identifier> blacklistedBiomes = Arrays.stream(ModConfig.INSTANCE.nonWinterBiomes.split(",")).map(Identifier::new).collect(Collectors.toSet());
-        Predicate<Biome> blacklist = biome -> blacklistedBiomes.contains(Registry.BIOME.getId(biome));
-        Registry.BIOME.forEach(biome -> {
-            if (!blacklist.test(biome))
-            {
-                hackWinterBiome(biome);
-            }
-        });
-        RegistryEntryAddedCallback.event(Registry.BIOME).register((rawId, identifier, biome) -> {
-            if (!blacklist.test(biome))
-            {
-                hackWinterBiome(biome);
-            }
-        });
-    }
-
     /**
      * Sets the weather of a world to an endless winter state
      */
     public static void setWeatherToEndlessWinter(ServerWorld world)
     {
-        if (world.getLevelProperties() instanceof ServerWorldProperties)
+        if (world != null && world.getLevelProperties() instanceof ServerWorldProperties)
         {
-            world.method_27910(0, Integer.MAX_VALUE, true, true); // setWeather
+            world.setWeather(0, Integer.MAX_VALUE, true, true); // setWeather
             world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
         }
     }
@@ -108,32 +61,9 @@ public final class Helpers
         return replacement.with(property, original.get(property));
     }
 
-    private static void hackWinterBiome(Biome biome)
+    @SuppressWarnings("unchecked")
+    public static <T> T accessCast(Object obj)
     {
-        // Everything is winter now
-        IBiome access = (IBiome) biome;
-        access.primalwinter_setTemperature(-0.5f);
-        access.primalwinter_setPrecipitation(Biome.Precipitation.SNOW);
-
-        IBiomeEffects effects = (IBiomeEffects) biome.getEffects();
-        effects.primalwinter_setWaterColor(0x3938C9);
-        effects.primalwinter_setFogWaterColor(0x050533);
-
-        // Winter mobs
-        access.primalwinter_getSpawns().computeIfAbsent(SpawnGroup.MONSTER, key -> new ArrayList<>()).add(new Biome.SpawnEntry(EntityType.STRAY, 320, 4, 4));
-        access.primalwinter_getSpawns().computeIfAbsent(SpawnGroup.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnEntry(EntityType.POLAR_BEAR, 4, 1, 2));
-        access.primalwinter_getSpawns().computeIfAbsent(SpawnGroup.CREATURE, key -> new ArrayList<>()).add(new Biome.SpawnEntry(EntityType.SNOW_GOLEM, 4, 4, 8));
-
-        // Freeze a bit more than just the top layer
-        // Remove the original feature because it sucks
-        biome.getFeaturesForStep(GenerationStep.Feature.TOP_LAYER_MODIFICATION).removeIf(feature -> feature.config instanceof DecoratedFeatureConfig && ((DecoratedFeatureConfig) feature.config).feature.feature instanceof FreezeTopLayerFeature);
-        biome.addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION, ModFeatures.FREEZE_EVERYTHING.configure(DefaultFeatureConfig.DEFAULT).createDecoratedFeature(Decorator.NOPE.configure(NopeDecoratorConfig.DEFAULT)));
-
-        // Ice spikes (although less frequent)
-        biome.addFeature(GenerationStep.Feature.SURFACE_STRUCTURES, Feature.ICE_SPIKE.configure(FeatureConfig.DEFAULT).createDecoratedFeature(Decorator.CHANCE_HEIGHTMAP.configure(new ChanceDecoratorConfig(7))));
-        biome.addFeature(GenerationStep.Feature.SURFACE_STRUCTURES, Feature.ICE_PATCH.configure(new IcePatchFeatureConfig(2)).createDecoratedFeature(Decorator.CHANCE_HEIGHTMAP.configure(new ChanceDecoratorConfig(5))));
-
-        // Igloos
-        biome.addStructureFeature(StructureFeature.IGLOO.configure(DefaultFeatureConfig.INSTANCE));
+        return (T) obj;
     }
 }

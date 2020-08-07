@@ -36,7 +36,7 @@ public abstract class BackgroundRendererMixin
     //@formatter:on
 
     @Inject(method = "render", at = @At("RETURN"))
-    private static void primalwinter_render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
+    private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
     {
         if (camera.getFocusedEntity() instanceof PlayerEntity && ModConfig.INSTANCE.enableSkyRenderChanges)
         {
@@ -46,8 +46,8 @@ public abstract class BackgroundRendererMixin
             if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY && player.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
             {
                 // Calculate color based on time of day
-                float angle = player.world.getSkyAngle(tickDelta);
-                float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
+                float angle = player.world.getSkyAngleRadians(tickDelta);
+                float height = MathHelper.cos(angle);
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
                 int colorDay = ModConfig.INSTANCE.fogColorDay;
@@ -66,7 +66,7 @@ public abstract class BackgroundRendererMixin
      */
     @SuppressWarnings("deprecation")
     @Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
-    private static void primalwinter_applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci)
+    private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci)
     {
         if (camera.getFocusedEntity() instanceof PlayerEntity)
         {

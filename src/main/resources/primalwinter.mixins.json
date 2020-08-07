@@ -3,19 +3,7 @@
   "minVersion": "0.8",
   "package": "com.alcatrazescapee.primalwinter.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "MinecraftServerMixin",
-    "entity.AnimalEntityMixin",
-    "entity.PolarBearEntityMixin",
-    "item.IAxeItem",
-    "item.IShovelItem",
-    "world.ChunkRegionMixin",
-    "world.IBiome",
-    "world.IBiomeEffects",
-    "world.IcePatchFeatureMixin",
-    "world.IceSpikeFeatureMixin",
-    "world.ServerWorldMixin"
-  ],
+  "mixins": ["entity.AnimalEntityMixin", "entity.PolarBearEntityMixin", "item.IAxeItem", "item.IShovelItem", "world.ChunkRegionMixin", "world.FreezeTopLayerFeatureMixin", "world.IcePatchFeatureMixin", "world.IceSpikeFeatureMixin", "world.ServerWorldMixin", "world.biome.IBiome", "world.biome.IBiomeEffects", "world.biome.IBiomeWeather", "world.biome.IGenerationSettings", "world.biome.ISpawnSettings"],
   "client": [
     "client.BackgroundRendererMixin",
     "client.SkyPropertiesMixin",

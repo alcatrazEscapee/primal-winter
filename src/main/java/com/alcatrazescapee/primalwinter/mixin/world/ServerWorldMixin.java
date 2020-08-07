@@ -34,14 +34,15 @@ public abstract class ServerWorldMixin extends World
     /**
      * When the world is about to place snow, also check to place multi-layer snow instead
      */
-    @Inject(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;canSetSnow(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;)Z"))
-    public void primalwinter_tickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci)
+    @Inject(method = "tickChunk", at = @At(value = "TAIL"))
+    public void tickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
-        // Recreates the same position about to be ticked for snow
-        int blockX = chunk.getPos().getStartX();
-        int blockZ = chunk.getPos().getStartZ();
-        int seed = this.lcgBlockSeed >> 2;
-        BlockPos pos = getTopPosition(Heightmap.Type.MOTION_BLOCKING, new BlockPos(blockX + (seed & 15), (seed >> 16 & 15), blockZ + (seed >> 8 & 15)));
-        Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, pos);
+        if (random.nextInt(16) == 0)
+        {
+            int blockX = chunk.getPos().getStartX();
+            int blockZ = chunk.getPos().getStartZ();
+            BlockPos pos = getTopPosition(Heightmap.Type.MOTION_BLOCKING, getRandomPosInChunk(blockX, 0, blockZ, 15));
+            Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, pos);
+        }
     }
 }

@@ -11,12 +11,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.DiskFeature;
+import net.minecraft.world.gen.feature.DiskFeatureConfig;
 import net.minecraft.world.gen.feature.IcePatchFeature;
-import net.minecraft.world.gen.feature.IcePatchFeatureConfig;
 
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,15 +24,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(IcePatchFeature.class)
-public abstract class IcePatchFeatureMixin extends Feature<IcePatchFeatureConfig>
+public abstract class IcePatchFeatureMixin extends DiskFeature
 {
-    private IcePatchFeatureMixin(Codec<IcePatchFeatureConfig> codec)
+    private IcePatchFeatureMixin(Codec<DiskFeatureConfig> codec)
     {
         super(codec);
     }
 
     @Inject(method = "generate", at = @At("HEAD"))
-    private void primalwinter_generate(ServerWorldAccess worldIn, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockPos pos, IcePatchFeatureConfig icePatchFeatureConfig, CallbackInfoReturnable<Boolean> cir)
+    private void generate(StructureWorldAccess worldIn, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DiskFeatureConfig diskFeatureConfig, CallbackInfoReturnable<Boolean> cir)
     {
         while (worldIn.isAir(pos) && pos.getY() > 2)
         {
