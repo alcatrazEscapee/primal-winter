@@ -47,8 +47,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/primalwinter-fabric-1.16.1-${{ steps.get_version.outputs.result }}.jar
-          asset_name: primalwinter-fabric-1.16.1-${{ steps.get_version.outputs.result }}.jar
+          asset_path: ./build/libs/primalwinter-fabric-1.16.2-${{ steps.get_version.outputs.result }}.jar
+          asset_name: primalwinter-fabric-1.16.2-${{ steps.get_version.outputs.result }}.jar
           asset_content_type: application/java-archive
       - name: Upload Cursefore
         id: upload_curseforge

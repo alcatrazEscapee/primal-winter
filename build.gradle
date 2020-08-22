@@ -3,6 +3,7 @@ import groovy.json.JsonSlurper
 
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -11,7 +12,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = "primalwinter-fabric-${project.minecraft_version}"
 group = 'com.alcatrazescapee'
 def envVersion = System.getenv("VERSION")
-version = envVersion == null ? 'dev' : envVersion
+version = envVersion == null ? 'indev' : envVersion
 
 repositories {
     jcenter()
@@ -68,4 +69,28 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE.md"
+}
+
+curseforge {
+    project {
+        def envApiKey = System.getenv('CURSEFORGE_API_KEY')
+        apiKey = envApiKey == null ? 'nope' : envApiKey
+
+        id = '319258'
+        changelog = "[Release Notes Fabric ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/v${version}-fabric)"
+        releaseType = 'beta'  // Fabric versions are marked beta
+
+        addGameVersion "${project.minecraft_version}"
+        addGameVersion 'Fabric'
+
+        mainArtifact (remapJar)
+
+        afterEvaluate {
+            uploadTask.dependsOn (remapJar)
+        }
+    }
+
+    options {
+        forgeGradleIntegration = false
+    }
 }
