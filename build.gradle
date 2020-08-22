@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
 }
@@ -5,8 +8,8 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
-group = project.maven_group
+archivesBaseName = "primalwinter-fabric-${project.minecraft_version}"
+group = 'com.alcatrazescapee'
 def envVersion = System.getenv("VERSION")
 version = envVersion == null ? 'dev' : envVersion
 
@@ -28,7 +31,7 @@ dependencies {
     include "me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig1u_version}"
 
     modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
-    modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+    modImplementation "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
 }
 
 processResources {
@@ -42,6 +45,14 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
 	}
+
+    // Minify the json files in the output jar, reduces overall jar size.
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each { File file ->
+            file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+            file.text = file.text.replace('"__comment__":"This file was automatically created by mcresources",', '')
+        }
+    }
 }
 
 minecraft {

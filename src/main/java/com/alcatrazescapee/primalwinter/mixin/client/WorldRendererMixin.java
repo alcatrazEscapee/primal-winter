@@ -28,7 +28,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
 
 import com.alcatrazescapee.primalwinter.ModConfig;
 import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
@@ -68,9 +67,9 @@ public abstract class WorldRendererMixin
      */
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
-    public void primalwinter_renderWeather(LightmapTextureManager manager, float f, double d, double e, double g, CallbackInfo ci)
+    public void renderWeather(LightmapTextureManager manager, float f, double d, double e, double g, CallbackInfo ci)
     {
-        if (ModConfig.INSTANCE.enableWeatherRenderChanges && this.client.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
+        if (ModConfig.INSTANCE.enableWeatherRenderChanges)
         {
             float h = this.client.world.getRainGradient(f);
             if (h > 0.0F)
@@ -189,7 +188,7 @@ public abstract class WorldRendererMixin
      */
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "tickRainSplashing", at = @At("RETURN"))
-    public void primalwinter_tickRainSplashing(Camera camera, CallbackInfo ci)
+    public void tickRainSplashing(Camera camera, CallbackInfo ci)
     {
         float f = this.client.world.getRainGradient(1.0F) / (MinecraftClient.isFancyGraphicsOrBetter() ? 1.0F : 2.0F);
         if (f > 0.0F)

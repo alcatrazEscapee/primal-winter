@@ -13,9 +13,9 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
-public class ModTags
+public final class ModTags
 {
-    public static class Blocks
+    public static final class Blocks
     {
         public static final Tag<Block> ANIMAL_SPAWNS_ON = TagRegistry.block(new Identifier(MOD_ID, "animal_spawns_on"));
     }

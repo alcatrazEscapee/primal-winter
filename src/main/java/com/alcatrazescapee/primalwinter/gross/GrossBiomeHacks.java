@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
@@ -19,29 +21,34 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 
+import com.alcatrazescapee.primalwinter.ModConfig;
 import com.alcatrazescapee.primalwinter.mixin.world.biome.*;
-import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.ModConfiguredFeatures;
 
 public class GrossBiomeHacks
 {
-    /**
-     * Adds a callback to the biome codec, in the most gross anti-data-driven way possible
-     */
-    public static void modifyBiomeCodec()
+    public static void modifyBiomes(Registry<Biome> registry)
     {
-        IBiome.setCodec(Biome.CODEC.xmap(biome -> {
-            GrossBiomeHacks.modifyBiome(biome);
-            return biome;
-        }, Function.identity()));
+        // Manually editing biomes... so gross
+        if (ModConfig.INSTANCE.enableGrossBiomeHacks)
+        {
+            Set<Identifier> nonWinterBiomeKeys = Arrays.stream(ModConfig.INSTANCE.nonWinterBiomes.split(",")).map(Identifier::new).collect(Collectors.toSet());
+            registry.getEntries().forEach(entry -> {
+                Identifier biomeKey = entry.getKey().getValue();
+                if (!nonWinterBiomeKeys.contains(biomeKey))
+                {
+                    modifyBiome(entry.getValue());
+                }
+            });
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
-    private static void modifyBiome(Biome biome)
+    public static void modifyBiome(Biome biome)
     {
         // Modify biome properties through IBiome
-        IBiome biomeAccess = Helpers.accessCast(biome);
-        IBiomeWeather weatherAccess = Helpers.accessCast(biomeAccess.getWeather());
+        IBiome biomeAccess = (IBiome) (Object) biome;
+        IBiomeWeather weatherAccess = (IBiomeWeather) biomeAccess.getWeather();
         weatherAccess.setTemperature(-0.5f);
         weatherAccess.setPrecipitation(Biome.Precipitation.SNOW);
 
@@ -96,13 +103,13 @@ public class GrossBiomeHacks
         }
     }
 
-    private static <T> List<T> mutableList(Collection<T> list)
+    private static <T> List<T> mutableList(Collection<? extends T> collection)
     {
-        return list == null ? new ArrayList<>() : new ArrayList<>(list);
+        return collection != null ? new ArrayList<>(collection) : new ArrayList<>();
     }
 
-    private static <T, E extends Collection<T>> List<List<T>> mutableListList(Collection<E> list)
+    private static <T> List<List<T>> mutableListList(Collection<? extends Collection<? extends T>> collection)
     {
-        return list == null ? new ArrayList<>() : list.stream().map(GrossBiomeHacks::mutableList).collect(Collectors.toList());
+        return collection != null ? collection.stream().map((Function<Collection<? extends T>, List<T>>) GrossBiomeHacks::mutableList).collect(Collectors.toList()) : new ArrayList<>();
     }
 }

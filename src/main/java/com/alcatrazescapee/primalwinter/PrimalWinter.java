@@ -10,7 +10,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.world.World;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
-import com.alcatrazescapee.primalwinter.gross.GrossBiomeHacks;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -25,12 +24,6 @@ public final class PrimalWinter implements ModInitializer
     {
         ModConfig.init();
         ModBlocks.init();
-
-        // Manually editing biomes... so gross
-        if (ModConfig.INSTANCE.enableGrossBiomeHacks)
-        {
-            GrossBiomeHacks.modifyBiomeCodec();
-        }
 
         // Vanilla weather command... NOT ALLOWED
         if (ModConfig.INSTANCE.enableVanillaWeatherCommand)

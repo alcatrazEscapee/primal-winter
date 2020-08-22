@@ -29,12 +29,28 @@ public class PrimalWinterClientInit implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getSpruceColor() : NOPE, ModBlocks.SNOWY_SPRUCE_LEAVES);
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getBirchColor() : NOPE, ModBlocks.SNOWY_BIRCH_LEAVES);
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
             if (tintIndex == 0)
             {
-                return world != null && pos != null ? BiomeColors.getFoliageColor(world, pos) : FoliageColors.getDefaultColor();
+                return FoliageColors.getSpruceColor();
+            }
+            return NOPE;
+        }, ModBlocks.SNOWY_SPRUCE_LEAVES);
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
+            if (tintIndex == 0)
+            {
+                return FoliageColors.getBirchColor();
+            }
+            return NOPE;
+        }, ModBlocks.SNOWY_BIRCH_LEAVES);
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
+            if (tintIndex == 0)
+            {
+                if (world != null && pos != null)
+                {
+                    return BiomeColors.getFoliageColor(world, pos);
+                }
+                return FoliageColors.getDefaultColor();
             }
             return NOPE;
         }, ModBlocks.SNOWY_OAK_LEAVES, ModBlocks.SNOWY_DARK_OAK_LEAVES, ModBlocks.SNOWY_JUNGLE_LEAVES, ModBlocks.SNOWY_ACACIA_LEAVES, ModBlocks.SNOWY_VINE);
@@ -52,5 +68,6 @@ public class PrimalWinterClientInit implements ClientModInitializer
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.SNOW, SnowParticle.Factory::new);
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SNOWY_VINE, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(), ModBlocks.SNOWY_SPRUCE_LEAVES, ModBlocks.SNOWY_BIRCH_LEAVES, ModBlocks.SNOWY_DARK_OAK_LEAVES, ModBlocks.SNOWY_JUNGLE_LEAVES, ModBlocks.SNOWY_ACACIA_LEAVES, ModBlocks.SNOWY_OAK_LEAVES);
     }
 }

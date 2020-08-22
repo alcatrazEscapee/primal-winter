@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import com.alcatrazescapee.primalwinter.PrimalWinter;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 
-public class ModItemGroups
+public final class ModItemGroups
 {
     public static final ItemGroup BLOCKS = FabricItemGroupBuilder.build(new Identifier(PrimalWinter.MOD_ID, "blocks"), () -> new ItemStack(ModBlocks.SNOWY_OAK_LEAVES));
 }

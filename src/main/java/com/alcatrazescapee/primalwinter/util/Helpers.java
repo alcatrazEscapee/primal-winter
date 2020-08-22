@@ -60,10 +60,4 @@ public final class Helpers
     {
         return replacement.with(property, original.get(property));
     }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T accessCast(Object obj)
-    {
-        return (T) obj;
-    }
 }

@@ -13,7 +13,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
-import net.minecraft.world.dimension.DimensionType;
 
 import com.alcatrazescapee.primalwinter.ModConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -43,7 +42,7 @@ public abstract class BackgroundRendererMixin
             PlayerEntity player = (PlayerEntity) camera.getFocusedEntity();
             BlockPos pos = player.getBlockPos();
             int light = player.world.getLightLevel(LightType.SKY, pos);
-            if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY && player.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
+            if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY)
             {
                 // Calculate color based on time of day
                 float angle = player.world.getSkyAngleRadians(tickDelta);
@@ -73,7 +72,7 @@ public abstract class BackgroundRendererMixin
             PlayerEntity player = (PlayerEntity) camera.getFocusedEntity();
             BlockPos pos = player.getBlockPos();
             int light = player.world.getLightLevel(LightType.SKY, pos);
-            if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY && player.world.getDimensionRegistryKey() == DimensionType.OVERWORLD_REGISTRY_KEY)
+            if (light > 3 && player.world.isRaining() && player.world.getBiome(pos).getTemperature(pos) < 0.15f && camera.getSubmergedFluidState().getFluid() == Fluids.EMPTY)
             {
                 float densityConfigValue = (float) ModConfig.INSTANCE.fogDensity;
                 float density = ((light - 3) * densityConfigValue / 13f);
