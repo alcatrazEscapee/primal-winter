@@ -6,7 +6,6 @@
   "mixins": ["DynamicRegistryManagerMixin", "entity.AnimalEntityMixin", "entity.PolarBearEntityMixin", "item.IAxeItem", "item.IShovelItem", "world.ChunkRegionMixin", "world.FreezeTopLayerFeatureMixin", "world.IcePatchFeatureMixin", "world.IceSpikeFeatureMixin", "world.ServerWorldMixin", "world.biome.IBiome", "world.biome.IBiomeEffects", "world.biome.IBiomeWeather", "world.biome.IGenerationSettings", "world.biome.ISpawnSettings"],
   "client": [
     "client.BackgroundRendererMixin",
-    "client.SkyPropertiesMixin",
     "client.WorldRendererMixin"
   ],
   "injectors": {

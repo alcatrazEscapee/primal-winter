@@ -13,7 +13,9 @@ import net.minecraft.block.CampfireBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.ParticlesMode;
 import net.minecraft.client.render.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
@@ -25,6 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
@@ -40,6 +43,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
@@ -67,7 +71,7 @@ public abstract class WorldRendererMixin
      */
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
-    public void renderWeather(LightmapTextureManager manager, float f, double d, double e, double g, CallbackInfo ci)
+    public void inject_renderWeather(LightmapTextureManager manager, float f, double d, double e, double g, CallbackInfo ci)
     {
         if (ModConfig.INSTANCE.enableWeatherRenderChanges)
         {
@@ -188,7 +192,7 @@ public abstract class WorldRendererMixin
      */
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "tickRainSplashing", at = @At("RETURN"))
-    public void tickRainSplashing(Camera camera, CallbackInfo ci)
+    public void inject_tickRainSplashing(Camera camera, CallbackInfo ci)
     {
         float f = this.client.world.getRainGradient(1.0F) / (MinecraftClient.isFancyGraphicsOrBetter() ? 1.0F : 2.0F);
         if (f > 0.0F)
@@ -226,19 +230,7 @@ public abstract class WorldRendererMixin
                 }
             }
 
-            if (blockPos2 != null && windSoundTime-- < 0 && ModConfig.INSTANCE.enableWindSounds)
-            {
-                windSoundTime = 20 * 3 + random.nextInt(30);
-                if (blockPos2.getY() > blockPos.getY() + 1 && worldView.getTopPosition(Heightmap.Type.MOTION_BLOCKING, blockPos).getY() > MathHelper.floor((float) blockPos.getY()))
-                {
-                    this.client.world.playSound(blockPos2, ModSoundEvents.WIND, SoundCategory.WEATHER, 0.2F, 0.5F, false);
-                }
-                else
-                {
-                    this.client.world.playSound(blockPos2, ModSoundEvents.WIND, SoundCategory.WEATHER, 0.3F, 0.7F, false);
-                }
-            }
-
+            // Rain / snow splashing sounds. Happens on the surface where particles are generated
             if (blockPos2 != null && random.nextInt(3) < this.rainSoundTime++ && ModConfig.INSTANCE.enableSnowSounds)
             {
                 this.rainSoundTime = 0;
@@ -251,6 +243,36 @@ public abstract class WorldRendererMixin
                     this.client.world.playSound(blockPos2, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
                 }
             }
+
+            // Added
+            if (windSoundTime-- < 0 && ModConfig.INSTANCE.enableWindSounds)
+            {
+                BlockPos playerPos = camera.getBlockPos();
+                Entity entity = camera.getFocusedEntity();
+                int light = camera.getFocusedEntity().world.getLightLevel(LightType.SKY, playerPos);
+                if (light > 3 && entity.world.isRaining() && entity.world.getBiome(playerPos).getTemperature(playerPos) < 0.15f)
+                {
+                    // In a windy location, play wind sounds
+                    float volumeModifier = 0.2f + (light - 3) * 0.01f;
+                    float pitchModifier = 0.7f;
+                    if (camera.getSubmergedFluidState().getFluid() != Fluids.EMPTY)
+                    {
+                        pitchModifier = 0.3f;
+                    }
+                    windSoundTime = 20 * 3 + random.nextInt(30);
+                    this.client.world.playSound(playerPos, ModSoundEvents.WIND, SoundCategory.WEATHER, volumeModifier, pitchModifier, true);
+                }
+                else
+                {
+                    windSoundTime += 5; // check a short time later
+                }
+            }
         }
+    }
+
+    @Redirect(method = "renderSky", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SkyProperties;getSkyColor(FF)[F"))
+    private float[] redirect_getSkyAngle(SkyProperties skyProperties, float skyAngle, float tickDelta)
+    {
+        return skyProperties instanceof SkyProperties.Overworld ? null : skyProperties.getSkyColor(skyAngle, tickDelta);
     }
 }
