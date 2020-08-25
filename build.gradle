@@ -76,8 +76,9 @@ curseforge {
         def envApiKey = System.getenv('CURSEFORGE_API_KEY')
         apiKey = envApiKey == null ? 'nope' : envApiKey
 
-        id = '319258'
+        id = '393321' // Primal Winter
         changelog = "[Release Notes Fabric ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/v${version}-fabric)"
+        changelogType = 'markdown'
         releaseType = 'beta'  // Fabric versions are marked beta
 
         addGameVersion "${project.minecraft_version}"
