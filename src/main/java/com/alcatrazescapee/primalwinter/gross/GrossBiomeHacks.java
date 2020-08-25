@@ -51,6 +51,7 @@ public class GrossBiomeHacks
         IBiomeWeather weatherAccess = (IBiomeWeather) biomeAccess.getWeather();
         weatherAccess.setTemperature(-0.5f);
         weatherAccess.setPrecipitation(Biome.Precipitation.SNOW);
+        weatherAccess.setTemperatureModifier(Biome.TemperatureModifier.NONE); // The frozen modifier has large >0.15 zones which result in non-ztormy behavior... bad!
 
         // Modify biome effects
         IBiomeEffects effectsAccess = (IBiomeEffects) biome.getEffects();

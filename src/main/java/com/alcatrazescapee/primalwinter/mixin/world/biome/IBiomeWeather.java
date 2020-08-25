@@ -18,4 +18,7 @@ public interface IBiomeWeather
 
     @Accessor(value = "temperature")
     void setTemperature(float temperature);
+
+    @Accessor(value = "temperatureModifier")
+    void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier);
 }

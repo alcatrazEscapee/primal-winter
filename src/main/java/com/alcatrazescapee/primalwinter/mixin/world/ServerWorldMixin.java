@@ -34,7 +34,7 @@ public abstract class ServerWorldMixin extends World
     /**
      * Place additional snow layers
      */
-    @Inject(method = "tickChunk", at = @At(value = "TAIL"))
+    @Inject(method = "tickChunk", at = @At(value = "RETURN"))
     public void tickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
         if (random.nextInt(16) == 0)
