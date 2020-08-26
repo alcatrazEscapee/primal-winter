@@ -22,5 +22,4 @@ public interface ISpawnSettings
 
     @Accessor(value = "spawners")
     void setSpawners(Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners);
-
 }
