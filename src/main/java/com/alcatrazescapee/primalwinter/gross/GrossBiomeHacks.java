@@ -73,7 +73,7 @@ public class GrossBiomeHacks
         monsterEntries.add(new SpawnSettings.SpawnEntry(EntityType.STRAY, 320, 4, 4));
 
         List<SpawnSettings.SpawnEntry> creatureEntries = mutableList(spawners.get(SpawnGroup.CREATURE));
-        spawners.put(SpawnGroup.MONSTER, creatureEntries);
+        spawners.put(SpawnGroup.CREATURE, creatureEntries);
 
         creatureEntries.add(new SpawnSettings.SpawnEntry(EntityType.POLAR_BEAR, 4, 1, 2));
         creatureEntries.add(new SpawnSettings.SpawnEntry(EntityType.SNOW_GOLEM, 4, 4, 8));
