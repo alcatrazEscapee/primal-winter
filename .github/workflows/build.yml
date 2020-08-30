@@ -2,7 +2,7 @@ name: Curseforge Build + Upload
 
 on:
   push:
-    tags: 'v*'
+    tags: 'v*-forge'
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           result-encoding: string
           script: |
-            return '${{ github.ref }}'.replace('refs/tags/v', '');
+            return '${{ github.ref }}'.replace('refs/tags/v', '').replace('-forge', '');
       - name: Build
         run: ./gradlew build
         env:
@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.get_version.outputs.result }}
+          tag_name: v${{ steps.get_version.outputs.result }}-forge
           release_name: (Forge) Primal Winter 1.16.2-${{ steps.get_version.outputs.result }}
           body: |
             [This was an automatic build]
