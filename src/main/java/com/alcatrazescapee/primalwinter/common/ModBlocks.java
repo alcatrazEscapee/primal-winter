@@ -7,18 +7,24 @@ package com.alcatrazescapee.primalwinter.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.alcatrazescapee.primalwinter.mixin.block.FireBlockAccess;
+import com.alcatrazescapee.primalwinter.mixin.item.AxeItemAccess;
+import com.alcatrazescapee.primalwinter.mixin.item.ShovelItemAccess;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
@@ -48,12 +54,12 @@ public final class ModBlocks
 
     public static final RegistryObject<Block> SNOWY_GRASS_PATH = register("snowy_grass_path", () -> new GrassPathBlock(Block.Properties.from(Blocks.GRASS_PATH)) {});
 
-    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> Blocks.func_235430_a_(MaterialColor.WOOD, MaterialColor.OBSIDIAN));
-    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> Blocks.func_235430_a_(MaterialColor.SAND, MaterialColor.QUARTZ));
-    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> Blocks.func_235430_a_(MaterialColor.OBSIDIAN, MaterialColor.BROWN));
-    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> Blocks.func_235430_a_(MaterialColor.DIRT, MaterialColor.OBSIDIAN));
-    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> Blocks.func_235430_a_(MaterialColor.BROWN, MaterialColor.BROWN));
-    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> Blocks.func_235430_a_(MaterialColor.ADOBE, MaterialColor.STONE));
+    public static final RegistryObject<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> createLogBlock(MaterialColor.WOOD, MaterialColor.OBSIDIAN));
+    public static final RegistryObject<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> createLogBlock(MaterialColor.SAND, MaterialColor.QUARTZ));
+    public static final RegistryObject<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> createLogBlock(MaterialColor.OBSIDIAN, MaterialColor.BROWN));
+    public static final RegistryObject<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> createLogBlock(MaterialColor.DIRT, MaterialColor.OBSIDIAN));
+    public static final RegistryObject<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> createLogBlock(MaterialColor.BROWN, MaterialColor.BROWN));
+    public static final RegistryObject<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> createLogBlock(MaterialColor.ADOBE, MaterialColor.STONE));
 
     public static final RegistryObject<Block> SNOWY_OAK_LEAVES = register("snowy_oak_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
     public static final RegistryObject<Block> SNOWY_BIRCH_LEAVES = register("snowy_birch_leaves", () -> new LeavesBlock(Block.Properties.from(Blocks.BIRCH_LEAVES)));
@@ -110,32 +116,43 @@ public final class ModBlocks
         .build()
     );
 
+    @SuppressWarnings("ConstantConditions")
     public static void setup()
     {
         // Fire properties - leaves and vines are lowered from vanilla
-        FireBlock fireblock = (FireBlock) Blocks.FIRE;
-        fireblock.setFireInfo(SNOWY_OAK_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_SPRUCE_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_BIRCH_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_JUNGLE_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_ACACIA_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_DARK_OAK_LOG.get(), 5, 5);
-        fireblock.setFireInfo(SNOWY_OAK_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_SPRUCE_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_BIRCH_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_JUNGLE_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_ACACIA_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_DARK_OAK_LEAVES.get(), 10, 20);
-        fireblock.setFireInfo(SNOWY_VINE.get(), 5, 30);
+        FireBlockAccess fireInfo = (FireBlockAccess) Blocks.FIRE;
+        fireInfo.callSetFireInfo(SNOWY_OAK_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_SPRUCE_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_BIRCH_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_JUNGLE_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_ACACIA_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_DARK_OAK_LOG.get(), 5, 5);
+        fireInfo.callSetFireInfo(SNOWY_OAK_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_SPRUCE_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_BIRCH_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_JUNGLE_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_ACACIA_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_DARK_OAK_LEAVES.get(), 10, 20);
+        fireInfo.callSetFireInfo(SNOWY_VINE.get(), 5, 30);
 
         // Block stripping - first we need to hack in mutability, then we can add special stripping "recipes"
-        AxeItem.BLOCK_STRIPPING_MAP = new HashMap<>(AxeItem.BLOCK_STRIPPING_MAP);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_ACACIA_LOG.get(), Blocks.ACACIA_LOG);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_OAK_LOG.get(), Blocks.OAK_LOG);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_DARK_OAK_LOG.get(), Blocks.DARK_OAK_LOG);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_JUNGLE_LOG.get(), Blocks.JUNGLE_LOG);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_BIRCH_LOG.get(), Blocks.BIRCH_LOG);
-        AxeItem.BLOCK_STRIPPING_MAP.put(SNOWY_SPRUCE_LOG.get(), Blocks.SPRUCE_LOG);
+        Map<Block, Block> blockStripping = new HashMap<>(AxeItemAccess.getBlockStrippingMap());
+        blockStripping.put(SNOWY_ACACIA_LOG.get(), Blocks.ACACIA_LOG);
+        blockStripping.put(SNOWY_OAK_LOG.get(), Blocks.OAK_LOG);
+        blockStripping.put(SNOWY_DARK_OAK_LOG.get(), Blocks.DARK_OAK_LOG);
+        blockStripping.put(SNOWY_JUNGLE_LOG.get(), Blocks.JUNGLE_LOG);
+        blockStripping.put(SNOWY_BIRCH_LOG.get(), Blocks.BIRCH_LOG);
+        blockStripping.put(SNOWY_SPRUCE_LOG.get(), Blocks.SPRUCE_LOG);
+        AxeItemAccess.setBlockStrippingMap(blockStripping);
+
+        // Shovel effectiveness, because it's not material based
+        Set<Block> shovelEffectiveBlocks = ShovelItemAccess.getEffectiveBlocks();
+        shovelEffectiveBlocks.add(SNOWY_DIRT.get());
+        shovelEffectiveBlocks.add(SNOWY_COARSE_DIRT.get());
+        shovelEffectiveBlocks.add(SNOWY_SAND.get());
+        shovelEffectiveBlocks.add(SNOWY_RED_SAND.get());
+        shovelEffectiveBlocks.add(SNOWY_GRAVEL.get());
+        shovelEffectiveBlocks.add(SNOWY_GRASS_PATH.get());
     }
 
     private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> blockFactory)
@@ -148,5 +165,10 @@ public final class ModBlocks
         RegistryObject<T> block = BLOCKS.register(name, blockFactory);
         ModItems.ITEMS.register(name, block.lazyMap(blockItemFactory));
         return block;
+    }
+
+    private static RotatedPillarBlock createLogBlock(MaterialColor topColor, MaterialColor barkColor)
+    {
+        return new RotatedPillarBlock(AbstractBlock.Properties.of(Material.WOOD, state -> state.get(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topColor : barkColor).hardnessAndResistance(2.0F).sound(SoundType.WOOD));
     }
 }

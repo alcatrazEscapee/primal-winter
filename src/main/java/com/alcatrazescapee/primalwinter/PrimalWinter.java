@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -18,7 +17,6 @@ import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
 import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.common.ModItems;
-import com.alcatrazescapee.primalwinter.util.VanillaHacks;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -51,14 +49,9 @@ public final class PrimalWinter
     }
 
     @SubscribeEvent
-    @SuppressWarnings("deprecation")
     public void setup(final FMLCommonSetupEvent event)
     {
         LOGGER.debug("Setup");
-
-        DeferredWorkQueue.runLater(VanillaHacks::hackWinterBiomes);
-        DeferredWorkQueue.runLater(VanillaHacks::hackEntitySpawnPlacementRegistry);
-
         ModBlocks.setup();
     }
 }

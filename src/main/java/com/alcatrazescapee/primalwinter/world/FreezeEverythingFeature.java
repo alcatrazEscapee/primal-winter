@@ -21,22 +21,20 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.util.Vector2i;
 import com.mojang.serialization.Codec;
 
-public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
+public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
 {
-    public WinterIceAndSnowFeature(Codec<NoFeatureConfig> codec)
+    public FreezeEverythingFeature(Codec<NoFeatureConfig> codec)
     {
         super(codec);
     }
 
-    // place
     @Override
-    public boolean func_230362_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config)
+    public boolean generate(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config)
     {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
@@ -160,7 +158,7 @@ public class WinterIceAndSnowFeature extends Feature<NoFeatureConfig>
         for (Direction direction : Direction.Plane.HORIZONTAL)
         {
             BlockPos posAt = pos.offset(direction);
-            if (!world.getBlockState(posAt).isSolidSide(world, posAt, direction.getOpposite()))
+            if (!world.getBlockState(posAt).isSideSolidFullSquare(world, posAt, direction.getOpposite()))
             {
                 count++;
             }

@@ -5,18 +5,12 @@
 
 package com.alcatrazescapee.primalwinter.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.LightType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -28,44 +22,13 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 public final class ClientForgeEventHandler
 {
     @SubscribeEvent
-    public static void onClientWorldLoad(WorldEvent.Load event)
-    {
-        if (event.getWorld() instanceof ClientWorld && ((ClientWorld) event.getWorld()).func_234922_V_() == DimensionType.field_235999_c_)
-        {
-            DimensionRenderInfo renderInfo = ((ClientWorld) event.getWorld()).func_239132_a_();
-            WinterWorldRenderer winterRenderer = WinterWorldRenderer.get();
-            if (Config.CLIENT.weatherRenderChanges.get())
-            {
-                // todo: needs MinecraftForge#6994
-                //renderInfo.setWeatherRenderer(winterRenderer.getWeatherHandler());
-            }
-            if (Config.CLIENT.skyRenderChanges.get())
-            {
-                // todo: needs MinecraftForge#6994
-                //renderInfo.setSkyRenderer(winterRenderer.getSkyHandler());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onClientWorldTick(TickEvent.WorldTickEvent.ClientTickEvent event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        ClientWorld world = mc.world;
-        if (world != null && mc.gameRenderer != null && !mc.isGamePaused() && world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionTypeKey() == DimensionType.OVERWORLD
-        {
-            WinterWorldRenderer.get().addSnowParticlesAndSound(mc, world, mc.gameRenderer.getActiveRenderInfo());
-        }
-    }
-
-    @SubscribeEvent
     public static void onRenderFogDensity(EntityViewRenderEvent.FogDensity event)
     {
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.func_233580_cy_()); // getPosition
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionKey() == DimensionType.OVERWORLD
+            int light = player.world.getLightLevel(LightType.SKY, player.getBlockPos());
+            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY)
             {
                 event.setCanceled(true);
                 event.setDensity((light - 3) * Config.CLIENT.fogDensity.get().floatValue() / 13f);
@@ -79,13 +42,13 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.func_233580_cy_());
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.world.func_234922_V_() == DimensionType.field_235999_c_) // getDimensionKey() == DimensionType.OVERWORLD
+            int light = player.world.getLightLevel(LightType.SKY, player.getBlockPos());
+            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY)
             {
                 // Calculate color based on time of day
                 float partialTicks = (float) event.getRenderPartialTicks();
-                float angle = player.world.getCelestialAngle(partialTicks);
-                float height = MathHelper.cos(angle * ((float) Math.PI * 2F));
+                float angle = player.world.getCelestialAngleRadians(partialTicks);
+                float height = MathHelper.cos(angle);
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 
                 int colorDay = Config.CLIENT.fogColorDay.get();

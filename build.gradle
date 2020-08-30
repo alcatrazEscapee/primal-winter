@@ -1,11 +1,13 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url='https://dist.creeper.host/Sponge/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
@@ -14,6 +16,7 @@ plugins {
     id 'idea'
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 
 /**
  * Version in dev is set to 'dev'
@@ -25,22 +28,29 @@ if (System.getenv('VERSION') != null) {
 } else {
     version = 'dev'
 }
-group = 'com.alcatrazescapee.primalwinter' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "primalwinter-forge-${mc_version}"
+group = "com.alcatrazescapee.${mod_id}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${mod_id}-forge-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+repositories {
+    maven {
+        url "https://maven.tterrag.com/"
+    }
+}
+
 minecraft {
-    mappings channel: 'snapshot', version: '20200707-1.16.1'
+    mappings channel: 'snapshot', version: '20200829-mixed-1.16.2'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Run configurations
     runs {
         client {
             workingDirectory project.file('run')
+            arg '-mixin.config=' + mod_id + '.mixins.json'
             property 'forge.logging.console.level', 'debug'
             mods {
-                oreveins {
+                primalwinter {
                     source sourceSets.main
                 }
             }
@@ -48,9 +58,10 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            arg '-mixin.config=' + mod_id + '.mixins.json'
             property 'forge.logging.console.level', 'debug'
             mods {
-                oreveins {
+                primalwinter {
                     source sourceSets.main
                 }
             }
@@ -65,17 +76,28 @@ dependencies {
 // Puts the mod version into the jar for mods.toml to read from
 jar {
     manifest {
-        attributes "Implementation-Version": "${version}"
+        attributes ([
+            "Implementation-Version": "${version}",
+            "MixinConfigs": "${mod_id}.mixins.json"
+        ])
     }
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
 }
 
 curseforge {
     project {
-        apiKey = System.getenv('CURSEFORGE_API_KEY')
-        id = '393321'
+        def envApiKey = System.getenv('CURSEFORGE_API_KEY')
+        apiKey = envApiKey == null ? 'nope' : envApiKey
+
+        id = '393321' // Primal Winter
         changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version})"
         changelogType = 'markdown'
-        releaseType = 'release'
+
+        releaseType = 'release' // Forge versions are marked release
+
         addGameVersion "${mc_version}"
     }
 }

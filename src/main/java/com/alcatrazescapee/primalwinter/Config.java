@@ -8,18 +8,14 @@ package com.alcatrazescapee.primalwinter;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public final class Config
 {
@@ -64,44 +60,31 @@ public final class Config
     public static final class Common
     {
         public final ForgeConfigSpec.BooleanValue disableWeatherCommand;
-        private final ForgeConfigSpec.ConfigValue<List<? extends String>> nonWinterBiomes;
+        public final ForgeConfigSpec.BooleanValue enableGrossBiomeHacks;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> nonWinterBiomes;
 
         Common(ForgeConfigSpec.Builder builder)
         {
             disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
+            enableGrossBiomeHacks = builder.comment("Enable some really gross hacks that allow this mod to modify biomes.").worldRestart().define("enableGrossBiomeHacks", true);
 
-            nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().define("nonWinterBiomes", this::getDefaultNonWinterBiomes, this::validateNonWinterBiomes);
+            nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().define("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
         }
 
-        public Predicate<Biome> getNonWinterBiomesFilter()
-        {
-            List<Biome> biomes = nonWinterBiomes.get()
-                .stream()
-                .map(id -> ForgeRegistries.BIOMES.getValue(new ResourceLocation(id)))
-                .collect(Collectors.toList());
-            return biomeIn -> biomes.stream().noneMatch(biome -> biome == biomeIn);
-        }
-
-        private boolean validateNonWinterBiomes(Object e)
-        {
-            return e instanceof String && ForgeRegistries.BIOMES.containsKey(new ResourceLocation(e.toString()));
-        }
-
-        @SuppressWarnings("ConstantConditions")
         private List<? extends String> getDefaultNonWinterBiomes()
         {
             return Stream.of(
-                ForgeRegistries.BIOMES.getKey(Biomes.field_235254_j_).toString(), // Nether wastes
-                ForgeRegistries.BIOMES.getKey(Biomes.field_235252_ay_).toString(), // Soul Sand Valley
-                ForgeRegistries.BIOMES.getKey(Biomes.field_235253_az_).toString(), // Crimson forest
-                ForgeRegistries.BIOMES.getKey(Biomes.field_235250_aA_).toString(), // Warped forest
-                ForgeRegistries.BIOMES.getKey(Biomes.field_235251_aB_).toString(), // Basalt deltas
-                ForgeRegistries.BIOMES.getKey(Biomes.END_BARRENS).toString(),
-                ForgeRegistries.BIOMES.getKey(Biomes.END_HIGHLANDS).toString(),
-                ForgeRegistries.BIOMES.getKey(Biomes.END_MIDLANDS).toString(),
-                ForgeRegistries.BIOMES.getKey(Biomes.THE_END).toString(),
-                ForgeRegistries.BIOMES.getKey(Biomes.THE_VOID).toString()
-            ).collect(Collectors.toList());
+                Biomes.NETHER_WASTES,
+                Biomes.SOUL_SAND_VALLEY,
+                Biomes.CRIMSON_FOREST,
+                Biomes.WARPED_FOREST,
+                Biomes.BASALT_DELTAS,
+                Biomes.END_BARRENS,
+                Biomes.END_HIGHLANDS,
+                Biomes.END_MIDLANDS,
+                Biomes.THE_END,
+                Biomes.THE_VOID
+            ).map(key -> key.getRegistryName().toString()).collect(Collectors.toList());
         }
     }
 }

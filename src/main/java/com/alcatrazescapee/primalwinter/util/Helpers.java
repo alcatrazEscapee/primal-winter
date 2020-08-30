@@ -6,15 +6,31 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 public final class Helpers
 {
+    /**
+     * Called from {@link ServerWorld#tickChunk(WorldChunk, int)} via mixin, places additional snow layers
+     */
+    public static void placeExtraSnowOnTickChunk(ServerWorld world, BlockPos pos)
+    {
+        BlockState state = world.getBlockState(pos);
+        if (world.isRaining() && state.getBlock() == Blocks.SNOW && state.get(BlockStateProperties.LAYERS_1_8) < 5)
+        {
+            world.setBlockState(pos, state.with(BlockStateProperties.LAYERS_1_8, state.get(BlockStateProperties.LAYERS_1_8) + 1));
+        }
+    }
+
     public static BlockState copyProperties(BlockState oldState, BlockState newState)
     {
-        for (Property<?> property : oldState.func_235904_r_()) // getProperties
+        for (Property<?> property : oldState.getProperties())
         {
-            if (newState.func_235904_r_().contains(property)) // getProperties
+            if (newState.getProperties().contains(property))
             {
                 newState = copyProperty(property, oldState, newState);
             }

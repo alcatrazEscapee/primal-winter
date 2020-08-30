@@ -13,9 +13,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
+@SuppressWarnings("unused")
 public final class ModFeatures
 {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
 
-    public static final RegistryObject<WinterIceAndSnowFeature> FREEZE_EVERYTHING = FEATURES.register("freeze_everything", () -> new WinterIceAndSnowFeature(NoFeatureConfig.field_236558_a_));
+    public static final RegistryObject<FreezeEverythingFeature> FREEZE_EVERYTHING = FEATURES.register("freeze_everything", () -> new FreezeEverythingFeature(NoFeatureConfig.CODEC));
 }
