@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.settings.ParticleStatus;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
@@ -29,6 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
@@ -336,6 +339,7 @@ public class WinterWorldRenderer
     /**
      * Similar to {@link WorldRenderer#addRainParticles(ActiveRenderInfo)}
      */
+    @SuppressWarnings("ConstantConditions")
     public void addSnowParticlesAndSound(Minecraft mc, World world, ActiveRenderInfo activeRenderInfo)
     {
         float rainStrength = world.getRainStrength(1);
@@ -422,19 +426,30 @@ public class WinterWorldRenderer
                     world.playSound(posX, posY, posZ, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
                 }
             }
-            if (j > 0 && windSoundTime-- < 0 && Config.CLIENT.windSounds.get())
+
+            // Added
+            if (windSoundTime-- < 0 && Config.CLIENT.windSounds.get())
             {
-                windSoundTime = 20 * 3 + random.nextInt(30);
-                if (posY > (double) (blockpos.getY() + 1) && world.getHeight(Heightmap.Type.MOTION_BLOCKING, blockpos).getY() > MathHelper.floor((float) blockpos.getY()))
+                BlockPos playerPos = activeRenderInfo.getBlockPos();
+                Entity entity = activeRenderInfo.getRenderViewEntity();
+                int light = activeRenderInfo.getRenderViewEntity().world.getLightFor(LightType.SKY, playerPos);
+                if (light > 3 && entity.world.isRaining() && entity.world.getBiome(playerPos).getTemperature(playerPos) < 0.15f)
                 {
-                    world.playSound(posX, posY, posZ, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.2f, 0.5f, false);
+                    // In a windy location, play wind sounds
+                    float volumeModifier = 0.2f + (light - 3) * 0.01f;
+                    float pitchModifier = 0.7f;
+                    if (activeRenderInfo.getFluidState().getFluid() != Fluids.EMPTY)
+                    {
+                        pitchModifier = 0.3f;
+                    }
+                    windSoundTime = 20 * 3 + random.nextInt(30);
+                    mc.world.playSound(playerPos, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, volumeModifier, pitchModifier, true);
                 }
                 else
                 {
-                    world.playSound(posX, posY, posZ, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, 0.3f, 0.7f, false);
+                    windSoundTime += 5; // check a short time later
                 }
             }
-
         }
     }
 
