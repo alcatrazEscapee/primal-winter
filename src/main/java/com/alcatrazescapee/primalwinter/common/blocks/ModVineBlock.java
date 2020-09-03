@@ -3,16 +3,16 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.common;
+package com.alcatrazescapee.primalwinter.common.blocks;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.VineBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
-public class WinterVineBlock extends VineBlock
+public class ModVineBlock extends VineBlock
 {
-    public WinterVineBlock(Properties properties)
+    public ModVineBlock(Properties properties)
     {
         super(properties);
     }

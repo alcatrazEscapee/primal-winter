@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Since replacing vanilla features in biomes is not simple or supported, we just co-opt this to call the improved feature
  */
 @Mixin(IceAndSnowFeature.class)
-public class IceAndSnowFeatureMixin
+public abstract class IceAndSnowFeatureMixin
 {
     @Inject(method = "generate", at = @At("HEAD"), cancellable = true)
     public void inject_generate(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random random, BlockPos pos, NoFeatureConfig config, CallbackInfoReturnable<Boolean> cir)

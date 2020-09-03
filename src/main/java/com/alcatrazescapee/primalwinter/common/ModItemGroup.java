@@ -16,7 +16,7 @@ import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 /**
  * Simple implementation of {@link ItemGroup} which uses a lazily initialized icon stack.
  */
-public class ModItemGroup extends ItemGroup
+public final class ModItemGroup extends ItemGroup
 {
     public static final ItemGroup ITEMS = new ModItemGroup(MOD_ID + ".items", () -> new ItemStack(ModBlocks.SNOWY_DIRT.get()));
 
