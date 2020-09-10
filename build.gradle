@@ -93,7 +93,7 @@ curseforge {
         apiKey = envApiKey == null ? 'nope' : envApiKey
 
         id = '393321' // Primal Winter
-        changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version})"
+        changelog = "[Release Notes ${version}](https://github.com/alcatrazEscapee/primal-winter/releases/tag/v${version}-forge)"
         changelogType = 'markdown'
 
         releaseType = 'release' // Forge versions are marked release
