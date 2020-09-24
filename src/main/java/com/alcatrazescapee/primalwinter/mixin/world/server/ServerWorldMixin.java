@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.world;
+package com.alcatrazescapee.primalwinter.mixin.world.server;
 
 import java.util.function.Supplier;
 
@@ -23,6 +23,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Used to intercept chunk / environment ticks
+ *
+ * Will be made superfluous by https://github.com/MinecraftForge/MinecraftForge/pull/7235
+ */
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World
 {
@@ -31,19 +36,14 @@ public abstract class ServerWorldMixin extends World
         super(worldInfo, worldKey, dimensionType, profiler, b1, b2, long1);
     }
 
-    /**
-     * Place additional snow layers
-     *
-     * @reason MinecraftForge#7235
-     */
-    @Inject(method = "tickEnvironment", at = @At(value = "RETURN"))
+    @Inject(method = "tickChunk", at = @At(value = "RETURN"))
     public void tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
-        if (rand.nextInt(16) == 0)
+        if (random.nextInt(16) == 0)
         {
-            int blockX = chunk.getPos().getXStart();
-            int blockZ = chunk.getPos().getZStart();
-            BlockPos pos = getHeight(Heightmap.Type.MOTION_BLOCKING, getBlockRandomPos(blockX, 0, blockZ, 15));
+            int blockX = chunk.getPos().getMinBlockX();
+            int blockZ = chunk.getPos().getMinBlockZ();
+            BlockPos pos = getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, getBlockRandomPos(blockX, 0, blockZ, 15));
             Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, pos);
         }
     }

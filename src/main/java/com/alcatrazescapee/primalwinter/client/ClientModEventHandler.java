@@ -33,7 +33,7 @@ public final class ClientModEventHandler
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event)
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.SNOWY_VINE.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.SNOWY_VINE.get(), RenderType.cutout());
     }
 
     @SubscribeEvent
@@ -41,12 +41,12 @@ public final class ClientModEventHandler
     {
         BlockColors colors = event.getBlockColors();
 
-        colors.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getSpruce() : NOPE, ModBlocks.SNOWY_SPRUCE_LEAVES.get());
-        colors.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getBirch() : NOPE, ModBlocks.SNOWY_BIRCH_LEAVES.get());
+        colors.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getEvergreenColor() : NOPE, ModBlocks.SNOWY_SPRUCE_LEAVES.get());
+        colors.register((state, world, pos, tintIndex) -> tintIndex == 0 ? FoliageColors.getBirchColor() : NOPE, ModBlocks.SNOWY_BIRCH_LEAVES.get());
         colors.register((state, world, pos, tintIndex) -> {
             if (tintIndex == 0)
             {
-                return world != null && pos != null ? BiomeColors.getFoliageColor(world, pos) : FoliageColors.getDefault();
+                return world != null && pos != null ? BiomeColors.getAverageFoliageColor(world, pos) : FoliageColors.getDefaultColor();
             }
             return NOPE;
         }, ModBlocks.SNOWY_OAK_LEAVES.get(), ModBlocks.SNOWY_DARK_OAK_LEAVES.get(), ModBlocks.SNOWY_JUNGLE_LEAVES.get(), ModBlocks.SNOWY_ACACIA_LEAVES.get(), ModBlocks.SNOWY_VINE.get());
@@ -60,7 +60,7 @@ public final class ClientModEventHandler
         colors.register((stack, tintIndex) -> {
             if (tintIndex == 0)
             {
-                BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
+                BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
                 return event.getBlockColors().getColor(state, null, null, tintIndex);
             }
             return NOPE;
@@ -70,6 +70,6 @@ public final class ClientModEventHandler
     @SubscribeEvent
     public static void onRegisterParticleFactories(ParticleFactoryRegisterEvent event)
     {
-        Minecraft.getInstance().particles.registerFactory(ModParticleTypes.SNOW.get(), SnowParticle.Factory::new);
+        Minecraft.getInstance().particleEngine.register(ModParticleTypes.SNOW.get(), SnowParticle.Factory::new);
     }
 }

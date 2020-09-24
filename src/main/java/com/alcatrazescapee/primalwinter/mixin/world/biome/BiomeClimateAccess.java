@@ -10,6 +10,9 @@ import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/**
+ * Will be made superfluous by https://github.com/MinecraftForge/MinecraftForge/pull/7336
+ */
 @Mixin(Biome.Climate.class)
 public interface BiomeClimateAccess
 {

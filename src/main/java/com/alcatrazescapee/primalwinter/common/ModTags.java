@@ -20,7 +20,7 @@ public final class ModTags
 
         private static ITag.INamedTag<Block> create(ResourceLocation id)
         {
-            return BlockTags.makeWrapperTag(id.toString());
+            return BlockTags.bind(id.toString());
         }
     }
 }

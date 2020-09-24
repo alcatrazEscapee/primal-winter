@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.world;
+package com.alcatrazescapee.primalwinter.mixin.world.gen;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(WorldGenRegion.class)
 public abstract class WorldGenRegionMixin
 {
-    @ModifyVariable(method = "setBlockState", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private BlockState setBlockState(BlockState stateIn)
+    @ModifyVariable(method = "setBlock", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+    private BlockState modifyVariable_setBlock(BlockState stateIn)
     {
         Block replacementBlock = ModBlocks.SNOWY_TREE_BLOCKS.getOrDefault(stateIn.getBlock(), () -> null).get();
         if (replacementBlock != null)
         {
-            BlockState replacementState = replacementBlock.getDefaultState();
+            BlockState replacementState = replacementBlock.defaultBlockState();
             return Helpers.copyProperties(stateIn, replacementState);
         }
         return stateIn;

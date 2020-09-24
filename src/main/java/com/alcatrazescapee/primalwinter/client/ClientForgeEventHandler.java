@@ -24,11 +24,11 @@ public final class ClientForgeEventHandler
     @SubscribeEvent
     public static void onRenderFogDensity(EntityViewRenderEvent.FogDensity event)
     {
-        if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
+        if (event.getInfo().getEntity() instanceof PlayerEntity)
         {
-            PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightLevel(LightType.SKY, player.getBlockPos());
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY)
+            PlayerEntity player = (PlayerEntity) event.getInfo().getEntity();
+            int light = player.level.getBrightness(LightType.SKY, player.blockPosition());
+            if (light > 3 && event.getInfo().getFluidInCamera().getType() == Fluids.EMPTY)
             {
                 event.setCanceled(true);
                 event.setDensity((light - 3) * Config.CLIENT.fogDensity.get().floatValue() / 13f);
@@ -39,15 +39,15 @@ public final class ClientForgeEventHandler
     @SubscribeEvent
     public static void onRenderFogColors(EntityViewRenderEvent.FogColors event)
     {
-        if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
+        if (event.getInfo().getEntity() instanceof PlayerEntity)
         {
-            PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightLevel(LightType.SKY, player.getBlockPos());
-            if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY)
+            PlayerEntity player = (PlayerEntity) event.getInfo().getEntity();
+            int light = player.level.getBrightness(LightType.SKY, player.blockPosition());
+            if (light > 3 && event.getInfo().getFluidInCamera().getType() == Fluids.EMPTY)
             {
                 // Calculate color based on time of day
                 float partialTicks = (float) event.getRenderPartialTicks();
-                float angle = player.world.getCelestialAngleRadians(partialTicks);
+                float angle = player.level.getSunAngle(partialTicks);
                 float height = MathHelper.cos(angle);
                 float delta = MathHelper.clamp((height + 0.4f) / 0.8f, 0, 1);
 

@@ -3,8 +3,10 @@
   "minVersion": "0.8",
   "package": "com.alcatrazescapee.primalwinter.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["DynamicRegistriesMixin", "entity.AnimalEntityMixin", "entity.PolarBearEntityMixin", "world.IceAndSnowFeatureMixin", "world.IcePatchFeatureMixin", "world.IceSpikeFeatureMixin", "world.ServerWorldMixin", "world.WorldGenRegionMixin", "world.biome.BiomeAccess", "world.biome.BiomeAmbianceAccess", "world.biome.BiomeClimateAccess", "world.biome.BiomeGenerationSettingsAccess", "world.biome.MobSpawnInfoAccess"],
-  "client": ["client.WorldRendererMixin"],
+  "mixins": ["entity.passive.AnimalEntityMixin", "entity.passive.PolarBearEntityMixin", "world.biome.BiomeAmbienceAccess", "world.biome.BiomeClimateAccess", "world.biome.BiomeGenerationSettingsBuilderAccess", "world.gen.WorldGenRegionMixin", "world.server.ServerWorldMixin"],
+  "client": [
+    "client.renderer.WorldRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

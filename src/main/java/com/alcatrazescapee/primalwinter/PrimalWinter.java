@@ -17,6 +17,7 @@ import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
 import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.common.ModItems;
+import com.alcatrazescapee.primalwinter.world.ModConfiguredFeatures;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -52,6 +53,7 @@ public final class PrimalWinter
     public void setup(final FMLCommonSetupEvent event)
     {
         LOGGER.debug("Setup");
-        ModBlocks.setup();
+
+        ModConfiguredFeatures.setup();
     }
 }

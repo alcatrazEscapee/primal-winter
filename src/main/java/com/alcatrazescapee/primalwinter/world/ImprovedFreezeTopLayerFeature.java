@@ -26,15 +26,15 @@ import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.util.Vector2i;
 import com.mojang.serialization.Codec;
 
-public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
+public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
 {
-    public FreezeEverythingFeature(Codec<NoFeatureConfig> codec)
+    public ImprovedFreezeTopLayerFeature(Codec<NoFeatureConfig> codec)
     {
         super(codec);
     }
 
     @Override
-    public boolean generate(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config)
+    public boolean place(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config)
     {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
 
@@ -62,7 +62,7 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
                 for (int z = 0; z < 16; ++z)
                 {
                     int skyLight = prevSkyLights[x + 16 * z];
-                    mutablePos.setPos(pos.getX() + x, y, pos.getZ() + z);
+                    mutablePos.set(pos.getX() + x, y, pos.getZ() + z);
                     BlockState state = worldIn.getBlockState(mutablePos);
                     if (state.isAir(worldIn, mutablePos))
                     {
@@ -102,7 +102,7 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
     private void placeSnowAndIce(IWorld worldIn, BlockPos pos, BlockState state, Random random, int skyLight)
     {
         FluidState fluidState = worldIn.getFluidState(pos);
-        BlockPos posDown = pos.down();
+        BlockPos posDown = pos.below();
         BlockState stateDown = worldIn.getBlockState(posDown);
 
         // First, possibly replace the block below. This may have impacts on being able to add snow on top
@@ -111,28 +111,28 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
             Block replacementBlock = ModBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
             if (replacementBlock != null)
             {
-                BlockState replacementState = replacementBlock.getDefaultState();
-                worldIn.setBlockState(posDown, replacementState, 2);
+                BlockState replacementState = replacementBlock.defaultBlockState();
+                worldIn.setBlock(posDown, replacementState, 2);
             }
         }
 
         // Then, try and place snow layers / ice at the current location
-        if (fluidState.getFluid() == Fluids.WATER && (state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable()))
+        if (fluidState.getType() == Fluids.WATER && (state.getBlock() instanceof FlowingFluidBlock || state.getMaterial().isReplaceable()))
         {
-            worldIn.setBlockState(pos, Blocks.ICE.getDefaultState(), 2);
+            worldIn.setBlock(pos, Blocks.ICE.defaultBlockState(), 2);
             if (!(state.getBlock() instanceof FlowingFluidBlock))
             {
-                worldIn.getPendingBlockTicks().scheduleTick(pos, Blocks.ICE, 0);
+                worldIn.getBlockTicks().scheduleTick(pos, Blocks.ICE, 0);
             }
         }
-        else if (fluidState.getFluid() == Fluids.LAVA && state.getBlock() instanceof FlowingFluidBlock)
+        else if (fluidState.getType() == Fluids.LAVA && state.getBlock() instanceof FlowingFluidBlock)
         {
-            worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 2);
+            worldIn.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 2);
         }
-        else if (Blocks.SNOW.getDefaultState().isValidPosition(worldIn, pos) && state.getMaterial().isReplaceable())
+        else if (Blocks.SNOW.defaultBlockState().canSurvive(worldIn, pos) && state.getMaterial().isReplaceable())
         {
             // Special exceptions
-            BlockPos posUp = pos.up();
+            BlockPos posUp = pos.above();
             if (state.getBlock() instanceof DoublePlantBlock && worldIn.getBlockState(posUp).getBlock() == state.getBlock())
             {
                 // Remove the above plant
@@ -140,14 +140,14 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
             }
 
             int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
-            worldIn.setBlockState(pos, Blocks.SNOW.getDefaultState().with(BlockStateProperties.LAYERS_1_8, layers), 3);
+            worldIn.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(BlockStateProperties.LAYERS, layers), 3);
 
             // Replace the below block as well
             Block replacementBlock = ModBlocks.SNOWY_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
             if (replacementBlock != null)
             {
-                BlockState replacementState = replacementBlock.getDefaultState();
-                worldIn.setBlockState(posDown, replacementState, 2);
+                BlockState replacementState = replacementBlock.defaultBlockState();
+                worldIn.setBlock(posDown, replacementState, 2);
             }
         }
     }
@@ -157,8 +157,8 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
         int count = 0;
         for (Direction direction : Direction.Plane.HORIZONTAL)
         {
-            BlockPos posAt = pos.offset(direction);
-            if (!world.getBlockState(posAt).isSideSolidFullSquare(world, posAt, direction.getOpposite()))
+            BlockPos posAt = pos.relative(direction);
+            if (!world.getBlockState(posAt).isFaceSturdy(world, posAt, direction.getOpposite()))
             {
                 count++;
             }
@@ -180,8 +180,8 @@ public class FreezeEverythingFeature extends Feature<NoFeatureConfig>
             Vector3i position = positions.remove(0);
             for (Direction direction : Direction.Plane.HORIZONTAL)
             {
-                int nextX = position.getX() + direction.getXOffset();
-                int nextZ = position.getZ() + direction.getZOffset();
+                int nextX = position.getX() + direction.getStepX();
+                int nextZ = position.getZ() + direction.getStepZ();
                 int nextSkyLight = position.getY() - 1;
                 if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
                 {

@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.client;
+package com.alcatrazescapee.primalwinter.mixin.client.renderer;
 
 import java.util.Random;
 
@@ -40,6 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.alcatrazescapee.primalwinter.Config;
 import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
 import com.alcatrazescapee.primalwinter.client.ModSoundEvents;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -58,10 +59,10 @@ public abstract class WorldRendererMixin
     private static final ResourceLocation SNOW_TEXTURES = new ResourceLocation("textures/environment/snow.png");
 
     //@formatter:off
-    @Shadow @Final private Minecraft mc;
-    @Shadow @Final private float[] field_20794;
-    @Shadow @Final private float[] field_20795;
-    @Shadow private ClientWorld world;
+    @Shadow @Final private Minecraft minecraft;
+    @Shadow @Final private float[] rainSizeX;
+    @Shadow @Final private float[] rainSizeZ;
+    @Shadow private ClientWorld level;
     @Shadow private int ticks;
     //@formatter:on
 
@@ -74,23 +75,23 @@ public abstract class WorldRendererMixin
      * - The rain / snow branch is condensed into one branch using the rain logic, except with rain / snow textures
      */
     @SuppressWarnings({"deprecation"})
-    @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderSnowAndRain", at = @At("HEAD"), cancellable = true)
     public void inject_renderWeather(LightTexture manager, float partialTicks, double xIn, double yIn, double zIn, CallbackInfo ci)
     {
         if (Config.CLIENT.weatherRenderChanges.get())
         {
-            if (mc != null && mc.gameRenderer != null)
+            if (minecraft != null && minecraft.gameRenderer != null)
             {
-                float rainStrength = world.getRainStrength(partialTicks);
+                float rainStrength = level.getRainLevel(partialTicks);
                 if (rainStrength > 0)
                 {
-                    mc.gameRenderer.getLightmapTextureManager().enableLightmap();
-                    Vector3d vec3d = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
-                    int xPos = MathHelper.floor(vec3d.getX());
-                    int yPos = MathHelper.floor(vec3d.getY());
-                    int zPos = MathHelper.floor(vec3d.getZ());
+                    minecraft.gameRenderer.lightTexture().turnOnLightLayer();
+                    Vector3d vec3d = minecraft.gameRenderer.getMainCamera().getPosition();
+                    int xPos = MathHelper.floor(vec3d.x());
+                    int yPos = MathHelper.floor(vec3d.y());
+                    int zPos = MathHelper.floor(vec3d.z());
                     Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder bufferbuilder = tessellator.getBuffer();
+                    BufferBuilder bufferbuilder = tessellator.getBuilder();
                     RenderSystem.enableAlphaTest();
                     RenderSystem.disableCull();
                     RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
@@ -99,7 +100,7 @@ public abstract class WorldRendererMixin
                     RenderSystem.defaultAlphaFunc();
                     RenderSystem.enableDepthTest();
                     int weatherAmount = Config.CLIENT.snowDensity.get();
-                    RenderSystem.depthMask(Minecraft.isFabulousGraphicsOrBetter());
+                    RenderSystem.depthMask(Minecraft.useShaderTransparency());
                     int flag = -1;
                     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     BlockPos.Mutable mutablePos = new BlockPos.Mutable();
@@ -109,13 +110,13 @@ public abstract class WorldRendererMixin
                         for (int x = xPos - weatherAmount; x <= xPos + weatherAmount; ++x)
                         {
                             int l1 = (z - zPos + 16) * 32 + x - xPos + 16;
-                            double d0 = (double) this.field_20794[l1] * 0.5D;
-                            double d1 = (double) this.field_20795[l1] * 0.5D;
-                            mutablePos.setPos(x, 0, z);
-                            Biome biome = world.getBiome(mutablePos);
+                            double d0 = (double) this.rainSizeX[l1] * 0.5D;
+                            double d1 = (double) this.rainSizeZ[l1] * 0.5D;
+                            mutablePos.set(x, 0, z);
+                            Biome biome = level.getBiome(mutablePos);
                             if (biome.getPrecipitation() != Biome.RainType.NONE)
                             {
-                                int i2 = world.getHeight(Heightmap.Type.MOTION_BLOCKING, mutablePos).getY();
+                                int i2 = level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, mutablePos).getY();
                                 int y = yPos - weatherAmount;
                                 int k2 = yPos + weatherAmount;
                                 if (y < i2)
@@ -137,20 +138,20 @@ public abstract class WorldRendererMixin
                                 if (y != k2)
                                 {
                                     Random random = new Random(x * x * 3121 + x * 45238971 ^ z * z * 418711 + z * 13761);
-                                    mutablePos.setPos(x, y, z);
-                                    float temperature = biome.getTemperatureCached(mutablePos);
+                                    mutablePos.set(x, y, z);
+                                    float temperature = biome.getTemperature(mutablePos);
                                     if (flag != 0)
                                     {
                                         flag = 0;
                                         if (temperature > 0.15)
                                         {
-                                            mc.getTextureManager().bindTexture(RAIN_TEXTURES);
+                                            minecraft.getTextureManager().bind(RAIN_TEXTURES);
                                         }
                                         else
                                         {
-                                            mc.getTextureManager().bindTexture(SNOW_TEXTURES);
+                                            minecraft.getTextureManager().bind(SNOW_TEXTURES);
                                         }
-                                        bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+                                        bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE);
                                     }
 
                                     int i3 = this.ticks + x * x * 3121 + x * 45238971 + z * z * 418711 + z * 13761 & 31;
@@ -159,12 +160,12 @@ public abstract class WorldRendererMixin
                                     double d4 = (double) ((float) z + 0.5F) - zIn;
                                     float f4 = MathHelper.sqrt(d2 * d2 + d4 * d4) / (float) weatherAmount;
                                     float f5 = ((1.0F - f4 * f4) * 0.5F + 0.5F) * rainStrength;
-                                    mutablePos.setPos(x, l2, z);
-                                    int j3 = WorldRenderer.getLightmapCoordinates(world, mutablePos);
-                                    bufferbuilder.vertex((double) x - xIn - d0 + 0.5D, (double) k2 - yIn, (double) z - zIn - d1 + 0.5D).texture(0.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).light(j3).endVertex();
-                                    bufferbuilder.vertex((double) x - xIn + d0 + 0.5D, (double) k2 - yIn, (double) z - zIn + d1 + 0.5D).texture(1.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).light(j3).endVertex();
-                                    bufferbuilder.vertex((double) x - xIn + d0 + 0.5D, (double) y - yIn, (double) z - zIn + d1 + 0.5D).texture(1.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).light(j3).endVertex();
-                                    bufferbuilder.vertex((double) x - xIn - d0 + 0.5D, (double) y - yIn, (double) z - zIn - d1 + 0.5D).texture(0.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).light(j3).endVertex();
+                                    mutablePos.set(x, l2, z);
+                                    int j3 = WorldRenderer.getLightColor(level, mutablePos);
+                                    bufferbuilder.vertex((double) x - xIn - d0 + 0.5D, (double) k2 - yIn, (double) z - zIn - d1 + 0.5D).uv(0.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).uv2(j3).endVertex();
+                                    bufferbuilder.vertex((double) x - xIn + d0 + 0.5D, (double) k2 - yIn, (double) z - zIn + d1 + 0.5D).uv(1.0F, (float) y * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).uv2(j3).endVertex();
+                                    bufferbuilder.vertex((double) x - xIn + d0 + 0.5D, (double) y - yIn, (double) z - zIn + d1 + 0.5D).uv(1.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).uv2(j3).endVertex();
+                                    bufferbuilder.vertex((double) x - xIn - d0 + 0.5D, (double) y - yIn, (double) z - zIn - d1 + 0.5D).uv(0.0F, (float) k2 * 0.25F + f3).color(1.0F, 1.0F, 1.0F, f5).uv2(j3).endVertex();
                                 }
                             }
                         }
@@ -172,14 +173,14 @@ public abstract class WorldRendererMixin
 
                     if (flag >= 0)
                     {
-                        tessellator.draw();
+                        tessellator.end();
                     }
 
                     RenderSystem.enableCull();
                     RenderSystem.disableBlend();
                     RenderSystem.defaultAlphaFunc();
                     RenderSystem.disableAlphaTest();
-                    mc.gameRenderer.getLightmapTextureManager().disableLightmap();
+                    minecraft.gameRenderer.lightTexture().turnOffLightLayer();
                 }
             }
             ci.cancel();
@@ -195,28 +196,28 @@ public abstract class WorldRendererMixin
      *
      * Since vanilla does nothing here when temperature < 0.15, we don't cancel the original method
      */
-    @Inject(method = "tickRainSplashing", at = @At("RETURN"))
-    public void inject_tickRainSplashing(ActiveRenderInfo renderInfo, CallbackInfo ci)
+    @Inject(method = "tickRain", at = @At("RETURN"))
+    public void inject_tickRain(ActiveRenderInfo renderInfo, CallbackInfo ci)
     {
-        float f = world.getRainStrength(1.0F) / (Minecraft.isFancyGraphicsEnabled() ? 1.0F : 2.0F);
+        float f = level.getRainLevel(1.0F) / (Minecraft.useFancyGraphics() ? 1.0F : 2.0F);
         if (f > 0.0F)
         {
             Random random = new Random((long) this.ticks * 312987231L);
-            IWorldReader worldView = world;
-            BlockPos blockPos = new BlockPos(renderInfo.getBlockPos());
+            IWorldReader worldView = level;
+            BlockPos blockPos = new BlockPos(renderInfo.getBlockPosition());
             BlockPos blockPos2 = null;
-            int i = (int) (100.0F * f * f) / (mc.gameSettings.particles == ParticleStatus.DECREASED ? 2 : 1);
+            int i = (int) (100.0F * f * f) / (minecraft.options.particles == ParticleStatus.DECREASED ? 2 : 1);
 
             for (int j = 0; j < i; ++j)
             {
                 int k = random.nextInt(21) - 10;
                 int l = random.nextInt(21) - 10;
-                BlockPos blockPos3 = worldView.getHeight(Heightmap.Type.MOTION_BLOCKING, blockPos.add(k, 0, l)).down();
+                BlockPos blockPos3 = worldView.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, blockPos.offset(k, 0, l)).below();
                 Biome biome = worldView.getBiome(blockPos3);
-                if (blockPos3.getY() > 0 && blockPos3.getY() <= blockPos.getY() + 10 && blockPos3.getY() >= blockPos.getY() - 10 && biome.getPrecipitation() == Biome.RainType.SNOW && biome.getTemperatureCached(blockPos3) < 0.15F)
+                if (blockPos3.getY() > 0 && blockPos3.getY() <= blockPos.getY() + 10 && blockPos3.getY() >= blockPos.getY() - 10 && biome.getPrecipitation() == Biome.RainType.SNOW && biome.getTemperature(blockPos3) < 0.15F)
                 {
                     blockPos2 = blockPos3;
-                    if (mc.gameSettings.particles == ParticleStatus.MINIMAL)
+                    if (minecraft.options.particles == ParticleStatus.MINIMAL)
                     {
                         break;
                     }
@@ -227,10 +228,10 @@ public abstract class WorldRendererMixin
                     FluidState fluidState = worldView.getFluidState(blockPos3);
                     VoxelShape voxelShape = blockState.getCollisionShape(worldView, blockPos3);
                     double g = voxelShape.max(Direction.Axis.Y, d, e);
-                    double h = fluidState.getActualHeight(worldView, blockPos3);
+                    double h = fluidState.getHeight(worldView, blockPos3);
                     double m = Math.max(g, h);
-                    IParticleData particleEffect = !fluidState.isTagged(FluidTags.LAVA) && !blockState.isIn(Blocks.MAGMA_BLOCK) && !CampfireBlock.isLitCampfire(blockState) ? ModParticleTypes.SNOW.get() : ParticleTypes.SMOKE;
-                    world.addParticle(particleEffect, (double) blockPos3.getX() + d, (double) blockPos3.getY() + m, (double) blockPos3.getZ() + e, 0.0D, 0.0D, 0.0D);
+                    IParticleData particleEffect = !fluidState.is(FluidTags.LAVA) && !blockState.is(Blocks.MAGMA_BLOCK) && !CampfireBlock.isLitCampfire(blockState) ? ModParticleTypes.SNOW.get() : ParticleTypes.SMOKE;
+                    level.addParticle(particleEffect, (double) blockPos3.getX() + d, (double) blockPos3.getY() + m, (double) blockPos3.getZ() + e, 0.0D, 0.0D, 0.0D);
                 }
             }
 
@@ -238,33 +239,33 @@ public abstract class WorldRendererMixin
             if (blockPos2 != null && random.nextInt(3) < this.rainSoundTime++ && Config.CLIENT.snowSounds.get())
             {
                 this.rainSoundTime = 0;
-                if (blockPos2.getY() > blockPos.getY() + 1 && worldView.getHeight(Heightmap.Type.MOTION_BLOCKING, blockPos).getY() > MathHelper.floor((float) blockPos.getY()))
+                if (blockPos2.getY() > blockPos.getY() + 1 && worldView.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, blockPos).getY() > MathHelper.floor((float) blockPos.getY()))
                 {
-                    world.playSound(blockPos2, SoundEvents.WEATHER_RAIN_ABOVE, SoundCategory.WEATHER, 0.03f, 0.05f, false);
+                    level.playLocalSound(blockPos2, SoundEvents.WEATHER_RAIN_ABOVE, SoundCategory.WEATHER, 0.03f, 0.05f, false);
                 }
                 else
                 {
-                    world.playSound(blockPos2, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
+                    level.playLocalSound(blockPos2, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.06f, 0.1f, false);
                 }
             }
 
             // Added
             if (windSoundTime-- < 0 && Config.CLIENT.windSounds.get())
             {
-                BlockPos playerPos = renderInfo.getBlockPos();
-                Entity entity = renderInfo.getRenderViewEntity();
-                int light = renderInfo.getRenderViewEntity().world.getLightLevel(LightType.SKY, playerPos);
-                if (light > 3 && entity.world.isRaining() && entity.world.getBiome(playerPos).getTemperatureCached(playerPos) < 0.15f)
+                BlockPos playerPos = renderInfo.getBlockPosition();
+                Entity entity = renderInfo.getEntity();
+                int light = renderInfo.getEntity().level.getBrightness(LightType.SKY, playerPos);
+                if (light > 3 && entity.level.isRaining() && entity.level.getBiome(playerPos).getTemperature(playerPos) < 0.15f)
                 {
                     // In a windy location, play wind sounds
                     float volumeModifier = 0.2f + (light - 3) * 0.01f;
                     float pitchModifier = 0.7f;
-                    if (renderInfo.getFluidState().getFluid() != Fluids.EMPTY)
+                    if (renderInfo.getFluidInCamera().getType() != Fluids.EMPTY)
                     {
                         pitchModifier = 0.3f;
                     }
                     windSoundTime = 20 * 3 + random.nextInt(30);
-                    world.playSound(playerPos, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, volumeModifier, pitchModifier, true);
+                    level.playLocalSound(playerPos, ModSoundEvents.WIND.get(), SoundCategory.WEATHER, volumeModifier, pitchModifier, true);
                 }
                 else
                 {
@@ -275,11 +276,17 @@ public abstract class WorldRendererMixin
     }
 
     /**
-     * This is the simplest way to ignore sunset and sunrise colors. We do this since it looks very bad during winter sky rendering. This has the effect of removing it everywhere in the overworld, but since there's no additional context here, and the alternative is to override the entire thing, this is fine.
+     * This is the simplest way to ignore sunset and sunrise colors. We do this since it looks very bad during winter sky rendering.
      */
-    @Redirect(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/DimensionRenderInfo;getSkyColor(FF)[F"))
-    private float[] redirect_getSkyAngle(DimensionRenderInfo renderInfo, float skyAngle, float tickDelta)
+    @Redirect(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/DimensionRenderInfo;getSunriseColor(FF)[F"))
+    private float[] redirect_getSunriseColor(DimensionRenderInfo renderInfo, float skyAngle, float tickDelta, MatrixStack matrixStackIn, float partialTicks)
     {
-        return renderInfo instanceof DimensionRenderInfo.Overworld ? null : renderInfo.getSkyColor(skyAngle, tickDelta);
+        BlockPos pos = minecraft.gameRenderer.getMainCamera().getBlockPosition();
+        Biome biome = level.getBiome(pos);
+        if (biome.getTemperature(pos) < 0.15f && renderInfo instanceof DimensionRenderInfo.Overworld)
+        {
+            return null;
+        }
+        return renderInfo.getSunriseColor(skyAngle, tickDelta); // Call the original method
     }
 }

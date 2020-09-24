@@ -20,9 +20,9 @@ public final class Helpers
     public static void placeExtraSnowOnTickChunk(ServerWorld world, BlockPos pos)
     {
         BlockState state = world.getBlockState(pos);
-        if (world.isRaining() && state.getBlock() == Blocks.SNOW && state.get(BlockStateProperties.LAYERS_1_8) < 5)
+        if (world.isRaining() && state.getBlock() == Blocks.SNOW && state.getValue(BlockStateProperties.LAYERS) < 5)
         {
-            world.setBlockState(pos, state.with(BlockStateProperties.LAYERS_1_8, state.get(BlockStateProperties.LAYERS_1_8) + 1));
+            world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LAYERS, state.getValue(BlockStateProperties.LAYERS) + 1));
         }
     }
 
@@ -43,6 +43,6 @@ public final class Helpers
      */
     public static <T extends Comparable<T>> BlockState copyProperty(Property<T> property, BlockState original, BlockState replacement)
     {
-        return replacement.with(property, original.get(property));
+        return replacement.setValue(property, original.getValue(property));
     }
 }

@@ -1,4 +1,8 @@
+from typing import Optional
+
+import mcresources.utils as utils
 from mcresources import ResourceManager, clean_generated_resources
+from mcresources.utils import Json, ResourceIdentifier
 
 
 def main():
@@ -116,11 +120,27 @@ def main():
     rm.block_tag('animal_spawns_on', 'minecraft:grass', 'minecraft:sand', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
     rm.block_tag('turtle_spawns_on', 'minecraft:sand', 'primalwinter:snowy_sand')
 
+    configured_feature(rm, 'improved_ice_spikes', config={
+
+    })
+    configured_feature(rm, 'improved_ice_patch')
+
     rm.flush()
 
 
 def lang(key: str, *args) -> str:
     return ((key % args) if len(args) > 0 else key).replace('_', ' ').replace('/', ' ').title()
+
+
+def configured_feature(rm: ResourceManager, name_parts: ResourceIdentifier, feature: Optional[ResourceIdentifier] = None, config: Optional[Json] = None):
+    if feature is None:
+        feature = name_parts
+    if config is None:
+        config = {}
+    rm.data(name_parts, {
+        'type': utils.resource_location(feature).join(),
+        'config': config
+    }, 'worldgen/configured_feature')
 
 
 VINE_VARIANTS = {

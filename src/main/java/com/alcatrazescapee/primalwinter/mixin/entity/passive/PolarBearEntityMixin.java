@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.entity;
+package com.alcatrazescapee.primalwinter.mixin.entity.passive;
 
 import java.util.Random;
 
@@ -31,17 +31,17 @@ public abstract class PolarBearEntityMixin extends AnimalEntity
     /**
      * canSpawn
      */
-    @Inject(method = "func_223320_c", at = @At("HEAD"), cancellable = true)
-    private static void func_223320_c(EntityType<PolarBearEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    @Inject(method = "checkPolarBearSpawnRules", at = @At("HEAD"), cancellable = true)
+    private static void checkPolarBearSpawnRules(EntityType<PolarBearEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
         Biome biome = world.getBiome(pos);
-        if (biome.getCategory() != Biome.Category.OCEAN)
+        if (biome.getBiomeCategory() != Biome.Category.OCEAN)
         {
-            cir.setReturnValue(AnimalEntity.canSpawnOn(type, world, spawnReason, pos, random));
+            cir.setReturnValue(AnimalEntity.checkMobSpawnRules(type, world, spawnReason, pos, random));
         }
         else
         {
-            cir.setReturnValue(world.getBaseLightLevel(pos, 0) > 8 && world.getBlockState(pos.down()).isIn(Blocks.ICE));
+            cir.setReturnValue(world.getRawBrightness(pos, 0) > 8 && world.getBlockState(pos.below()).is(Blocks.ICE));
         }
     }
 

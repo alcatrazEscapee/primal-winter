@@ -3,7 +3,7 @@
  * Work under Copyright. See the project LICENSE.md for details.
  */
 
-package com.alcatrazescapee.primalwinter.mixin.entity;
+package com.alcatrazescapee.primalwinter.mixin.entity.passive;
 
 import java.util.Random;
 
@@ -27,10 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AnimalEntity.class)
 public abstract class AnimalEntityMixin extends AgeableEntity
 {
-    @Inject(method = "func_223316_b", at = @At("HEAD"), cancellable = true)
-    private static void func_223316_b(EntityType<? extends AnimalEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    @Inject(method = "checkAnimalSpawnRules", at = @At("HEAD"), cancellable = true)
+    private static void checkAnimalSpawnRules(EntityType<? extends AnimalEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
-        cir.setReturnValue(ModTags.Blocks.ANIMAL_SPAWNS_ON.contains(world.getBlockState(pos.down()).getBlock()) && world.getBaseLightLevel(pos, 0) > 8);
+        cir.setReturnValue(ModTags.Blocks.ANIMAL_SPAWNS_ON.contains(world.getBlockState(pos.below()).getBlock()) && world.getRawBrightness(pos, 0) > 8);
     }
 
     private AnimalEntityMixin(EntityType<? extends AgeableEntity> entityType, World world)

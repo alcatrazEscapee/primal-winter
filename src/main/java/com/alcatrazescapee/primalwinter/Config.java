@@ -75,10 +75,10 @@ public final class Config
         {
             return Stream.of(
                 Biomes.NETHER_WASTES,
-                Biomes.SOUL_SAND_VALLEY,
                 Biomes.CRIMSON_FOREST,
                 Biomes.WARPED_FOREST,
                 Biomes.BASALT_DELTAS,
+                Biomes.SOUL_SAND_VALLEY,
                 Biomes.END_BARRENS,
                 Biomes.END_HIGHLANDS,
                 Biomes.END_MIDLANDS,

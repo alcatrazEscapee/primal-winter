@@ -25,7 +25,7 @@ public class LogBlock extends RotatedPillarBlock
 
     public LogBlock(MaterialColor topColor, MaterialColor barkColor, Supplier<Block> strippedBlock)
     {
-        super(AbstractBlock.Properties.of(Material.WOOD, state -> state.get(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topColor : barkColor).hardnessAndResistance(2.0F).sound(SoundType.WOOD));
+        super(AbstractBlock.Properties.of(Material.WOOD, state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topColor : barkColor).strength(2.0F).sound(SoundType.WOOD));
         this.strippedBlock = strippedBlock;
     }
 
@@ -45,10 +45,10 @@ public class LogBlock extends RotatedPillarBlock
     @Override
     public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType)
     {
-        BlockState result = strippedBlock.get().getDefaultState();
+        BlockState result = strippedBlock.get().defaultBlockState();
         if (state.getProperties().contains(RotatedPillarBlock.AXIS))
         {
-            result = result.with(RotatedPillarBlock.AXIS, state.get(RotatedPillarBlock.AXIS));
+            result = result.setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS));
         }
         return result;
     }
