@@ -63,15 +63,15 @@ public final class ForgeEventHandler
     @SubscribeEvent
     public static void onBiomeLoading(BiomeLoadingEvent event)
     {
-        if (Config.COMMON.nonWinterBiomes.get().stream().anyMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
+        if (Config.COMMON.nonWinterBiomes.get().stream().noneMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
         {
             // This requires a mixin because forge hasn't exposed any mutators, a constructor, or a builder...
             BiomeClimateAccess climateAccess = (BiomeClimateAccess) event.getClimate();
             climateAccess.setTemperature(-0.5f);
             climateAccess.setPrecipitation(Biome.RainType.SNOW);
-            climateAccess.setTemperatureModifier(Biome.TemperatureModifier.NONE); // The frozen modifier has large >0.15 zones which result in non-ztormy behavior... bad!
+            climateAccess.setTemperatureModifier(Biome.TemperatureModifier.NONE); // The frozen modifier has large >0.15 zones which result in non-stormy behavior... bad!
 
-            // Modify effects - mixin required as there is no accessors or usable builder
+            // Modify effects
             BiomeAmbienceAccess effectsAccess = (BiomeAmbienceAccess) event.getEffects();
             effectsAccess.setWaterColor(0x3938C9);
             effectsAccess.setFogWaterColor(0x050533);

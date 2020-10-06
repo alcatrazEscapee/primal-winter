@@ -1,8 +1,4 @@
-from typing import Optional
-
-import mcresources.utils as utils
 from mcresources import ResourceManager, clean_generated_resources
-from mcresources.utils import Json, ResourceIdentifier
 
 
 def main():
@@ -16,45 +12,46 @@ def main():
     })
 
     for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel', 'stone', 'granite', 'diorite', 'andesite', 'white_terracotta', 'orange_terracotta', 'terracotta', 'yellow_terracotta', 'brown_terracotta', 'red_terracotta', 'light_gray_terracotta'):
-        rm.blockstate('snowy_' + block) \
-            .with_item_model() \
-            .with_block_model(textures={
+        b = rm.blockstate('snowy_' + block)
+        b.with_item_model()
+        b.with_block_model(textures={
             'side': 'primalwinter:block/snowy_' + block,
             'bottom': 'minecraft:block/' + block,
             'top': 'minecraft:block/snow'
-        }, parent='block/cube_bottom_top') \
-            .with_block_loot({
+        }, parent='block/cube_bottom_top')
+        b.with_block_loot({
             'entries': {
                 'type': 'loot_table',
                 'name': 'minecraft:blocks/%s' % block
             }
-        }) \
-            .with_lang(lang('snowy ' + block))
+        })
+        b.with_lang(lang('snowy ' + block))
 
-    rm.blockstate('snowy_grass_path', variants={
+    b = rm.blockstate('snowy_grass_path', variants={
         '': [{'model': 'primalwinter:block/snowy_grass_path', 'y': y} for y in (None, 90, 180, 270)]
-    }, use_default_model=False) \
-        .with_item_model() \
-        .with_block_model(textures={
+    }, use_default_model=False)
+    b.with_item_model()
+    b.with_block_model(textures={
         'top': 'minecraft:block/snow',
         'side': 'primalwinter:block/snowy_grass_path_side'
-    }, parent='block/grass_path') \
-        .with_block_loot({
+    }, parent='block/grass_path')
+    b.with_block_loot({
         'entries': {
             'type': 'loot_table',
             'name': 'minecraft:blocks/grass_path'
         }
-    }) \
-        .with_lang(lang('snowy grass path'))
+    })
+    b.with_lang(lang('snowy grass path'))
 
-    rm.blockstate('snowy_vine', variants=VINE_VARIANTS) \
-        .with_block_loot({
+    b = rm.blockstate('snowy_vine', variants=VINE_VARIANTS)
+    b.with_block_loot({
         'entries': {
             'type': 'loot_table',
             'name': 'minecraft:blocks/vine'
         }
-    }) \
-        .with_lang(lang('snowy vine'))
+    })
+    b.with_lang(lang('snowy vine'))
+
     rm.item_model('snowy_vine', 'block/vine', 'primalwinter:block/snowy_leaves_overlay')
 
     for suffix in ('_1', '_2', '_3', '_4', '_1u', '_2u', '_3u', '_4u', '_2_opposite', '_2u_opposite', '_u'):
@@ -68,40 +65,41 @@ def main():
         }, parent='block/vine' + suffix, elements=elements)
 
     for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce'):
-        rm.blockstate('snowy_%s_log' % wood, variants={
+        b = rm.blockstate('snowy_%s_log' % wood, variants={
             'axis=y': {'model': 'primalwinter:block/snowy_%s_log' % wood},
             'axis=z': {'model': 'primalwinter:block/snowy_%s_log' % wood, 'x': 90},
             'axis=x': {'model': 'primalwinter:block/snowy_%s_log' % wood, 'x': 90, 'y': 90}
-        }) \
-            .with_item_model() \
-            .with_block_model(textures={
+        })
+        b.with_item_model()
+        b.with_block_model(textures={
             'side': 'primalwinter:block/snowy_%s_log' % wood,
             'end': 'primalwinter:block/snowy_%s_log_top' % wood
-        }, parent='block/cube_column') \
-            .with_block_loot({
+        }, parent='block/cube_column')
+        b.with_block_loot({
             'entries': {
                 'type': 'loot_table',
                 'name': 'minecraft:blocks/%s_log' % wood
             }
-        }) \
-            .with_lang(lang('snowy %s log', wood)) \
-            .with_tag('minecraft:%s_logs' % wood) \
-            .with_tag('minecraft:logs')
-        rm.blockstate('snowy_%s_leaves' % wood) \
-            .with_block_model(textures={
+        })
+        b.with_lang(lang('snowy %s log', wood))
+        b.with_tag('minecraft:%s_logs' % wood)
+        b.with_tag('minecraft:logs')
+
+        b = rm.blockstate('snowy_%s_leaves' % wood)
+        b.with_block_model(textures={
             'all': 'block/%s_leaves' % wood,
             'overlay': 'primalwinter:block/snowy_leaves_overlay'
-        }, parent='primalwinter:block/snowy_leaves') \
-            .with_item_model() \
-            .with_block_loot({
+        }, parent='primalwinter:block/snowy_leaves')
+        b.with_item_model()
+        b.with_block_loot({
             'entries': {
                 'type': 'loot_table',
                 'name': 'minecraft:blocks/%s_leaves' % wood
             }
-        }) \
-            .with_lang(lang('snowy %s leaves', wood)) \
-            .with_tag('minecraft:%s_leaves' % wood) \
-            .with_tag('minecraft:leaves')
+        })
+        b.with_lang(lang('snowy %s leaves', wood))
+        b.with_tag('minecraft:%s_leaves' % wood)
+        b.with_tag('minecraft:leaves')
 
     # Template leaves model
     rm.block_model('snowy_leaves', textures={
@@ -120,27 +118,11 @@ def main():
     rm.block_tag('animal_spawns_on', 'minecraft:grass', 'minecraft:sand', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
     rm.block_tag('turtle_spawns_on', 'minecraft:sand', 'primalwinter:snowy_sand')
 
-    configured_feature(rm, 'improved_ice_spikes', config={
-
-    })
-    configured_feature(rm, 'improved_ice_patch')
-
     rm.flush()
 
 
 def lang(key: str, *args) -> str:
     return ((key % args) if len(args) > 0 else key).replace('_', ' ').replace('/', ' ').title()
-
-
-def configured_feature(rm: ResourceManager, name_parts: ResourceIdentifier, feature: Optional[ResourceIdentifier] = None, config: Optional[Json] = None):
-    if feature is None:
-        feature = name_parts
-    if config is None:
-        config = {}
-    rm.data(name_parts, {
-        'type': utils.resource_location(feature).join(),
-        'config': config
-    }, 'worldgen/configured_feature')
 
 
 VINE_VARIANTS = {
