@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * Will be made superfluous by https://github.com/MinecraftForge/MinecraftForge/pull/7336
  */
 @Mixin(BiomeAmbience.class)
-public interface BiomeAmbienceAccess
+public interface BiomeAmbienceAccessor
 {
     @Accessor(value = "waterColor")
-    void setWaterColor(int waterColor);
+    void accessor$setWaterColor(int waterColor);
 
     @Accessor(value = "waterFogColor")
-    void setFogWaterColor(int waterFogColor);
+    void accessor$setFogWaterColor(int waterFogColor);
 }

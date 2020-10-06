@@ -9,11 +9,9 @@ import java.util.function.Supplier;
 
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.ISpawnWorldInfo;
 
@@ -37,14 +35,8 @@ public abstract class ServerWorldMixin extends World
     }
 
     @Inject(method = "tickChunk", at = @At(value = "RETURN"))
-    public void tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci)
+    public void inject$tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
-        if (random.nextInt(16) == 0)
-        {
-            int blockX = chunk.getPos().getMinBlockX();
-            int blockZ = chunk.getPos().getMinBlockZ();
-            BlockPos pos = getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, getBlockRandomPos(blockX, 0, blockZ, 15));
-            Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, pos);
-        }
+        Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, chunk);
     }
 }

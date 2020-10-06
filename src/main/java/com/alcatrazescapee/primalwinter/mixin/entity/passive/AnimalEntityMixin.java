@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class AnimalEntityMixin extends AgeableEntity
 {
     @Inject(method = "checkAnimalSpawnRules", at = @At("HEAD"), cancellable = true)
-    private static void checkAnimalSpawnRules(EntityType<? extends AnimalEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    private static void inject$checkAnimalSpawnRules(EntityType<? extends AnimalEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
         cir.setReturnValue(ModTags.Blocks.ANIMAL_SPAWNS_ON.contains(world.getBlockState(pos.below()).getBlock()) && world.getRawBrightness(pos, 0) > 8);
     }

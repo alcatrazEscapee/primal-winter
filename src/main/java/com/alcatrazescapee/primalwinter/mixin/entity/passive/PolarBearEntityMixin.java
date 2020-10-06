@@ -28,11 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PolarBearEntity.class)
 public abstract class PolarBearEntityMixin extends AnimalEntity
 {
-    /**
-     * canSpawn
-     */
     @Inject(method = "checkPolarBearSpawnRules", at = @At("HEAD"), cancellable = true)
-    private static void checkPolarBearSpawnRules(EntityType<PolarBearEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
+    private static void inject$checkPolarBearSpawnRules(EntityType<PolarBearEntity> type, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir)
     {
         Biome biome = world.getBiome(pos);
         if (biome.getBiomeCategory() != Biome.Category.OCEAN)

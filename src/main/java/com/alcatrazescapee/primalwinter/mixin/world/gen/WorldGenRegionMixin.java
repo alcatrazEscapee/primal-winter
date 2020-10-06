@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class WorldGenRegionMixin
 {
     @ModifyVariable(method = "setBlock", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private BlockState modifyVariable_setBlock(BlockState stateIn)
+    private BlockState modifyVariable$setBlock(BlockState stateIn)
     {
         Block replacementBlock = ModBlocks.SNOWY_TREE_BLOCKS.getOrDefault(stateIn.getBlock(), () -> null).get();
         if (replacementBlock != null)

@@ -76,7 +76,7 @@ public abstract class WorldRendererMixin
      */
     @SuppressWarnings({"deprecation"})
     @Inject(method = "renderSnowAndRain", at = @At("HEAD"), cancellable = true)
-    public void inject_renderWeather(LightTexture manager, float partialTicks, double xIn, double yIn, double zIn, CallbackInfo ci)
+    public void inject$renderWeather(LightTexture manager, float partialTicks, double xIn, double yIn, double zIn, CallbackInfo ci)
     {
         if (Config.CLIENT.weatherRenderChanges.get())
         {
@@ -197,7 +197,7 @@ public abstract class WorldRendererMixin
      * Since vanilla does nothing here when temperature < 0.15, we don't cancel the original method
      */
     @Inject(method = "tickRain", at = @At("RETURN"))
-    public void inject_tickRain(ActiveRenderInfo renderInfo, CallbackInfo ci)
+    public void inject$tickRain(ActiveRenderInfo renderInfo, CallbackInfo ci)
     {
         float f = level.getRainLevel(1.0F) / (Minecraft.useFancyGraphics() ? 1.0F : 2.0F);
         if (f > 0.0F)
@@ -279,7 +279,7 @@ public abstract class WorldRendererMixin
      * This is the simplest way to ignore sunset and sunrise colors. We do this since it looks very bad during winter sky rendering.
      */
     @Redirect(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/DimensionRenderInfo;getSunriseColor(FF)[F"))
-    private float[] redirect_getSunriseColor(DimensionRenderInfo renderInfo, float skyAngle, float tickDelta, MatrixStack matrixStackIn, float partialTicks)
+    private float[] redirect$getSunriseColor$getSunriseColor(DimensionRenderInfo renderInfo, float skyAngle, float tickDelta, MatrixStack matrixStackIn, float partialTicks)
     {
         BlockPos pos = minecraft.gameRenderer.getMainCamera().getBlockPosition();
         Biome biome = level.getBiome(pos);

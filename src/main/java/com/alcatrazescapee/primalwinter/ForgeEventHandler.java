@@ -24,9 +24,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeAmbienceAccess;
-import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeClimateAccess;
-import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeGenerationSettingsBuilderAccess;
+import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeAmbienceAccessor;
 import com.alcatrazescapee.primalwinter.world.ModConfiguredFeatures;
 
 import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
@@ -66,15 +64,12 @@ public final class ForgeEventHandler
         if (Config.COMMON.nonWinterBiomes.get().stream().noneMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
         {
             // This requires a mixin because forge hasn't exposed any mutators, a constructor, or a builder...
-            BiomeClimateAccess climateAccess = (BiomeClimateAccess) event.getClimate();
-            climateAccess.setTemperature(-0.5f);
-            climateAccess.setPrecipitation(Biome.RainType.SNOW);
-            climateAccess.setTemperatureModifier(Biome.TemperatureModifier.NONE); // The frozen modifier has large >0.15 zones which result in non-stormy behavior... bad!
+            event.setClimate(new Biome.Climate(Biome.RainType.SNOW, -0.5f, Biome.TemperatureModifier.NONE, event.getClimate().downfall));
 
             // Modify effects
-            BiomeAmbienceAccess effectsAccess = (BiomeAmbienceAccess) event.getEffects();
-            effectsAccess.setWaterColor(0x3938C9);
-            effectsAccess.setFogWaterColor(0x050533);
+            BiomeAmbienceAccessor effectsAccess = (BiomeAmbienceAccessor) event.getEffects();
+            effectsAccess.accessor$setWaterColor(0x3938C9);
+            effectsAccess.accessor$setFogWaterColor(0x050533);
 
             // Modify spawn settings
             MobSpawnInfoBuilder spawnSettingsBuilder = event.getSpawns();
@@ -91,7 +86,7 @@ public final class ForgeEventHandler
             generationSettingsBuilder.addStructureStart(StructureFeatures.IGLOO);
 
             // Removals need to access the underlying list for now
-            ((BiomeGenerationSettingsBuilderAccess) generationSettingsBuilder).getFeatures().forEach(list -> list.removeIf(feature -> feature.get() == Features.FREEZE_TOP_LAYER));
+            generationSettingsBuilder.getFeatures(GenerationStage.Decoration.TOP_LAYER_MODIFICATION).removeIf(feature -> feature.get() == Features.FREEZE_TOP_LAYER);
         }
     }
 }

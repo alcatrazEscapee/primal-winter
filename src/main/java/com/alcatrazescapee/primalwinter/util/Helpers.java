@@ -10,6 +10,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 
 public final class Helpers
@@ -17,12 +19,18 @@ public final class Helpers
     /**
      * Called from {@link ServerWorld#tickChunk(WorldChunk, int)} via mixin, places additional snow layers
      */
-    public static void placeExtraSnowOnTickChunk(ServerWorld world, BlockPos pos)
+    public static void placeExtraSnowOnTickChunk(ServerWorld world, Chunk chunk)
     {
-        BlockState state = world.getBlockState(pos);
-        if (world.isRaining() && state.getBlock() == Blocks.SNOW && state.getValue(BlockStateProperties.LAYERS) < 5)
+        if (world.random.nextInt(16) == 0)
         {
-            world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LAYERS, state.getValue(BlockStateProperties.LAYERS) + 1));
+            int blockX = chunk.getPos().getMinBlockX();
+            int blockZ = chunk.getPos().getMinBlockZ();
+            BlockPos pos = world.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, world.getBlockRandomPos(blockX, 0, blockZ, 15));
+            BlockState state = world.getBlockState(pos);
+            if (world.isRaining() && state.getBlock() == Blocks.SNOW && state.getValue(BlockStateProperties.LAYERS) < 5)
+            {
+                world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LAYERS, state.getValue(BlockStateProperties.LAYERS) + 1));
+            }
         }
     }
 
