@@ -50,8 +50,8 @@ public final class Config
         {
             fogDensity = builder.comment("How dense the fog effect during a snowstorm is.").defineInRange("fogDensity", 0.1, 0, 1);
             snowDensity = builder.comment("How visually dense the snow weather effect is. Normally, vanilla sets this to 5 with fast graphics, and 10 with fancy graphics.").defineInRange("snowDensity", 15, 1, 15);
-            snowSounds = builder.comment("Enable snow (actually rain) weather sounds.").define("snowSounds", true);
-            windSounds = builder.comment("Enable wind / snow storm weather sounds.").define("windSounds", true);
+            snowSounds = builder.comment("Enable snow (actually rain) weather sounds.").define("snowSounds", false);
+            windSounds = builder.comment("Enable wind / snow storm weather sounds.").define("windSounds", false);
 
             fogColorDay = builder.comment("This is the fog color during the day. This is a hex color code, with 8 bits each for red, green, blue.").defineInRange("fogColorDay", 0xbfbfd8, 0, 0xFFFFFF);
             fogColorNight = builder.comment("This is the fog color during the night. This is a hex color code, with 8 bits each for red, green, blue.").defineInRange("fogColorNight", 0x0c0c19, 0, 0xFFFFFF);
@@ -68,7 +68,7 @@ public final class Config
 
         Common(ForgeConfigSpec.Builder builder)
         {
-            disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
+            disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", false);
 
             nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().define("nonWinterBiomes", this::getDefaultNonWinterBiomes, this::validateNonWinterBiomes);
         }
