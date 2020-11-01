@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
 import net.minecraft.world.dimension.DimensionType;
@@ -60,7 +61,7 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.getPosition());
+            int light = player.world.getLightFor(LightType.SKY, new BlockPos(player.getEyePosition((float) event.getRenderPartialTicks())));
             if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.dimension == DimensionType.OVERWORLD)
             {
                 event.setCanceled(true);
@@ -75,7 +76,7 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getRenderViewEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getRenderViewEntity();
-            int light = player.world.getLightFor(LightType.SKY, player.getPosition());
+            int light = player.world.getLightFor(LightType.SKY, new BlockPos(player.getEyePosition((float) event.getRenderPartialTicks())));
             if (light > 3 && event.getInfo().getFluidState().getFluid() == Fluids.EMPTY && player.dimension == DimensionType.OVERWORLD)
             {
                 // Calculate color based on time of day
