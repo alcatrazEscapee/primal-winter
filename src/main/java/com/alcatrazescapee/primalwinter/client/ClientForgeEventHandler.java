@@ -7,6 +7,7 @@ package com.alcatrazescapee.primalwinter.client;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,7 +28,7 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getEntity();
-            int light = player.level.getBrightness(LightType.SKY, player.blockPosition());
+            int light = player.level.getBrightness(LightType.SKY, new BlockPos(player.getEyePosition((float) event.getRenderPartialTicks())));
             if (light > 3 && event.getInfo().getFluidInCamera().getType() == Fluids.EMPTY)
             {
                 event.setCanceled(true);
@@ -42,7 +43,7 @@ public final class ClientForgeEventHandler
         if (event.getInfo().getEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getInfo().getEntity();
-            int light = player.level.getBrightness(LightType.SKY, player.blockPosition());
+            int light = player.level.getBrightness(LightType.SKY, new BlockPos(player.getEyePosition((float) event.getRenderPartialTicks())));
             if (light > 3 && event.getInfo().getFluidInCamera().getType() == Fluids.EMPTY)
             {
                 // Calculate color based on time of day
