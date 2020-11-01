@@ -35,11 +35,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.result }}-forge
-          release_name: (Forge) Primal Winter 1.16.2-${{ steps.get_version.outputs.result }}
+          release_name: (Forge) Primal Winter 1.16.3-${{ steps.get_version.outputs.result }}
           body: |
             [This was an automatic build]
             // todo: add changelog
-          draft: false
+          draft: true
           prerelease: false
       - name: Upload Main Jar
         id: upload_main_jar
@@ -48,8 +48,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/primalwinter-forge-1.16.2-${{ steps.get_version.outputs.result }}.jar
-          asset_name: primalwinter-forge-1.16.2-${{ steps.get_version.outputs.result }}.jar
+          asset_path: ./build/libs/primalwinter-forge-1.16.3-${{ steps.get_version.outputs.result }}.jar
+          asset_name: primalwinter-forge-1.16.3-${{ steps.get_version.outputs.result }}.jar
           asset_content_type: application/java-archive
       - name: Upload
         run: ./gradlew curseforge
