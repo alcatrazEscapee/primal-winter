@@ -68,7 +68,7 @@ public final class Config
             disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
             enableGrossBiomeHacks = builder.comment("Enable some really gross hacks that allow this mod to modify biomes.").worldRestart().define("enableGrossBiomeHacks", true);
 
-            nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().define("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
+            nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().defineList("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
         }
 
         private List<? extends String> getDefaultNonWinterBiomes()
@@ -84,7 +84,7 @@ public final class Config
                 Biomes.END_MIDLANDS,
                 Biomes.THE_END,
                 Biomes.THE_VOID
-            ).map(key -> key.getRegistryName().toString()).collect(Collectors.toList());
+            ).map(key -> key.location().toString()).collect(Collectors.toList());
         }
     }
 }
