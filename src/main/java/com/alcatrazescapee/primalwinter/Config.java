@@ -62,6 +62,7 @@ public final class Config
         public final ForgeConfigSpec.BooleanValue disableWeatherCommand;
         public final ForgeConfigSpec.BooleanValue enableGrossBiomeHacks;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> nonWinterBiomes;
+        public final ForgeConfigSpec.BooleanValue enableSnowAccumulation;
 
         Common(ForgeConfigSpec.Builder builder)
         {
@@ -69,6 +70,7 @@ public final class Config
             enableGrossBiomeHacks = builder.comment("Enable some really gross hacks that allow this mod to modify biomes.").worldRestart().define("enableGrossBiomeHacks", true);
 
             nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().defineList("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
+            enableSnowAccumulation = builder.comment("Should snow accumulate during snow storms?").define("enableSnowAccumulation", true);
         }
 
         private List<? extends String> getDefaultNonWinterBiomes()

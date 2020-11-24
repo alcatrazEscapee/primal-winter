@@ -15,6 +15,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.ISpawnWorldInfo;
 
+import com.alcatrazescapee.primalwinter.Config;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,6 +38,8 @@ public abstract class ServerWorldMixin extends World
     @Inject(method = "tickChunk", at = @At(value = "RETURN"))
     public void inject$tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
-        Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, chunk);
+        if(Config.COMMON.enableSnowAccumulation.get()) {
+            Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, chunk);
+        }
     }
 }
