@@ -1,6 +1,6 @@
 # Loader Metadata
 modLoader = "javafml" # mandatory
-loaderVersion = "[34,)" # mandatory
+loaderVersion = "[35,)" # mandatory
 license = "MIT"
 issueTrackerURL = "https://github.com/alcatrazEscapee/primal-winter/issues" # optional
 
@@ -11,24 +11,24 @@ version = "${file.jarVersion}" # mandatory
 displayName = "Primal Winter" # mandatory
 #updateJSONURL="http://myurl.me/" #optional
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/primalwinter" #optional
-    #logoFile="examplemod.png" #optional
-    #credits="" #optional
-    authors="AlcatrazEscapee" #optional
-    description='''
+#logoFile="examplemod.png" #optional
+#credits="" #optional
+authors = "AlcatrazEscapee" #optional
+description = '''
     A horrible accident has left the world - the entire world - a frozen wasteland. Unending snowstorms rage across the land, from forests, to plains, to jungles, to deserts. The air is thick with fog and wind howls across the landscape. Will you be able to survive in this primordial winter?
     '''
 
 # dependencies
 [[dependencies.primalwinter]]
-    modId="forge"
+modId = "forge"
 mandatory = true
-versionRange = "[34.0.7,)"
+versionRange = "[35.0.0,)"
 ordering = "NONE"
-    side="BOTH"
+side = "BOTH"
 
 [[dependencies.primalwinter]]
-    modId="minecraft"
+modId = "minecraft"
 mandatory = true
-versionRange = "[1.16.3,)"
+versionRange = "[1.16.4,)"
 ordering = "NONE"
-    side="BOTH"
+side = "BOTH"

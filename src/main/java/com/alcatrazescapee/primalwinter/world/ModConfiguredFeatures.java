@@ -7,9 +7,12 @@ package com.alcatrazescapee.primalwinter.world;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.*;
+
+import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
 public final class ModConfiguredFeatures
 {
@@ -21,6 +24,6 @@ public final class ModConfiguredFeatures
 
     private static <FC extends IFeatureConfig> ConfiguredFeature<?, ?> register(String id, ConfiguredFeature<FC, ?> configuredFeature)
     {
-        return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, id, configuredFeature);
+        return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(MOD_ID, id), configuredFeature);
     }
 }

@@ -50,7 +50,7 @@ public final class ForgeEventHandler
     public static void onWorldLoad(WorldEvent.Load event)
     {
         // todo: check dimension == overworld
-        if (event.getWorld() instanceof ServerWorld)
+        if (event.getWorld() instanceof ServerWorld && !((ServerWorld) event.getWorld()).isDebug())
         {
             ServerWorld world = (ServerWorld) event.getWorld();
             world.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, world.getServer());
@@ -63,7 +63,6 @@ public final class ForgeEventHandler
     {
         if (Config.COMMON.nonWinterBiomes.get().stream().noneMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
         {
-            // This requires a mixin because forge hasn't exposed any mutators, a constructor, or a builder...
             event.setClimate(new Biome.Climate(Biome.RainType.SNOW, -0.5f, Biome.TemperatureModifier.NONE, event.getClimate().downfall));
 
             // Modify effects
