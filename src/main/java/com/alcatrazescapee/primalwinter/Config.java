@@ -21,6 +21,7 @@ public final class Config
 {
     public static final Common COMMON = register(ModConfig.Type.COMMON, Common::new);
     public static final Client CLIENT = register(ModConfig.Type.CLIENT, Client::new);
+    public static final Server SERVER = register(ModConfig.Type.SERVER, Server::new);
 
     static void init() {}
 
@@ -60,13 +61,11 @@ public final class Config
     public static final class Common
     {
         public final ForgeConfigSpec.BooleanValue disableWeatherCommand;
-        public final ForgeConfigSpec.BooleanValue enableGrossBiomeHacks;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> nonWinterBiomes;
 
         Common(ForgeConfigSpec.Builder builder)
         {
             disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
-            enableGrossBiomeHacks = builder.comment("Enable some really gross hacks that allow this mod to modify biomes.").worldRestart().define("enableGrossBiomeHacks", true);
 
             nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().defineList("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
         }
@@ -85,6 +84,16 @@ public final class Config
                 Biomes.THE_END,
                 Biomes.THE_VOID
             ).map(key -> key.location().toString()).collect(Collectors.toList());
+        }
+    }
+
+    public static final class Server
+    {
+        public final ForgeConfigSpec.BooleanValue enableSnowAccumulation;
+
+        Server(ForgeConfigSpec.Builder builder)
+        {
+            enableSnowAccumulation = builder.comment("Should snow accumulate during snow storms?").define("enableSnowAccumulation", true);
         }
     }
 }

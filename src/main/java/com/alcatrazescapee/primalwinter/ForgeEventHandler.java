@@ -49,7 +49,6 @@ public final class ForgeEventHandler
     @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load event)
     {
-        // todo: check dimension == overworld
         if (event.getWorld() instanceof ServerWorld && !((ServerWorld) event.getWorld()).isDebug())
         {
             ServerWorld world = (ServerWorld) event.getWorld();

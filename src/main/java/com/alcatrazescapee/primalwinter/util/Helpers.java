@@ -14,6 +14,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 
+import com.alcatrazescapee.primalwinter.Config;
+
 public final class Helpers
 {
     /**
@@ -21,7 +23,7 @@ public final class Helpers
      */
     public static void placeExtraSnowOnTickChunk(ServerWorld world, Chunk chunk)
     {
-        if (world.random.nextInt(16) == 0)
+        if (Config.SERVER.enableSnowAccumulation.get() && world.random.nextInt(16) == 0)
         {
             int blockX = chunk.getPos().getMinBlockX();
             int blockZ = chunk.getPos().getMinBlockZ();
