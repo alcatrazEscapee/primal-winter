@@ -1,8 +1,7 @@
 /*
- * Part of the Primal Winter by AlcatrazEscapee
- * Work under Copyright. See the project LICENSE.md for details.
+ * Part of the Primal Winter mod by AlcatrazEscapee.
+ * Work under copyright. See the project LICENSE.md for details.
  */
-
 
 package com.alcatrazescapee.primalwinter;
 
