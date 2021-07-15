@@ -16,23 +16,38 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.gen.feature.structure.StructureFeatures;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeAmbienceAccessor;
 import com.alcatrazescapee.primalwinter.world.ModConfiguredFeatures;
 
-import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
-
-@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ForgeEventHandler
 {
-    @SubscribeEvent
+    public static void init()
+    {
+        final IEventBus forge = MinecraftForge.EVENT_BUS;
+        final IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
+
+        mod.addListener(ForgeEventHandler::setup);
+
+        forge.addListener(ForgeEventHandler::onRegisterCommands);
+        forge.addListener(ForgeEventHandler::onWorldLoad);
+        forge.addListener(ForgeEventHandler::onBiomeLoading);
+    }
+
+    public static void setup(FMLCommonSetupEvent event)
+    {
+        ModConfiguredFeatures.setup();
+    }
+
     public static void onRegisterCommands(RegisterCommandsEvent event)
     {
         if (Config.COMMON.disableWeatherCommand.get())
@@ -46,7 +61,6 @@ public final class ForgeEventHandler
         }
     }
 
-    @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load event)
     {
         if (event.getWorld() instanceof ServerWorld && !((ServerWorld) event.getWorld()).isDebug())
@@ -57,7 +71,6 @@ public final class ForgeEventHandler
         }
     }
 
-    @SubscribeEvent
     public static void onBiomeLoading(BiomeLoadingEvent event)
     {
         if (Config.COMMON.nonWinterBiomes.get().stream().noneMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
