@@ -23,7 +23,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
-import com.alcatrazescapee.primalwinter.util.Vector2i;
 import com.mojang.serialization.Codec;
 
 public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
@@ -172,9 +171,9 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
     private void extendSkyLights(int[] skyLights, int startX, int startZ)
     {
         List<Vector3i> positions = new ArrayList<>();
-        Set<Vector2i> visited = new HashSet<>();
+        Set<Vector3i> visited = new HashSet<>();
         positions.add(new Vector3i(startX, skyLights[startX + 16 * startZ], startZ));
-        visited.add(new Vector2i(startX, startZ));
+        visited.add(new Vector3i(startX, 0, startZ));
         while (!positions.isEmpty())
         {
             Vector3i position = positions.remove(0);
@@ -185,7 +184,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
                 int nextSkyLight = position.getY() - 1;
                 if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
                 {
-                    Vector2i nextVisited = new Vector2i(nextX, nextZ);
+                    Vector3i nextVisited = new Vector3i(nextX, 0, nextZ);
                     if (!visited.contains(nextVisited))
                     {
                         skyLights[nextX + 16 * nextZ] = nextSkyLight;

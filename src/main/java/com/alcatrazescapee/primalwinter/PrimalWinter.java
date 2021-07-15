@@ -20,9 +20,8 @@ import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.alcatrazescapee.primalwinter.common.ModItems;
 import com.alcatrazescapee.primalwinter.world.ModFeatures;
 
-import static com.alcatrazescapee.primalwinter.PrimalWinter.MOD_ID;
 
-@Mod(MOD_ID)
+@Mod(PrimalWinter.MOD_ID)
 public final class PrimalWinter
 {
     public static final String MOD_ID = "primalwinter";
@@ -37,7 +36,7 @@ public final class PrimalWinter
         Config.init();
 
         // Register event handlers
-        ForgeEventHandler.init();
+        EventHandler.init();
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientEventHandler::init);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

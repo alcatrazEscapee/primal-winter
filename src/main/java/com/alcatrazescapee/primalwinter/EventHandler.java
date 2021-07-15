@@ -9,7 +9,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.GenerationStage;
@@ -19,6 +19,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -27,25 +28,33 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.alcatrazescapee.primalwinter.mixin.world.biome.BiomeAmbienceAccessor;
+import com.alcatrazescapee.primalwinter.util.WeatherData;
 import com.alcatrazescapee.primalwinter.world.ModConfiguredFeatures;
 
-public final class ForgeEventHandler
+public final class EventHandler
 {
     public static void init()
     {
         final IEventBus forge = MinecraftForge.EVENT_BUS;
         final IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
 
-        mod.addListener(ForgeEventHandler::setup);
+        mod.addListener(EventHandler::setup);
 
-        forge.addListener(ForgeEventHandler::onRegisterCommands);
-        forge.addListener(ForgeEventHandler::onWorldLoad);
-        forge.addListener(ForgeEventHandler::onBiomeLoading);
+        forge.addGenericListener(World.class, EventHandler::attachWorldCapabilities);
+        forge.addListener(EventHandler::onRegisterCommands);
+        forge.addListener(EventHandler::onWorldLoad);
+        forge.addListener(EventHandler::onBiomeLoading);
     }
 
     public static void setup(FMLCommonSetupEvent event)
     {
         ModConfiguredFeatures.setup();
+        WeatherData.setup();
+    }
+
+    public static void attachWorldCapabilities(AttachCapabilitiesEvent<World> event)
+    {
+        event.addCapability(WeatherData.ID, new WeatherData());
     }
 
     public static void onRegisterCommands(RegisterCommandsEvent event)
@@ -65,15 +74,13 @@ public final class ForgeEventHandler
     {
         if (event.getWorld() instanceof ServerWorld && !((ServerWorld) event.getWorld()).isDebug())
         {
-            ServerWorld world = (ServerWorld) event.getWorld();
-            world.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, world.getServer());
-            world.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
+            WeatherData.trySetEndlessStorm((ServerWorld) event.getWorld());
         }
     }
 
     public static void onBiomeLoading(BiomeLoadingEvent event)
     {
-        if (Config.COMMON.nonWinterBiomes.get().stream().noneMatch(id -> id.equals(event.getName() == null ? "" : event.getName().toString())))
+        if (Config.COMMON.isWinterBiome(event.getName()))
         {
             event.setClimate(new Biome.Climate(Biome.RainType.SNOW, -0.5f, Biome.TemperatureModifier.NONE, event.getClimate().downfall));
 

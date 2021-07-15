@@ -5,6 +5,8 @@
 
 package com.alcatrazescapee.primalwinter.util;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
@@ -54,5 +56,15 @@ public final class Helpers
     public static <T extends Comparable<T>> BlockState copyProperty(Property<T> property, BlockState original, BlockState replacement)
     {
         return replacement.setValue(property, original.getValue(property));
+    }
+
+    /**
+     * Used for static final fields injected by forge, stops IDE nullability warnings
+     */
+    @Nonnull
+    @SuppressWarnings("ConstantConditions")
+    public static <T> T notNull()
+    {
+        return null;
     }
 }
