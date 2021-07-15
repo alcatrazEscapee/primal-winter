@@ -17,6 +17,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
@@ -100,6 +101,12 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
 
     private void placeSnowAndIce(IWorld worldIn, BlockPos pos, BlockState state, Random random, int skyLight)
     {
+        Biome biome = worldIn.getBiome(pos);
+        if (biome.getTemperature(pos) > 0.15f || biome.getPrecipitation() != Biome.RainType.SNOW)
+        {
+            return;
+        }
+
         FluidState fluidState = worldIn.getFluidState(pos);
         BlockPos posDown = pos.below();
         BlockState stateDown = worldIn.getBlockState(posDown);

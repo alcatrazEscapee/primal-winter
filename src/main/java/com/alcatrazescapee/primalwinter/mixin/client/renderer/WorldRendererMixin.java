@@ -34,8 +34,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.alcatrazescapee.primalwinter.Config;
 import com.alcatrazescapee.primalwinter.client.ModParticleTypes;
@@ -50,7 +48,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@OnlyIn(Dist.CLIENT)
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin
 {

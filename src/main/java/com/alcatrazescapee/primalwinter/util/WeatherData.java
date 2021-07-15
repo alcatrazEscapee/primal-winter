@@ -72,6 +72,6 @@ public class WeatherData implements ICapabilitySerializable<ByteNBT>
     @Override
     public void deserializeNBT(ByteNBT nbt)
     {
-        alreadySetWorldToWinter = nbt == ByteNBT.ONE;
+        alreadySetWorldToWinter = nbt.getAsByte() == 1;
     }
 }

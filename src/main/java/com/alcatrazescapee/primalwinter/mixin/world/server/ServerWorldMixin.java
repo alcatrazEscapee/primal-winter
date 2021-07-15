@@ -37,6 +37,6 @@ public abstract class ServerWorldMixin extends World
     @Inject(method = "tickChunk", at = @At(value = "RETURN"))
     public void inject$tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci)
     {
-        Helpers.placeExtraSnowOnTickChunk((ServerWorld) (Object) this, chunk);
+        Helpers.placeExtraSnowOnTickChunk(Helpers.cast(this), chunk);
     }
 }
