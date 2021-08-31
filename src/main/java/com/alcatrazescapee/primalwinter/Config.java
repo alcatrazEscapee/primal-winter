@@ -22,7 +22,6 @@ public final class Config
 {
     public static final Common COMMON = register(ModConfig.Type.COMMON, Common::new);
     public static final Client CLIENT = register(ModConfig.Type.CLIENT, Client::new);
-    public static final Server SERVER = register(ModConfig.Type.SERVER, Server::new);
 
     static void init() {}
 
@@ -69,15 +68,21 @@ public final class Config
         private final ForgeConfigSpec.BooleanValue invertNonWinterBiomes;
         private final ForgeConfigSpec.BooleanValue invertNonWinterDimensions;
 
+        public final ForgeConfigSpec.BooleanValue enableSnowAccumulationDuringWorldgen;
+        public final ForgeConfigSpec.BooleanValue enableSnowAccumulationDuringWeather;
+
         Common(ForgeConfigSpec.Builder builder)
         {
-            disableWeatherCommand = builder.comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
+            disableWeatherCommand = builder.comment(" Should the vanilla /weather be disabled? Any changes require a world restart to take effect.").worldRestart().define("disableWeatherCommand", true);
 
-            nonWinterBiomes = builder.comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().defineList("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
-            nonWinterDimensions = builder.comment("A list of dimension IDs that will not have winter weather effects set.").worldRestart().defineList("nonWinterDimensions", this::getDefaultNonWinterDimensions, e -> e instanceof String);
+            nonWinterBiomes = builder.comment(" A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.").worldRestart().defineList("nonWinterBiomes", this::getDefaultNonWinterBiomes, e -> e instanceof String);
+            nonWinterDimensions = builder.comment(" A list of dimension IDs that will not have winter weather effects set.").worldRestart().defineList("nonWinterDimensions", this::getDefaultNonWinterDimensions, e -> e instanceof String);
 
-            invertNonWinterBiomes = builder.comment("If true, the 'nonWinterBiomes' config option will be interpreted as a list of winter biomes, and all others will be ignored.").define("invertNonWinterBiomes", false);
-            invertNonWinterDimensions = builder.comment("If true, the 'nonWinterDimensions' config option will be interpreted as a list of winter dimensions, and all others will be ignored.").define("invertNonWinterDimensions", false);
+            invertNonWinterBiomes = builder.comment(" If true, the 'nonWinterBiomes' config option will be interpreted as a list of winter biomes, and all others will be ignored.").define("invertNonWinterBiomes", false);
+            invertNonWinterDimensions = builder.comment(" If true, the 'nonWinterDimensions' config option will be interpreted as a list of winter dimensions, and all others will be ignored.").define("invertNonWinterDimensions", false);
+
+            enableSnowAccumulationDuringWorldgen = builder.comment(" If true, snow will be layered higher than one layer during world generation.").define("enableSnowAccumulationDuringWorldgen", true);
+            enableSnowAccumulationDuringWeather = builder.comment(" If true, snow will be layered higher than one layer during weather (snow).").define("enableSnowAccumulationDuringWeather", true);
         }
 
         public boolean isWinterBiome(@Nullable ResourceLocation id)
@@ -85,7 +90,8 @@ public final class Config
             if (id != null)
             {
                 final String name = id.toString();
-                return invertNonWinterBiomes.get() ? nonWinterBiomes.get().stream().anyMatch(name::equals) : nonWinterBiomes.get().stream().noneMatch(name::equals);
+                final Stream<? extends String> stream = nonWinterBiomes.get().stream();
+                return invertNonWinterBiomes.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
             }
             return false;
         }
@@ -93,7 +99,8 @@ public final class Config
         public boolean isWinterDimension(ResourceLocation id)
         {
             final String name = id.toString();
-            return invertNonWinterDimensions.get() ? nonWinterDimensions.get().stream().anyMatch(name::equals) : nonWinterDimensions.get().stream().noneMatch(name::equals);
+            final Stream<? extends String> stream = nonWinterDimensions.get().stream();
+            return invertNonWinterDimensions.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
         }
 
         private List<? extends String> getDefaultNonWinterBiomes()
@@ -115,16 +122,6 @@ public final class Config
         private List<? extends String> getDefaultNonWinterDimensions()
         {
             return Stream.of("minecraft:the_nether", "minecraft:the_end").collect(Collectors.toList());
-        }
-    }
-
-    public static final class Server
-    {
-        public final ForgeConfigSpec.BooleanValue enableSnowAccumulation;
-
-        Server(ForgeConfigSpec.Builder builder)
-        {
-            enableSnowAccumulation = builder.comment("Should snow accumulate during snow storms?").define("enableSnowAccumulation", true);
         }
     }
 }

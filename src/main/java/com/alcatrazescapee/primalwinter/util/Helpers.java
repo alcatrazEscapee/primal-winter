@@ -15,6 +15,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
+import net.minecraft.world.LightType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.Heightmap;
@@ -30,14 +31,14 @@ public final class Helpers
      */
     public static void placeExtraSnowOnTickChunk(ServerWorld world, Chunk chunk)
     {
-        if (Config.SERVER.enableSnowAccumulation.get() && world.random.nextInt(16) == 0)
+        if (Config.COMMON.enableSnowAccumulationDuringWeather.get() && world.random.nextInt(16) == 0)
         {
             final int blockX = chunk.getPos().getMinBlockX();
             final int blockZ = chunk.getPos().getMinBlockZ();
             final BlockPos pos = world.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, world.getBlockRandomPos(blockX, 0, blockZ, 15));
             final BlockState state = world.getBlockState(pos);
             final Biome biome = world.getBiome(pos);
-            if (world.isRaining() && biome.shouldFreeze(world, pos))
+            if (world.isRaining() && biome.getTemperature(pos) < 0.15 && world.getBrightness(LightType.BLOCK, pos) < 10)
             {
                 if (state.getBlock() == Blocks.SNOW)
                 {

@@ -78,6 +78,10 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    if (System.getProperty("idea.sync.active") != "true") {
+        annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+    }
 }
 
 // Puts the mod version into the jar for mods.toml to read from

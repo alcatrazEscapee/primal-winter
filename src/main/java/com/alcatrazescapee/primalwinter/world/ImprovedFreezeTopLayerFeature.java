@@ -23,6 +23,7 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
+import com.alcatrazescapee.primalwinter.Config;
 import com.alcatrazescapee.primalwinter.common.ModBlocks;
 import com.mojang.serialization.Codec;
 
@@ -145,7 +146,15 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoFeatureConfig>
                 worldIn.removeBlock(posUp, false);
             }
 
-            int layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
+            int layers;
+            if (Config.COMMON.enableSnowAccumulationDuringWorldgen.get())
+            {
+                layers = MathHelper.clamp(skyLight - random.nextInt(3) - countExposedFaces(worldIn, pos), 1, 7);
+            }
+            else
+            {
+                layers = 1;
+            }
             worldIn.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(BlockStateProperties.LAYERS, layers), 3);
 
             // Replace the below block as well
