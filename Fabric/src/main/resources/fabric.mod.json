@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "primalwinter",
+  "version": "${version}",
+  "name": "Primal Winter",
+  "description": "A horrible accident has left the world - the entire world - a frozen wasteland. Unending snowstorms rage across the land, from forests, to plains, to jungles, to deserts. The air is thick with fog and wind howls across the landscape. Will you be able to survive in this primordial winter?",
+  "authors": [
+    "AlcatrazEscapee"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/primalwinter",
+    "sources": "https://github.com/alcatrazEscapee/primal-winter"
+  },
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.alcatrazescapee.primalwinter.FabricPrimalWinter"
+    ]
+  },
+  "mixins": [
+    "primalwinter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
+  
