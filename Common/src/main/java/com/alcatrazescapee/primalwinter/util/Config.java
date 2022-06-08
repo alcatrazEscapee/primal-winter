@@ -17,6 +17,7 @@ public abstract class Config
     public final BooleanValue enableWeatherCommand;
 
     public final BooleanValue enableSnowAccumulationDuringWorldgen;
+    public final BooleanValue enableSnowAccumulationDuringWeather;
 
     public final ListValue<String> nonWinterBiomes;
     public final ListValue<String> nonWinterDimensions;
@@ -43,6 +44,7 @@ public abstract class Config
         enableWeatherCommand = build(Type.COMMON, "enableWeatherCommand", false, "Should the vanilla /weather be disabled? Any changes require a world restart to take effect.");
 
         enableSnowAccumulationDuringWorldgen = build(Type.COMMON, "enableSnowAccumulationDuringWorldgen", true, " If true, snow will be layered higher than one layer during world generation.");
+        enableSnowAccumulationDuringWeather = build(Type.COMMON, "enableSnowAccumulationDuringWeather", true, " If true, snow will be layered higher than one layer during weather (snow).");
 
         nonWinterBiomes = build(Type.COMMON, "nonWinterBiomes", getDefaultNonWinterBiomes(), "A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.");
         nonWinterDimensions = build(Type.COMMON, "nonWinterDimensions", getDefaultNonWinterDimensions(), "A list of dimension IDs that will not have winter weather effects set.");

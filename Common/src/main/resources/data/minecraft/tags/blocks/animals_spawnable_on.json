@@ -1,0 +1,10 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "replace": false,
+  "values": [
+    "minecraft:snow_block",
+    "minecraft:snow",
+    "primalwinter:snowy_dirt",
+    "primalwinter:snowy_sand"
+  ]
+}

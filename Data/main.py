@@ -132,9 +132,7 @@ def main():
         'textures': ['primalwinter:snow_%d' % i for i in range(4)]
     }, 'assets')
 
-    # todo
-    #common.block_tag('animal_spawns_on', 'minecraft:grass', 'minecraft:sand', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
-    #common.block_tag('turtle_spawns_on', 'minecraft:sand', 'primalwinter:snowy_sand')
+    common.block_tag('minecraft:animals_spawnable_on', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
 
     # Then only flush common
     common.flush()
