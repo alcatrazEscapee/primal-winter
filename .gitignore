@@ -9,6 +9,7 @@
 
 !/**/build.gradle
 !/**/src/**/*.*
+!/Data/main.py
 
 !/img/**/*.png
 
