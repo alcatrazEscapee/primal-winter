@@ -1,7 +1,0 @@
-{
-    "pack": {
-        "description": "Resources",
-        "pack_format": 6,
-        "_comment": "Pack format of 6 is >=1.16.2"
-    }
-}

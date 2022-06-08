@@ -20,7 +20,8 @@
     ]
   },
   "mixins": [
-    "primalwinter.mixins.json"
+    "primalwinter.mixins.json",
+    "primalwinter.common.mixins.jcon"
   ],
   "depends": {
     "fabricloader": ">=0.13",
@@ -28,8 +29,6 @@
     "minecraft": "1.18.x",
     "java": ">=17"
   },
-  "suggests": {
-    "another-mod": "*"
-  }
+  "suggests": {}
 }
   
