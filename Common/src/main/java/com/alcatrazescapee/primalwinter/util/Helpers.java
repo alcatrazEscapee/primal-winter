@@ -1,7 +1,8 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import java.util.stream.Stream;
-
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -9,7 +10,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
@@ -21,13 +21,11 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import com.alcatrazescapee.primalwinter.PrimalWinter;
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.logging.LogUtils;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 public final class Helpers
 {
@@ -91,7 +89,12 @@ public final class Helpers
             level.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
         }
     }
-
+    public static boolean isWinterDimension(ResourceLocation id)
+    {
+        final String name = id.toString();
+        final Stream<? extends String> stream = Config.INSTANCE.nonWinterDimensions.get().stream();
+        return Config.INSTANCE.invertNonWinterDimensions.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
+    }
     public static boolean isWinterBiome(@Nullable ResourceLocation id)
     {
         if (id != null)
@@ -102,14 +105,6 @@ public final class Helpers
         }
         return false;
     }
-
-    public static boolean isWinterDimension(ResourceLocation id)
-    {
-        final String name = id.toString();
-        final Stream<? extends String> stream = Config.INSTANCE.nonWinterDimensions.get().stream();
-        return Config.INSTANCE.invertNonWinterDimensions.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
-    }
-
     public static ResourceLocation identifier(String name)
     {
         return new ResourceLocation(PrimalWinter.MOD_ID, name);

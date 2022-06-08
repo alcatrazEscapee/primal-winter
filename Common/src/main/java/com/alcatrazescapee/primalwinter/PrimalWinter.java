@@ -1,11 +1,12 @@
 package com.alcatrazescapee.primalwinter;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
 import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
 import com.alcatrazescapee.primalwinter.util.Config;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 
 public final class PrimalWinter
 {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -26,10 +26,27 @@ import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.Helpers;
-import com.mojang.serialization.Codec;
 
 public final class PrimalWinterWorldGen
 {
+    /**
+     * For certain vanilla features which do a check at the starting position, if it's a full block of snow (and thus only generating in very specific locations), we need to fake the initial conditions for other biomes.
+     */
+    public static void adjustPosForIceFeature(FeaturePlaceContext<?> context)
+    {
+        final WorldGenLevel level = context.level();
+        BlockPos pos = context.origin();
+        while (level.isEmptyBlock(pos) && pos.getY() > level.getMinBuildHeight() + 2)
+        {
+            pos = pos.below();
+        }
+        final BlockState originalState = level.getBlockState(pos);
+        if (!Helpers.is(originalState, BlockTags.LEAVES) && !Helpers.is(originalState, BlockTags.LOGS))
+        {
+            level.setBlock(pos, Blocks.SNOW_BLOCK.defaultBlockState(), 2);
+        }
+    }
+
     public static final class Features
     {
         public static final RegistryInterface<Feature<?>> FEATURES = XPlatform.INSTANCE.registryInterface(Registry.FEATURE);
@@ -69,24 +86,6 @@ public final class PrimalWinterWorldGen
         private static RegistryHolder<PlacedFeature> register(String name, RegistryHolder<ConfiguredFeature<?, ?>> feature)
         {
             return PLACED_FEATURES.register(name, () -> new PlacedFeature(Holder.hackyErase(feature.holder()), new ArrayList<>()));
-        }
-    }
-
-    /**
-     * For certain vanilla features which do a check at the starting position, if it's a full block of snow (and thus only generating in very specific locations), we need to fake the initial conditions for other biomes.
-     */
-    public static void adjustPosForIceFeature(FeaturePlaceContext<?> context)
-    {
-        final WorldGenLevel level = context.level();
-        BlockPos pos = context.origin();
-        while (level.isEmptyBlock(pos) && pos.getY() > level.getMinBuildHeight() + 2)
-        {
-            pos = pos.below();
-        }
-        final BlockState originalState = level.getBlockState(pos);
-        if (!Helpers.is(originalState, BlockTags.LEAVES) && !Helpers.is(originalState, BlockTags.LOGS))
-        {
-            level.setBlock(pos, Blocks.SNOW_BLOCK.defaultBlockState(), 2);
         }
     }
 }

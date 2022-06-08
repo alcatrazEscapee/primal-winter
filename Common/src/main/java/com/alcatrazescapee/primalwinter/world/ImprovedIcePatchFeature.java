@@ -5,11 +5,10 @@
 
 package com.alcatrazescapee.primalwinter.world;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.IcePatchFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
-
-import com.mojang.serialization.Codec;
 
 /**
  * The standard ice patch feature does not place unless it encounters a snow block. This avoids that restriction.

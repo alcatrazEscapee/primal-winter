@@ -1,15 +1,14 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import net.minecraft.world.level.biome.Biomes;
 
+import com.alcatrazescapee.primalwinter.platform.AbstractConfig;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 
-public abstract class Config
+public abstract class Config extends AbstractConfig
 {
     public static final Config INSTANCE = XPlatform.INSTANCE.config();
 
@@ -58,8 +57,8 @@ public abstract class Config
         snowSounds = build(Type.CLIENT, "snowSounds", true, "Enable snow (actually rain) weather sounds.");
         windSounds = build(Type.CLIENT, "windSounds", true, "Enable wind / snow storm weather sounds.");
 
-        fogColorDay = build(Type.CLIENT, "fogColorDay", 0xbfbfd8, 0, 0xFFFFFF, "This is the fog color during the day. This is a hex color code, with 8 bits each for red, green, blue.");
-        fogColorNight = build(Type.CLIENT, "fogColorNight", 0x0c0c19, 0, 0xFFFFFF, "This is the fog color during the night. This is a hex color code, with 8 bits each for red, green, blue.");
+        fogColorDay = build(Type.CLIENT, "fogColorDay", 0xbfbfd8, 0, 0xFFFFFF, "This is the fog color during the day. Default = #BFBFD8");
+        fogColorNight = build(Type.CLIENT, "fogColorNight", 0x0c0c19, 0, 0xFFFFFF, "This is the fog color during the night. Default = #0C0C19");
 
         weatherRenderChanges = build(Type.CLIENT, "weatherRenderChanges", true, "Changes the weather renderer to one which renders faster, denser snow. Note: this requires a world reload to take effect.");
         skyRenderChanges = build(Type.CLIENT, "skyRenderChanges", true, "Changes the sky renderer to one which does not render sunrise or sunset effects during a snowstorm. Note: this requires a world reload to take effect.");
@@ -84,23 +83,5 @@ public abstract class Config
     private List<String> getDefaultNonWinterDimensions()
     {
         return Stream.of("minecraft:the_nether", "minecraft:the_end").collect(Collectors.toList());
-    }
-
-    public void earlySetup() {}
-
-    protected abstract BooleanValue build(Type configType, String name, boolean defaultValue, String comment);
-    protected abstract DoubleValue build(Type configType, String name, double defaultValue, double minValue, double maxValue, String comment);
-    protected abstract IntValue build(Type configType, String name, int defaultValue, int minValue, int maxValue, String comment);
-    protected abstract ListValue<String> build(Type configType, String name, List<String> defaultValue, String comment);
-
-    public interface BooleanValue extends Supplier<Boolean> {}
-    public interface DoubleValue extends Supplier<Double> {}
-    public interface IntValue extends Supplier<Integer> {}
-    public interface ListValue<T> extends Supplier<List<T>> {}
-
-    public enum Type
-    {
-        CLIENT,
-        COMMON
     }
 }

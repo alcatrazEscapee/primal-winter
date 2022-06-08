@@ -16,7 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FogType;
 
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.alcatrazescapee.primalwinter.platform.client.*;
+import com.alcatrazescapee.primalwinter.platform.client.BlockColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.FogColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.FogDensityCallback;
+import com.alcatrazescapee.primalwinter.platform.client.ItemColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
+import com.alcatrazescapee.primalwinter.platform.client.XPlatformClient;
 import com.alcatrazescapee.primalwinter.util.Config;
 
 public final class ClientEventHandler
@@ -94,11 +99,11 @@ public final class ClientEventHandler
             // Smoothly interpolate fog towards the expected value - increasing faster than it decreases
             if (expectedFogDensity > prevFogDensity)
             {
-                prevFogDensity = Math.min(0.1f, prevFogDensity + expectedFogDensity);
+                prevFogDensity = Math.min(prevFogDensity + 0.0015f, expectedFogDensity);
             }
             else if (expectedFogDensity < prevFogDensity)
             {
-                prevFogDensity = Math.max(prevFogDensity - 0.05f, expectedFogDensity);
+                prevFogDensity = Math.max(prevFogDensity - 0.0002f, expectedFogDensity);
             }
 
             if (camera.getFluidInCamera() != FogType.NONE)
@@ -108,7 +113,7 @@ public final class ClientEventHandler
 
             if (prevFogDensity > 0)
             {
-                callback.accept(prevFogDensity * Config.INSTANCE.fogDensity.get().floatValue());
+                callback.accept(Mth.lerp(prevFogDensity, 1f, Config.INSTANCE.fogDensity.get().floatValue()));
             }
         }
     }

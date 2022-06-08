@@ -2,7 +2,6 @@ package com.alcatrazescapee.primalwinter.platform;
 
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;

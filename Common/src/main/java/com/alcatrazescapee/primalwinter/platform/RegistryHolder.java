@@ -1,8 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -26,4 +24,5 @@ public interface RegistryHolder<T> extends Supplier<T>
     {
         return registry().getOrCreateHolder(key());
     }
+
 }

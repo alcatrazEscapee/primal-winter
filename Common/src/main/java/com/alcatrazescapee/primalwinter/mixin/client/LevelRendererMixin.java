@@ -1,7 +1,7 @@
 package com.alcatrazescapee.primalwinter.mixin.client;
 
 import java.util.Random;
-
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
@@ -28,10 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.FogType;
-
-import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
-import com.alcatrazescapee.primalwinter.util.Config;
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,6 +35,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
+import com.alcatrazescapee.primalwinter.util.Config;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin

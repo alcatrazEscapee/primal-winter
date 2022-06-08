@@ -1,7 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform.client;
 
 import java.util.function.Function;
-
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;

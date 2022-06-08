@@ -5,8 +5,13 @@
 
 package com.alcatrazescapee.primalwinter.world;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -28,7 +33,6 @@ import net.minecraft.world.level.material.Fluids;
 
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
 import com.alcatrazescapee.primalwinter.util.Config;
-import com.mojang.serialization.Codec;
 
 
 public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfiguration>
@@ -106,7 +110,36 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         }
         return true;
     }
-
+    /**
+     * Simple BFS that extends a skylight source outwards within the array
+     */
+    private void extendSkyLights(int[] skyLights, int startX, int startZ)
+    {
+        final List<Vec3i> positions = new ArrayList<>();
+        final Set<Vec3i> visited = new HashSet<>();
+        positions.add(new Vec3i(startX, skyLights[startX + 16 * startZ], startZ));
+        visited.add(new Vec3i(startX, 0, startZ));
+        while (!positions.isEmpty())
+        {
+            final Vec3i position = positions.remove(0);
+            for (Direction direction : Direction.Plane.HORIZONTAL)
+            {
+                final int nextX = position.getX() + direction.getStepX();
+                final int nextZ = position.getZ() + direction.getStepZ();
+                final int nextSkyLight = position.getY() - 1;
+                if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
+                {
+                    final Vec3i nextVisited = new Vec3i(nextX, 0, nextZ);
+                    if (!visited.contains(nextVisited))
+                    {
+                        skyLights[nextX + 16 * nextZ] = nextSkyLight;
+                        positions.add(new Vec3i(nextX, nextSkyLight, nextZ));
+                        visited.add(nextVisited);
+                    }
+                }
+            }
+        }
+    }
     private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, Random random, int skyLight)
     {
         final Biome biome = level.getBiome(pos).value();
@@ -173,7 +206,6 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
         }
     }
-
     private int countExposedFaces(WorldGenLevel level, BlockPos pos)
     {
         int count = 0;
@@ -186,36 +218,5 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
         }
         return count;
-    }
-
-    /**
-     * Simple BFS that extends a skylight source outwards within the array
-     */
-    private void extendSkyLights(int[] skyLights, int startX, int startZ)
-    {
-        final List<Vec3i> positions = new ArrayList<>();
-        final Set<Vec3i> visited = new HashSet<>();
-        positions.add(new Vec3i(startX, skyLights[startX + 16 * startZ], startZ));
-        visited.add(new Vec3i(startX, 0, startZ));
-        while (!positions.isEmpty())
-        {
-            final Vec3i position = positions.remove(0);
-            for (Direction direction : Direction.Plane.HORIZONTAL)
-            {
-                final int nextX = position.getX() + direction.getStepX();
-                final int nextZ = position.getZ() + direction.getStepZ();
-                final int nextSkyLight = position.getY() - 1;
-                if (nextX >= 0 && nextX < 16 && nextZ >= 0 && nextZ < 16 && skyLights[nextX + 16 * nextZ] < nextSkyLight)
-                {
-                    final Vec3i nextVisited = new Vec3i(nextX, 0, nextZ);
-                    if (!visited.contains(nextVisited))
-                    {
-                        skyLights[nextX + 16 * nextZ] = nextSkyLight;
-                        positions.add(new Vec3i(nextX, nextSkyLight, nextZ));
-                        visited.add(nextVisited);
-                    }
-                }
-            }
-        }
     }
 }

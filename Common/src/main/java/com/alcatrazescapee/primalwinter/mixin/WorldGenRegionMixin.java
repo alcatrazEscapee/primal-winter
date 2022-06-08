@@ -1,20 +1,19 @@
 package com.alcatrazescapee.primalwinter.mixin;
 
 import java.util.function.Supplier;
-
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.alcatrazescapee.primalwinter.util.Helpers;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
+import com.alcatrazescapee.primalwinter.util.Helpers;
 
 @Mixin(WorldGenRegion.class)
 public abstract class WorldGenRegionMixin
