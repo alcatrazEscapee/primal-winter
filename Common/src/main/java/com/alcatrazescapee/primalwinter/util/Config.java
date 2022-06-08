@@ -84,6 +84,8 @@ public abstract class Config
         return Stream.of("minecraft:the_nether", "minecraft:the_end").collect(Collectors.toList());
     }
 
+    public void earlySetup() {}
+
     protected abstract BooleanValue build(Type configType, String name, boolean defaultValue, String comment);
     protected abstract DoubleValue build(Type configType, String name, double defaultValue, double minValue, double maxValue, String comment);
     protected abstract IntValue build(Type configType, String name, int defaultValue, int minValue, int maxValue, String comment);

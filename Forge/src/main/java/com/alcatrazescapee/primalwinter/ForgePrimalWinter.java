@@ -7,12 +7,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import com.alcatrazescapee.primalwinter.client.ForgePrimalWinterClient;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
@@ -30,16 +30,22 @@ public final class ForgePrimalWinter
         modBus.addListener((FMLCommonSetupEvent event) -> PrimalWinter.lateSetup());
 
         forgeBus.addListener((RegisterCommandsEvent event) -> Helpers.registerCommands(event.getDispatcher()));
+        forgeBus.addListener((WorldEvent.Load event) -> Helpers.setLevelToThunder(event.getWorld()));
         forgeBus.addListener(this::modifyBiomes);
 
         if (XPlatform.INSTANCE.isDedicatedClient())
         {
-            ForgePrimalWinterClient.setup();
+            ForgePrimalWinterClient.earlySetup();
         }
     }
 
     private void modifyBiomes(BiomeLoadingEvent event)
     {
+        if (!Helpers.isWinterBiome(event.getName()))
+        {
+            return;
+        }
+
         event.setClimate(new Biome.ClimateSettings(Biome.Precipitation.SNOW, -0.5f, Biome.TemperatureModifier.NONE, event.getClimate().downfall));
 
         final BiomeSpecialEffects effects = event.getEffects();

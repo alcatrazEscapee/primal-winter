@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.WorldGenLevel;
@@ -31,13 +30,10 @@ import com.mojang.serialization.Codec;
 
 public final class PrimalWinterWorldGen
 {
-    public static final RegistryInterface<Feature<?>> FEATURES = XPlatform.INSTANCE.registryInterface(Registry.FEATURE);
-    public static final RegistryInterface<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = XPlatform.INSTANCE.registryInterface(BuiltinRegistries.CONFIGURED_FEATURE);
-    public static final RegistryInterface<PlacedFeature> PLACED_FEATURES = XPlatform.INSTANCE.registryInterface(BuiltinRegistries.PLACED_FEATURE);
-
-
     public static final class Features
     {
+        public static final RegistryInterface<Feature<?>> FEATURES = XPlatform.INSTANCE.registryInterface(Registry.FEATURE);
+
         public static final RegistryHolder<ImprovedFreezeTopLayerFeature> FREEZE_TOP_LAYER = register("freeze_top_layer", ImprovedFreezeTopLayerFeature::new, NoneFeatureConfiguration.CODEC);
         public static final RegistryHolder<ImprovedIceSpikeFeature> ICE_SPIKES = register("ice_spikes", ImprovedIceSpikeFeature::new, NoneFeatureConfiguration.CODEC);
         public static final RegistryHolder<ImprovedIcePatchFeature> ICE_PATCH = register("ice_patch", ImprovedIcePatchFeature::new, DiskConfiguration.CODEC);
@@ -50,6 +46,8 @@ public final class PrimalWinterWorldGen
 
     public static final class Configured
     {
+        public static final RegistryInterface<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = XPlatform.INSTANCE.registryInterface(BuiltinRegistries.CONFIGURED_FEATURE);
+
         public static final RegistryHolder<ConfiguredFeature<?, ?>> FREEZE_TOP_LAYER = register("freeze_top_layer", Features.FREEZE_TOP_LAYER, NoneFeatureConfiguration.INSTANCE);
         public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_SPIKES = register("ice_spikes", Features.ICE_SPIKES, NoneFeatureConfiguration.INSTANCE);
         public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_PATCH = register("ice_patch", Features.ICE_PATCH, new DiskConfiguration(Blocks.PACKED_ICE.defaultBlockState(), UniformInt.of(2, 3), 1, List.of(Blocks.DIRT.defaultBlockState(), Blocks.GRASS_BLOCK.defaultBlockState(), Blocks.PODZOL.defaultBlockState(), Blocks.COARSE_DIRT.defaultBlockState(), Blocks.MYCELIUM.defaultBlockState(), Blocks.SNOW_BLOCK.defaultBlockState(), Blocks.ICE.defaultBlockState())));
@@ -62,6 +60,8 @@ public final class PrimalWinterWorldGen
 
     public static final class Placed
     {
+        public static final RegistryInterface<PlacedFeature> PLACED_FEATURES = XPlatform.INSTANCE.registryInterface(BuiltinRegistries.PLACED_FEATURE);
+
         public static final RegistryHolder<PlacedFeature> FREEZE_TOP_LAYER = register("freeze_top_layer", Configured.FREEZE_TOP_LAYER);
         public static final RegistryHolder<PlacedFeature> ICE_SPIKES = register("ice_spikes", Configured.ICE_SPIKES);
         public static final RegistryHolder<PlacedFeature> ICE_PATCH = register("ice_patch", Configured.ICE_PATCH);

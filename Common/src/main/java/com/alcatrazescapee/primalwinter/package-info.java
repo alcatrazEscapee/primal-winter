@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-package com.alcatrazescapee.primalwinter.client;
+package com.alcatrazescapee.primalwinter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

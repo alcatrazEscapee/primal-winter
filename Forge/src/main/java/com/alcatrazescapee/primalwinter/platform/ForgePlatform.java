@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import com.alcatrazescapee.primalwinter.util.Config;
@@ -40,6 +41,6 @@ public final class ForgePlatform implements XPlatform
     @Override
     public boolean isDedicatedClient()
     {
-        return FMLLoader.getDist() == Dist.CLIENT;
+        return FMLEnvironment.dist == Dist.CLIENT;
     }
 }

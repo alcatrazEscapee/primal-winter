@@ -6,20 +6,29 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import com.alcatrazescapee.primalwinter.PrimalWinter;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 public final class Helpers
 {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        if (!Config.INSTANCE.enableWeatherCommand.get())
+        final boolean enable = Config.INSTANCE.enableWeatherCommand.get();
+        LOGGER.info("Vanilla /weather enabled = {}", enable);
+        if (!enable)
         {
             // Vanilla weather command... NOT ALLOWED
             dispatcher.getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
@@ -27,6 +36,15 @@ public final class Helpers
                 source.getSource().sendSuccess(new TextComponent("Not even a command can overcome this storm... (This command is disabled by Primal Winter)"), false);
                 return 0;
             }));
+        }
+    }
+
+    public static void setLevelToThunder(LevelAccessor levelIn)
+    {
+        if (levelIn instanceof ServerLevel level && isWinterDimension(level.dimension().location()))
+        {
+            // Copied from WeatherCommand
+            level.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
         }
     }
 

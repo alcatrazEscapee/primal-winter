@@ -1,4 +1,4 @@
-package com.alcatrazescapee.primalwinter.client;
+package com.alcatrazescapee.primalwinter;
 
 import java.util.function.Function;
 
@@ -7,6 +7,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 
+import com.alcatrazescapee.primalwinter.client.ClientEventHandler;
 import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;

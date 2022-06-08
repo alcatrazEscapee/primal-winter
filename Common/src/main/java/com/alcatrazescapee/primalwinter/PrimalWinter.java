@@ -2,31 +2,40 @@ package com.alcatrazescapee.primalwinter;
 
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
 import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
-import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.util.Config;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 public final class PrimalWinter
 {
     public static final String MOD_ID = "primalwinter";
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void earlySetup()
     {
+        LOGGER.info("Early XPlatform Setup");
+
+        Config.INSTANCE.earlySetup();
+
         PrimalWinterBlocks.BLOCKS.earlySetup();
         PrimalWinterBlocks.ITEMS.earlySetup();
-        PrimalWinterWorldGen.FEATURES.earlySetup();
-        PrimalWinterWorldGen.CONFIGURED_FEATURES.earlySetup();
-        PrimalWinterWorldGen.PLACED_FEATURES.earlySetup();
+        PrimalWinterWorldGen.Features.FEATURES.earlySetup();
+        PrimalWinterWorldGen.Configured.CONFIGURED_FEATURES.earlySetup();
+        PrimalWinterWorldGen.Placed.PLACED_FEATURES.earlySetup();
         PrimalWinterAmbience.PARTICLE_TYPES.earlySetup();
         PrimalWinterAmbience.SOUND_EVENTS.earlySetup();
     }
 
     public static void lateSetup()
     {
+        LOGGER.info("Late XPlatform Setup");
+
         PrimalWinterBlocks.BLOCKS.lateSetup();
         PrimalWinterBlocks.ITEMS.lateSetup();
-        PrimalWinterWorldGen.FEATURES.lateSetup();
-        PrimalWinterWorldGen.CONFIGURED_FEATURES.lateSetup();
-        PrimalWinterWorldGen.PLACED_FEATURES.lateSetup();
+        PrimalWinterWorldGen.Features.FEATURES.lateSetup();
+        PrimalWinterWorldGen.Configured.CONFIGURED_FEATURES.lateSetup();
+        PrimalWinterWorldGen.Placed.PLACED_FEATURES.lateSetup();
         PrimalWinterAmbience.PARTICLE_TYPES.lateSetup();
         PrimalWinterAmbience.SOUND_EVENTS.lateSetup();
 

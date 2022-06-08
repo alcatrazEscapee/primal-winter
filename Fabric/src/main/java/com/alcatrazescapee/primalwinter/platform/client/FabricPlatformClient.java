@@ -1,4 +1,4 @@
-package com.alcatrazescapee.primalwinter.client;
+package com.alcatrazescapee.primalwinter.platform.client;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;

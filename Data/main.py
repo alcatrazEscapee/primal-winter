@@ -54,7 +54,21 @@ def main():
     })
     b.with_lang(lang('snowy grass path'))
 
-    b = common.blockstate('snowy_vine', variants=VINE_VARIANTS)
+    faces = (('up', {'x': 270}), ('north', {}), ('east', {'y': 180}), ('west', {'y': 270}), ('south', {'y': 180}))
+    vine_element = lambda texture, tint: {
+        'from': [0, 0, 0.8],
+        'to': [16, 16, 0.8],
+        'shade': False,
+        'faces': {
+            'north': {'uv': [16, 0, 0, 16], 'texture': texture, 'tintindex': tint},
+            'south': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
+        }
+    }
+    b = common.blockstate_multipart(
+        'snowy_vine',
+        *(({face: 'true'}, {'model': 'primalwinter:block/snowy_vine', **rot, 'uvlock': True}) for face, rot in faces),
+        *(({face: 'false' for face, _ in faces}, {'model': 'primalwinter:block/snowy_vine', **rot, 'uvlock': True}) for _, rot in faces)
+    )
     b.with_block_loot({
         'entries': {
             'type': 'loot_table',
@@ -62,18 +76,10 @@ def main():
         }
     })
     b.with_lang(lang('snowy vine'))
-
+    b.with_block_model({
+        'overlay': 'primalwinter:block/snowy_leaves_overlay'
+    }, parent='block/vine', elements=[vine_element('#vine', 0), vine_element('#overlay', 1)])
     common.item_model('snowy_vine', 'block/vine', 'primalwinter:block/snowy_leaves_overlay')
-
-    for suffix in ('_1', '_2', '_3', '_4', '_1u', '_2u', '_3u', '_4u', '_2_opposite', '_2u_opposite', '_u'):
-        elements = []
-        for suffixes, element_factory in VINE_ELEMENTS.items():
-            if suffix in suffixes:
-                elements.append(element_factory('#vine', 0))
-                elements.append(element_factory('#overlay', 1))
-        common.block('snowy_vine' + suffix).with_block_model({
-            'overlay': 'primalwinter:block/snowy_leaves_overlay'
-        }, parent='block/vine' + suffix, elements=elements)
 
     for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce'):
         b = common.blockstate('snowy_%s_log' % wood, variants={
@@ -137,89 +143,6 @@ def main():
 def lang(key: str, *args) -> str:
     return ((key % args) if len(args) > 0 else key).replace('_', ' ').replace('/', ' ').title()
 
-
-VINE_VARIANTS = {
-    'east=false,north=false,south=false,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_1'},
-    'east=false,north=false,south=true,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_1'},
-    'east=false,north=false,south=false,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_1', 'y': 90},
-    'east=false,north=true,south=false,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_1', 'y': 180},
-    'east=true,north=false,south=false,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_1', 'y': 270},
-    'east=true,north=true,south=false,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_2'},
-    'east=true,north=false,south=true,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_2', 'y': 90},
-    'east=false,north=false,south=true,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_2', 'y': 180},
-    'east=false,north=true,south=false,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_2', 'y': 270},
-    'east=true,north=false,south=false,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_2_opposite'},
-    'east=false,north=true,south=true,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_2_opposite', 'y': 90},
-    'east=true,north=true,south=true,up=false,west=false': {'model': 'primalwinter:block/snowy_vine_3'},
-    'east=true,north=false,south=true,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_3', 'y': 90},
-    'east=false,north=true,south=true,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_3', 'y': 180},
-    'east=true,north=true,south=false,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_3', 'y': 270},
-    'east=true,north=true,south=true,up=false,west=true': {'model': 'primalwinter:block/snowy_vine_4'},
-    'east=false,north=false,south=false,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_u'},
-    'east=false,north=false,south=true,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_1u'},
-    'east=false,north=false,south=false,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_1u', 'y': 90},
-    'east=false,north=true,south=false,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_1u', 'y': 180},
-    'east=true,north=false,south=false,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_1u', 'y': 270},
-    'east=true,north=true,south=false,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_2u'},
-    'east=true,north=false,south=true,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_2u', 'y': 90},
-    'east=false,north=false,south=true,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_2u', 'y': 180},
-    'east=false,north=true,south=false,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_2u', 'y': 270},
-    'east=true,north=false,south=false,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_2u_opposite'},
-    'east=false,north=true,south=true,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_2u_opposite', 'y': 90},
-    'east=true,north=true,south=true,up=true,west=false': {'model': 'primalwinter:block/snowy_vine_3u'},
-    'east=true,north=false,south=true,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_3u', 'y': 90},
-    'east=false,north=true,south=true,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_3u', 'y': 180},
-    'east=true,north=true,south=false,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_3u', 'y': 270},
-    'east=true,north=true,south=true,up=true,west=true': {'model': 'primalwinter:block/snowy_vine_4u'}
-}
-
-VINE_ELEMENTS = {
-    ('_1', '_3', '_4', '_1u', '_3u', '_4u'): lambda texture, tint: {
-        'from': [0, 0, 15.2],
-        'to': [16, 16, 15.2],
-        'shade': False,
-        'faces': {
-            'north': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint},
-            'south': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    },
-    ('_2', '_3', '_4', '_2u', '_3u', '_4u'): lambda texture, tint: {
-        'from': [0, 0, 0.8],
-        'to': [16, 16, 0.8],
-        'shade': False,
-        'faces': {
-            'north': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint},
-            'south': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    },
-    ('_2', '_3', '_4', '_2u', '_3u', '_4u', '_2_opposite', '_2u_opposite'): lambda texture, tint: {
-        'from': [15.2, 0, 0],
-        'to': [15.2, 16, 16],
-        'shade': False,
-        'faces': {
-            'west': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint},
-            'east': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    },
-    ('_4', '_4u', '_2_opposite', '_2u_opposite'): lambda texture, tint: {
-        'from': [0.8, 0, 0],
-        'to': [0.8, 16, 16],
-        'shade': False,
-        'faces': {
-            'west': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint},
-            'east': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    },
-    ('_1u', '_2u', '_3u', '_4u', '_2u_opposite', '_u'): lambda texture, tint: {
-        'from': [0, 15.2, 0],
-        'to': [16, 15.2, 16],
-        'shade': False,
-        'faces': {
-            'down': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint},
-            'up': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    }
-}
 
 if __name__ == '__main__':
     main()
