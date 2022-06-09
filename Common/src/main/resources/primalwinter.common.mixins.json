@@ -5,8 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AxeItemAccessor",
-    "WorldGenRegionMixin",
-    "ServerLevelMixin"
+    "ServerLevelMixin",
+    "SurfaceSystemMixin",
+    "WorldGenRegionMixin"
   ],
   "client": [
     "client.LevelRendererMixin"

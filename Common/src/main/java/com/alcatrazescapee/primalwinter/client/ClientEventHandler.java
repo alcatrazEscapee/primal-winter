@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.client;
 
+import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
@@ -26,7 +27,8 @@ import com.alcatrazescapee.primalwinter.util.Config;
 
 public final class ClientEventHandler
 {
-    private static float prevFogDensity = 0f;
+    private static float prevFogDensity = -1f;
+    private static long prevFogTick = -1L;
 
     public static void setupClient()
     {
@@ -82,38 +84,49 @@ public final class ClientEventHandler
         }
     }
 
-    public static void renderFogDensity(Camera camera, float partialTick, FogDensityCallback callback)
+    public static void renderFogDensity(Camera camera, FogDensityCallback callback)
     {
         if (camera.getEntity() instanceof Player player)
         {
+            final long thisTick = Util.getMillis();
+            final boolean firstTick = prevFogTick == -1;
+            final float deltaTick = firstTick ? 1e10f : (thisTick - prevFogTick) * 0.00015f;
+
+            prevFogTick = thisTick;
+
             float expectedFogDensity = 0f;
 
             final Level level = player.level;
             final Biome biome = level.getBiome(camera.getBlockPosition()).value();
             if (level.isRaining() && biome.getPrecipitation() == Biome.Precipitation.SNOW && biome.coldEnoughToSnow(camera.getBlockPosition()))
             {
-                final int light = level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(partialTick)));
-                expectedFogDensity = Mth.clampedMap(light, 3f, 15f, 0f, 1f);
+                final int light = level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition()));
+                expectedFogDensity = Mth.clampedMap(light, 0f, 15f, 0f, 1f);
             }
 
             // Smoothly interpolate fog towards the expected value - increasing faster than it decreases
             if (expectedFogDensity > prevFogDensity)
             {
-                prevFogDensity = Math.min(prevFogDensity + 0.0015f, expectedFogDensity);
+                prevFogDensity = Math.min(prevFogDensity + 4f * deltaTick, expectedFogDensity);
             }
             else if (expectedFogDensity < prevFogDensity)
             {
-                prevFogDensity = Math.max(prevFogDensity - 0.0002f, expectedFogDensity);
+                prevFogDensity = Math.max(prevFogDensity - deltaTick, expectedFogDensity);
             }
 
             if (camera.getFluidInCamera() != FogType.NONE)
             {
-                prevFogDensity = 0; // Immediately cancel fog if there's another fog effect going on
+                prevFogDensity = -1; // Immediately cancel fog if there's another fog effect going on
+                prevFogTick = -1;
             }
 
             if (prevFogDensity > 0)
             {
-                callback.accept(Mth.lerp(prevFogDensity, 1f, Config.INSTANCE.fogDensity.get().floatValue()));
+                final float scaledDelta = 1 - (1 - prevFogDensity) * (1 - prevFogDensity);
+                final float fogDensity = Config.INSTANCE.fogDensity.get().floatValue();
+                final float farPlaneScale = Mth.lerp(scaledDelta, 1f, fogDensity);
+                final float nearPlaneScale = Mth.lerp(scaledDelta, 1f, 0.3f * fogDensity);
+                callback.accept(nearPlaneScale, farPlaneScale);
             }
         }
     }

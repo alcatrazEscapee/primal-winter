@@ -42,13 +42,10 @@ public final class ForgePrimalWinterClient
             event.setGreen(green);
         }));
 
-        forgeBus.addListener((EntityViewRenderEvent.RenderFogEvent event) -> ClientEventHandler.renderFogDensity(event.getCamera(), (float) event.getPartialTicks(), density -> {
-            if (density < 1f)
-            {
-                event.scaleNearPlaneDistance(density * 0.3f);
-                event.scaleFarPlaneDistance(density);
-                event.setCanceled(true);
-            }
+        forgeBus.addListener((EntityViewRenderEvent.RenderFogEvent event) -> ClientEventHandler.renderFogDensity(event.getCamera(), (nearPlane, farPlane) -> {
+            event.scaleNearPlaneDistance(nearPlane);
+            event.scaleFarPlaneDistance(farPlane);
+            event.setCanceled(true);
         }));
     }
 }

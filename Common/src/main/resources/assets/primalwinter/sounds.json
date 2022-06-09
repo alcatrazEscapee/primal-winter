@@ -1,0 +1,9 @@
+{
+  "wind": {
+    "category": "weather",
+    "subtitle": "primalwinter.subtitle.wind",
+    "sounds": [
+      "primalwinter:wind"
+    ]
+  }
+}
