@@ -31,6 +31,7 @@ public final class FabricPlatform implements XPlatform
     {
         return FabricItemGroupBuilder.build(id, icon);
     }
+
     @Override
     public boolean isDedicatedClient()
     {

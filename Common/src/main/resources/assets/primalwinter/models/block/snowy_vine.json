@@ -60,8 +60,7 @@
             0,
             16
           ],
-          "texture": "#overlay",
-          "tintindex": 1
+          "texture": "#overlay"
         },
         "south": {
           "uv": [
@@ -70,8 +69,7 @@
             16,
             16
           ],
-          "texture": "#overlay",
-          "tintindex": 1
+          "texture": "#overlay"
         }
       }
     }

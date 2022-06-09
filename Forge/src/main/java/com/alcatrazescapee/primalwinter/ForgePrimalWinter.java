@@ -14,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.util.EventHandler;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
 
@@ -29,8 +30,8 @@ public final class ForgePrimalWinter
 
         modBus.addListener((FMLCommonSetupEvent event) -> PrimalWinter.lateSetup());
 
-        forgeBus.addListener((RegisterCommandsEvent event) -> Helpers.registerCommands(event.getDispatcher()));
-        forgeBus.addListener((WorldEvent.Load event) -> Helpers.setLevelToThunder(event.getWorld()));
+        forgeBus.addListener((RegisterCommandsEvent event) -> EventHandler.registerCommands(event.getDispatcher()));
+        forgeBus.addListener((WorldEvent.Load event) -> EventHandler.setLevelToThunder(event.getWorld()));
         forgeBus.addListener(this::modifyBiomes);
 
         if (XPlatform.INSTANCE.isDedicatedClient())

@@ -1,11 +1,11 @@
 package com.alcatrazescapee.primalwinter;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+import com.alcatrazescapee.primalwinter.util.EventHandler;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
 import net.fabricmc.api.ModInitializer;
@@ -23,7 +23,9 @@ public final class FabricPrimalWinter implements ModInitializer {
         PrimalWinter.earlySetup();
         PrimalWinter.lateSetup();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> Helpers.registerCommands(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> EventHandler.registerCommands(dispatcher));
+
+        ServerWorldEvents.LOAD.register((server, level) -> EventHandler.setLevelToThunder(level));
 
         BiomeModifications.create(Helpers.identifier("winterize")).add(ModificationPhase.REPLACEMENTS, BiomeSelectors.foundInOverworld(), context -> {
             final BiomeModificationContext.WeatherContext weather = context.getWeather();

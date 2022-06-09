@@ -38,23 +38,23 @@ def main():
         })
         b.with_lang(lang('snowy ' + block))
 
-    b = common.blockstate('snowy_grass_path', variants={
-        '': [{'model': 'primalwinter:block/snowy_grass_path', 'y': y} for y in (None, 90, 180, 270)]
+    b = common.blockstate('snowy_dirt_path', variants={
+        '': [{'model': 'primalwinter:block/snowy_dirt_path', 'y': y} for y in (None, 90, 180, 270)]
     }, use_default_model=False)
     b.with_item_model()
     b.with_block_model(textures={
         'top': 'minecraft:block/snow',
-        'side': 'primalwinter:block/snowy_grass_path_side'
-    }, parent='block/grass_path')
+        'side': 'primalwinter:block/snowy_dirt_path_side'
+    }, parent='block/dirt_path')
     b.with_block_loot({
         'entries': {
             'type': 'loot_table',
-            'name': 'minecraft:blocks/grass_path'
+            'name': 'minecraft:blocks/dirt_path'
         }
     })
-    b.with_lang(lang('snowy grass path'))
+    b.with_lang(lang('snowy dirt path'))
 
-    faces = (('up', {'x': 270}), ('north', {}), ('east', {'y': 180}), ('west', {'y': 270}), ('south', {'y': 180}))
+    faces = (('up', {'x': 270}), ('north', {}), ('east', {'y': 90}), ('west', {'y': 270}), ('south', {'y': 180}))
     vine_element = lambda texture, tint: {
         'from': [0, 0, 0.8],
         'to': [16, 16, 0.8],
@@ -78,7 +78,7 @@ def main():
     b.with_lang(lang('snowy vine'))
     b.with_block_model({
         'overlay': 'primalwinter:block/snowy_leaves_overlay'
-    }, parent='block/vine', elements=[vine_element('#vine', 0), vine_element('#overlay', 1)])
+    }, parent='block/vine', elements=[vine_element('#vine', 0), vine_element('#overlay', None)])
     common.item_model('snowy_vine', 'block/vine', 'primalwinter:block/snowy_leaves_overlay')
 
     for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce'):

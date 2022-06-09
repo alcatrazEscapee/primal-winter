@@ -65,7 +65,7 @@ public final class FabricConfig
             @Override
             protected IntValue build(Type configType, String name, int defaultValue, int minValue, int maxValue, String comment)
             {
-                return builder(configType, name, b -> b.beginValue(name, INTEGER.withMaximum(minValue).withMaximum(maxValue), defaultValue).withComment(comment), INTEGER)::get;
+                return builder(configType, name, b -> b.beginValue(name, INTEGER.withMinimum(minValue).withMaximum(maxValue), defaultValue).withComment(comment), INTEGER)::get;
             }
 
             @Override

@@ -44,7 +44,7 @@ public final class ClientEventHandler
             {
                 return world != null && pos != null ? BiomeColors.getAverageFoliageColor(world, pos) : FoliageColor.getDefaultColor();
             }
-            return 0;
+            return 0xFFFFFF;
         }, PrimalWinterBlocks.SNOWY_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_DARK_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_JUNGLE_LEAVES.get(), PrimalWinterBlocks.SNOWY_ACACIA_LEAVES.get(), PrimalWinterBlocks.SNOWY_VINE.get());
     }
 
@@ -56,7 +56,7 @@ public final class ClientEventHandler
                 BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
                 return Minecraft.getInstance().getBlockColors().getColor(state, null, null, tintIndex);
             }
-            return 0;
+            return 0xFFFFFF;
         }, PrimalWinterBlocks.SNOWY_VINE.get(), PrimalWinterBlocks.SNOWY_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_SPRUCE_LEAVES.get(), PrimalWinterBlocks.SNOWY_BIRCH_LEAVES.get(), PrimalWinterBlocks.SNOWY_JUNGLE_LEAVES.get(), PrimalWinterBlocks.SNOWY_ACACIA_LEAVES.get(), PrimalWinterBlocks.SNOWY_DARK_OAK_LEAVES.get());
     }
 

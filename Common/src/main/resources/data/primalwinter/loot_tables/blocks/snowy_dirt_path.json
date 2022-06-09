@@ -8,7 +8,7 @@
       "entries": [
         {
           "type": "loot_table",
-          "name": "minecraft:blocks/grass_path"
+          "name": "minecraft:blocks/dirt_path"
         }
       ],
       "conditions": [

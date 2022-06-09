@@ -17,11 +17,14 @@
   "entrypoints": {
     "main": [
       "com.alcatrazescapee.primalwinter.FabricPrimalWinter"
+    ],
+    "client": [
+      "com.alcatrazescapee.primalwinter.FabricPrimalWinterClient"
     ]
   },
   "mixins": [
     "primalwinter.mixins.json",
-    "primalwinter.common.mixins.jcon"
+    "primalwinter.common.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.13",
