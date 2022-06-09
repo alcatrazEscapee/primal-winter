@@ -22,7 +22,7 @@ public interface XPlatform
 
     <T> RegistryInterface<T> registryInterface(Registry<T> registry);
 
-    Config config();
+    Config createConfig();
 
     CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon);
 

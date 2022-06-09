@@ -6,22 +6,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.BaseDiskFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.DiskReplaceFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -35,28 +30,9 @@ import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
 import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
-import com.alcatrazescapee.primalwinter.util.Helpers;
 
 public final class PrimalWinterWorldGen
 {
-    /**
-     * For certain vanilla features which do a check at the starting position, if it's a full block of snow (and thus only generating in very specific locations), we need to fake the initial conditions for other biomes.
-     */
-    public static void adjustPosForIceFeature(FeaturePlaceContext<?> context)
-    {
-        final WorldGenLevel level = context.level();
-        BlockPos pos = context.origin();
-        while (level.isEmptyBlock(pos) && pos.getY() > level.getMinBuildHeight() + 2)
-        {
-            pos = pos.below();
-        }
-        final BlockState originalState = level.getBlockState(pos);
-        if (!Helpers.is(originalState, BlockTags.LEAVES) && !Helpers.is(originalState, BlockTags.LOGS))
-        {
-            level.setBlock(pos, Blocks.SNOW_BLOCK.defaultBlockState(), 2);
-        }
-    }
-
     public static final class Features
     {
         public static final RegistryInterface<Feature<?>> FEATURES = XPlatform.INSTANCE.registryInterface(Registry.FEATURE);
@@ -79,8 +55,8 @@ public final class PrimalWinterWorldGen
         public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_SPIKES = register("ice_spikes", Features.ICE_SPIKES, () -> NoneFeatureConfiguration.INSTANCE);
 
         public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_PATCH = register("ice_patch", Features.DISK, () -> new DiskConfiguration(Blocks.PACKED_ICE.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
-        public static final RegistryHolder<ConfiguredFeature<?, ?>> SNOW_PATCH = register("snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.SNOW_BLOCK.defaultBlockState(), UniformInt.of(1, 3), 1, snowyReplaceableBlocks()));
-        public static final RegistryHolder<ConfiguredFeature<?, ?>> POWDER_SNOW_PATCH = register("powder_snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.POWDER_SNOW.defaultBlockState(), UniformInt.of(1, 3), 1, snowyReplaceableBlocks()));
+        public static final RegistryHolder<ConfiguredFeature<?, ?>> SNOW_PATCH = register("snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.SNOW_BLOCK.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
+        public static final RegistryHolder<ConfiguredFeature<?, ?>> POWDER_SNOW_PATCH = register("powder_snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.POWDER_SNOW.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
 
         private static <C extends FeatureConfiguration, F extends Feature<C>> RegistryHolder<ConfiguredFeature<?, ?>> register(String name, Supplier<F> feature, Supplier<C> config)
         {
@@ -100,7 +76,7 @@ public final class PrimalWinterWorldGen
         public static final RegistryInterface<PlacedFeature> PLACED_FEATURES = XPlatform.INSTANCE.registryInterface(BuiltinRegistries.PLACED_FEATURE);
 
         public static final RegistryHolder<PlacedFeature> FREEZE_TOP_LAYER = register("freeze_top_layer", Configured.FREEZE_TOP_LAYER);
-        public static final RegistryHolder<PlacedFeature> ICE_SPIKES = register("ice_spikes", Configured.ICE_SPIKES, RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome());
+        public static final RegistryHolder<PlacedFeature> ICE_SPIKES = register("ice_spikes", Configured.ICE_SPIKES, RarityFilter.onAverageOnceEvery(8), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome());
         public static final RegistryHolder<PlacedFeature> ICE_PATCH = register("ice_patch", Configured.ICE_PATCH, InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome());
 
         public static final RegistryHolder<PlacedFeature> SNOW_PATCH = register("snow_patch", Configured.SNOW_PATCH, InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome());

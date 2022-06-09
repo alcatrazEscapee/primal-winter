@@ -3,14 +3,16 @@ package com.alcatrazescapee.primalwinter.util;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biomes;
+import org.jetbrains.annotations.Nullable;
 
 import com.alcatrazescapee.primalwinter.platform.AbstractConfig;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 
 public abstract class Config extends AbstractConfig
 {
-    public static final Config INSTANCE = XPlatform.INSTANCE.config();
+    public static final Config INSTANCE = XPlatform.INSTANCE.createConfig();
 
     // Common
     public final BooleanValue enableWeatherCommand;
@@ -42,7 +44,7 @@ public abstract class Config extends AbstractConfig
         // Common
         enableWeatherCommand = build(Type.COMMON, "enableWeatherCommand", false, "Should the vanilla /weather be disabled? Any changes require a world restart to take effect.");
 
-        enableSnowAccumulationDuringWorldgen = build(Type.COMMON, "enableSnowAccumulationDuringWorldgen", true, " If true, snow will be layered higher than one layer during world generation.");
+        enableSnowAccumulationDuringWorldgen = build(Type.COMMON, "enableSnowAccumulationDuringWorldgen", false, " If true, snow will be layered higher than one layer during world generation. Note: due to snow layers being > 1 block tall, this tends to prevent most passive (and hostile) mob spawning on the surface, since there are no places to spawn.");
         enableSnowAccumulationDuringWeather = build(Type.COMMON, "enableSnowAccumulationDuringWeather", true, " If true, snow will be layered higher than one layer during weather (snow).");
 
         nonWinterBiomes = build(Type.COMMON, "nonWinterBiomes", getDefaultNonWinterBiomes(), "A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.");
@@ -62,6 +64,24 @@ public abstract class Config extends AbstractConfig
 
         weatherRenderChanges = build(Type.CLIENT, "weatherRenderChanges", true, "Changes the weather renderer to one which renders faster, denser snow. Note: this requires a world reload to take effect.");
         skyRenderChanges = build(Type.CLIENT, "skyRenderChanges", true, "Changes the sky renderer to one which does not render sunrise or sunset effects during a snowstorm. Note: this requires a world reload to take effect.");
+    }
+
+    public boolean isWinterDimension(ResourceLocation id)
+    {
+        final String name = id.toString();
+        final Stream<? extends String> stream = INSTANCE.nonWinterDimensions.get().stream();
+        return INSTANCE.invertNonWinterDimensions.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
+    }
+
+    public boolean isWinterBiome(@Nullable ResourceLocation id)
+    {
+        if (id != null)
+        {
+            final String name = id.toString();
+            final Stream<? extends String> stream = INSTANCE.nonWinterBiomes.get().stream();
+            return INSTANCE.invertNonWinterBiomes.get() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
+        }
+        return false;
     }
 
     private List<String> getDefaultNonWinterBiomes()

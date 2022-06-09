@@ -75,7 +75,7 @@ public final class EventHandler
     }
     public static void setLevelToThunder(LevelAccessor maybeLevel)
     {
-        if (maybeLevel instanceof ServerLevel level && Helpers.isWinterDimension(level.dimension().location()))
+        if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension().location()))
         {
             // Copied from WeatherCommand
             level.setWeatherParameters(0, Integer.MAX_VALUE, true, true);

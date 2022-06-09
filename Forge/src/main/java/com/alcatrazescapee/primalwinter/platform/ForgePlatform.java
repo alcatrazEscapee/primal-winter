@@ -21,7 +21,7 @@ public final class ForgePlatform implements XPlatform
     }
 
     @Override
-    public Config config()
+    public Config createConfig()
     {
         return ForgeConfig.create();
     }

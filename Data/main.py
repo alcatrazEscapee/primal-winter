@@ -38,6 +38,12 @@ def main():
         })
         b.with_lang(lang('snowy ' + block))
 
+    for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel'):
+        common.block_tag('minecraft:mineable/shovel', 'primalwinter:snowy_%s' % block)
+
+    for block in ('stone', 'granite', 'diorite', 'andesite', 'white_terracotta', 'orange_terracotta', 'terracotta', 'yellow_terracotta', 'brown_terracotta', 'red_terracotta', 'light_gray_terracotta'):
+        common.block_tag('minecraft:mineable/pickaxe', 'primalwinter:snowy_%s' % block)
+
     b = common.blockstate('snowy_dirt_path', variants={
         '': [{'model': 'primalwinter:block/snowy_dirt_path', 'y': y} for y in (None, 90, 180, 270)]
     }, use_default_model=False)
@@ -53,17 +59,9 @@ def main():
         }
     })
     b.with_lang(lang('snowy dirt path'))
+    b.with_tag('minecraft:mineable/shovel')
 
     faces = (('up', {'x': 270}), ('north', {}), ('east', {'y': 90}), ('west', {'y': 270}), ('south', {'y': 180}))
-    vine_element = lambda texture, tint: {
-        'from': [0, 0, 0.8],
-        'to': [16, 16, 0.8],
-        'shade': False,
-        'faces': {
-            'north': {'uv': [16, 0, 0, 16], 'texture': texture, 'tintindex': tint},
-            'south': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
-        }
-    }
     b = common.blockstate_multipart(
         'snowy_vine',
         *(({face: 'true'}, {'model': 'primalwinter:block/snowy_vine', **rot, 'uvlock': True}) for face, rot in faces),
@@ -79,6 +77,8 @@ def main():
     b.with_block_model({
         'overlay': 'primalwinter:block/snowy_leaves_overlay'
     }, parent='block/vine', elements=[vine_element('#vine', 0), vine_element('#overlay', None)])
+    b.with_tag('minecraft:mineable/axe')
+    b.with_tag('minecraft:climbable')
     common.item_model('snowy_vine', 'block/vine', 'primalwinter:block/snowy_leaves_overlay')
 
     for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce'):
@@ -99,6 +99,7 @@ def main():
             }
         })
         b.with_lang(lang('snowy %s log', wood))
+        b.with_tag('minecraft:mineable/axe')
         b.with_tag('minecraft:%s_logs' % wood)
         b.with_tag('minecraft:logs')
 
@@ -115,6 +116,7 @@ def main():
             }
         })
         b.with_lang(lang('snowy %s leaves', wood))
+        b.with_tag('minecraft:mineable/hoe')
         b.with_tag('minecraft:%s_leaves' % wood)
         b.with_tag('minecraft:leaves')
 
@@ -137,6 +139,17 @@ def main():
     # Then only flush common
     common.flush()
 
+
+def vine_element(texture, tint):
+    return {
+        'from': [0, 0, 0.8],
+        'to': [16, 16, 0.8],
+        'shade': False,
+        'faces': {
+            'north': {'uv': [16, 0, 0, 16], 'texture': texture, 'tintindex': tint},
+            'south': {'uv': [0, 0, 16, 16], 'texture': texture, 'tintindex': tint}
+        }
+    }
 
 def lang(key: str, *args) -> str:
     return ((key % args) if len(args) > 0 else key).replace('_', ' ').replace('/', ' ').title()

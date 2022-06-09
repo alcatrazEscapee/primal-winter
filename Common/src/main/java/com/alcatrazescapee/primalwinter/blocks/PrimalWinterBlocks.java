@@ -30,6 +30,7 @@ import com.alcatrazescapee.primalwinter.mixin.AxeItemAccessor;
 import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.util.Helpers;
 
 public final class PrimalWinterBlocks
 {
@@ -141,18 +142,13 @@ public final class PrimalWinterBlocks
 
     private static <T extends Block> RegistryHolder<T> register(String name, Supplier<T> blockFactory)
     {
-        return register(name, blockFactory, block -> new BlockItem(block, new Item.Properties().tab(Tab.TAB)));
-    }
-
-    private static <T extends Block> RegistryHolder<T> register(String name, Supplier<T> blockFactory, Function<T, ? extends BlockItem> blockItemFactory)
-    {
         final RegistryHolder<T> block = BLOCKS.register(name, blockFactory);
-        ITEMS.register(name, () -> blockItemFactory.apply(block.get()));
+        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(Tab.TAB)));
         return block;
     }
 
     public static final class Tab
     {
-        public static final CreativeModeTab TAB = XPlatform.INSTANCE.creativeTab(new ResourceLocation(PrimalWinter.MOD_ID), () -> new ItemStack(SNOWY_DIRT.get()));
+        public static final CreativeModeTab TAB = XPlatform.INSTANCE.creativeTab(Helpers.identifier("items"), () -> new ItemStack(SNOWY_DIRT.get()));
     }
 }

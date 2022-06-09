@@ -31,7 +31,7 @@ public final class ForgeRegistryInterface<T> implements RegistryInterface<T>
     @SuppressWarnings("unchecked")
     public <V extends T> RegistryHolder<V> register(String name, Supplier<? extends V> factory)
     {
-        return new Holder<V>(deferred.register(name, factory), (Registry<V>) registry);
+        return new Holder<>(deferred.register(name, factory), (Registry<V>) registry);
     }
 
     record Holder<T>(RegistryObject<T> obj, Registry<T> registry) implements RegistryHolder<T>

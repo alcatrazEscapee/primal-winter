@@ -21,7 +21,7 @@ public final class FabricPlatform implements XPlatform
     }
 
     @Override
-    public Config config()
+    public Config createConfig()
     {
         return FabricConfig.create();
     }
