@@ -1,8 +1,3 @@
-/*
- * Part of the Primal Winter mod by AlcatrazEscapee.
- * Work under copyright. See the project LICENSE.md for details.
- */
-
 package com.alcatrazescapee.primalwinter.world;
 
 import java.util.ArrayList;
@@ -110,6 +105,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         }
         return true;
     }
+
     /**
      * Simple BFS that extends a skylight source outwards within the array
      */
@@ -140,6 +136,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
         }
     }
+
     private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, Random random, int skyLight)
     {
         final Biome biome = level.getBiome(pos).value();
@@ -206,6 +203,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
         }
     }
+
     private int countExposedFaces(WorldGenLevel level, BlockPos pos)
     {
         int count = 0;

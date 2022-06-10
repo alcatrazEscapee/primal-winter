@@ -39,6 +39,7 @@ public final class EventHandler
             }));
         }
     }
+
     /**
      * During {@link ServerLevel#tickChunk(LevelChunk, int)}, places additional snow layers
      */
@@ -73,6 +74,7 @@ public final class EventHandler
             }
         }
     }
+
     public static void setLevelToThunder(LevelAccessor maybeLevel)
     {
         if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension().location()))

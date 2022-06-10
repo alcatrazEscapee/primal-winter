@@ -40,7 +40,7 @@ public final class ForgePrimalWinter
 
         if (XPlatform.INSTANCE.isDedicatedClient())
         {
-            ForgePrimalWinterClient.earlySetup();
+            ForgePrimalWinterClient.setupClient();
         }
     }
 

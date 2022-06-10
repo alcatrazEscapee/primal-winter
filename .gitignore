@@ -15,8 +15,8 @@
 
 !/.gitignore
 !/gradle.properties
+!/settings.gradle
 !/gradlew
 !/gradlew.bat
 !/LICENSE
-!/HEADER.txt
 !/README.md

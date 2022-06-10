@@ -1,4 +1,5 @@
 from mcresources import ResourceManager, utils
+from mcresources.type_definitions import JsonObject
 
 
 def main():
@@ -136,11 +137,11 @@ def main():
 
     common.block_tag('minecraft:animals_spawnable_on', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
 
-    # Then only flush common
+    # Only flush common
     common.flush()
 
 
-def vine_element(texture, tint):
+def vine_element(texture: str, tint: int) -> JsonObject:
     return {
         'from': [0, 0, 0.8],
         'to': [16, 16, 0.8],

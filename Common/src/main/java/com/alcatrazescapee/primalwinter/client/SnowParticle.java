@@ -1,8 +1,3 @@
-/*
- * Part of the Primal Winter mod by AlcatrazEscapee.
- * Work under copyright. See the project LICENSE.md for details.
- */
-
 package com.alcatrazescapee.primalwinter.client;
 
 import net.minecraft.client.multiplayer.ClientLevel;

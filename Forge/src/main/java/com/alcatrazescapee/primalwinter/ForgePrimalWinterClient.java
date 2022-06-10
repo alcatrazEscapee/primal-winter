@@ -19,7 +19,7 @@ import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback
 
 public final class ForgePrimalWinterClient
 {
-    public static void earlySetup()
+    public static void setupClient()
     {
         final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         final IEventBus forgeBus = MinecraftForge.EVENT_BUS;
