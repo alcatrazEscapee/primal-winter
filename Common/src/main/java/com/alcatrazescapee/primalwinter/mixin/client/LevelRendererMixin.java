@@ -146,12 +146,12 @@ public abstract class LevelRendererMixin
                     // In a windy location, play wind sounds
                     float volumeModifier = 0.2f + (light - 3) * 0.01f;
                     float pitchModifier = 0.7f;
-                    if (camera.getFluidInCamera() == FogType.NONE)
+                    if (camera.getFluidInCamera() != FogType.NONE)
                     {
                         pitchModifier = 0.3f;
                     }
                     windSoundTime = 20 * 3 + random.nextInt(30);
-                    level.playLocalSound(playerPos, PrimalWinterAmbience.WIND.get(), SoundSource.WEATHER, volumeModifier, pitchModifier, true);
+                    level.playLocalSound(playerPos, PrimalWinterAmbience.WIND.get(), SoundSource.WEATHER, volumeModifier, pitchModifier, false);
                 }
                 else
                 {
