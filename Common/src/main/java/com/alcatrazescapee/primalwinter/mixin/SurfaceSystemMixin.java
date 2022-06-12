@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,6 +21,6 @@ public abstract class SurfaceSystemMixin
     )
     private boolean useIcebergExtensionOnAllOceans(Holder<Biome> biome, ResourceKey<Biome> key)
     {
-        return biome.is(BiomeTags.IS_OCEAN);
+        return key == Biomes.FROZEN_OCEAN ? biome.is(BiomeTags.IS_OCEAN) : biome.is(key);
     }
 }

@@ -24,5 +24,4 @@ public interface RegistryHolder<T> extends Supplier<T>
     {
         return registry().getOrCreateHolder(key());
     }
-
 }

@@ -6,6 +6,7 @@ _A horrible accident has left the world - the **entire** world - a frozen wastel
 
 Primal Winter is available for the following Minecraft and mod loader versions:
 
+- 1.18.2: Fabric and Forge
 - 1.16.2: Fabric and Forge
 - 1.15.2: Forge
 
@@ -19,7 +20,8 @@ This mod will turn your entire world into a frozen wasteland. It adds several ne
 - The weather is always snowy and thundering, and there's more snow including extra particle effects and sounds.
 - Most surface blocks are replaced with snowy variants. These can be mined to obtain their vanilla counterparts.
 - Polar bears and strays now spawn everywhere.
-- Ice spikes, icebergs, and packed ice pools appear sporadically in all biomes, snow and ice placement has been improved and now layers more intuitively and can creep into caves and under overhangs such as trees during world generation.
+- Ice spikes, icebergs, snow blocks, packed ice, and powder snow all appear sporadically in all biomes.
+- Snow and ice placement has been improved and now layers more intuitively and can creep into caves and under overhangs such as trees during world generation.
 - Works automatically with any other mods which add new biomes, forcefully converting them to winter versions.
 
 ![Another Example of Winter Landscape](./img/jungle.png)
