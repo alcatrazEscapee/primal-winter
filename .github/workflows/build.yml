@@ -1,8 +1,8 @@
-name: Curseforge Build + Upload
+name: Build
 
 on:
   push:
-    tags: 'v*-forge'
+    tags: ['v*']
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           result-encoding: string
           script: |
-            return '${{ github.ref }}'.replace('refs/tags/v', '').replace('-forge', '');
+            return '${{ github.ref }}'.replace('refs/tags/v', '');
       - name: Build
         run: ./gradlew build
         env:
@@ -35,25 +35,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.result }}-forge
-          release_name: (Forge) Primal Winter 1.16.4-${{ steps.get_version.outputs.result }}
+          release_name: Primal Winter 1.18.2-${{ steps.get_version.outputs.result }}
           body: |
             [This was an automatic build]
             // todo: add changelog
           draft: true
           prerelease: false
-      - name: Upload Main Jar
-        id: upload_main_jar
+      - name: Upload Forge Jar
+        id: upload_forge_jar
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/primalwinter-forge-1.16.4-${{ steps.get_version.outputs.result }}.jar
-          asset_name: primalwinter-forge-1.16.4-${{ steps.get_version.outputs.result }}.jar
+          asset_path: ./Forge/build/libs/primalwinter-forge-1.18.2-${{ steps.get_version.outputs.result }}.jar
+          asset_name: primalwinter-forge-1.18.2-${{ steps.get_version.outputs.result }}.jar
           asset_content_type: application/java-archive
-      - name: Upload
-        run: ./gradlew curseforge
+      - name: Upload Fabric Jar
+        id: upload_fabric_jar
+        uses: actions/upload-release-asset@v1.0.1
         env:
-          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
-          VERSION: ${{ steps.get_version.outputs.result }}
-          OFFICIAL_MAPPINGS: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Fabric/build/libs/primalwinter-fabric-1.18.2-${{ steps.get_version.outputs.result }}.jar
+          asset_name: primalwinter-fabric-1.18.2-${{ steps.get_version.outputs.result }}.jar
+          asset_content_type: application/java-archive

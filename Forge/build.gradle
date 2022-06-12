@@ -12,22 +12,21 @@ buildscript {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
-apply plugin: 'java'
-apply plugin: 'idea'
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
+def envVersion = System.getenv('VERSION')
+version = envVersion == null ? '0.0.0-indev' : envVersion
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
-    
-    if (project.hasProperty('forge_ats_enabled') && project.findProperty('forge_ats_enabled').toBoolean()) {
-        // This location is hardcoded in Forge and can not be changed.
-        // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-        project.logger.debug('Forge Access Transformers are enabled for this project.')
-    }
 
     runs {
         client {
@@ -62,12 +61,16 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    if (System.getProperty("idea.sync.active") != "true") {
+        annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    }
+
     compileOnly project(":Common")
 }
 
 mixin {
-    add project(":Common").sourceSets.main, "${mod_id}.refmap.json"
-    add sourceSets.main, "${mod_id}_forge.refmap.json"
+    add sourceSets.main, "${mod_id}.refmap.json"
 
     config "${mod_id}.mixins.json"
     config "${mod_id}.common.mixins.json"
@@ -79,10 +82,6 @@ tasks.withType(JavaCompile) {
 
 processResources {
     from project(":Common").sourceSets.main.resources
-
-    filesMatching("${mod_id}.mixins.json") {
-        expand "refmap_target": "${mod_id}."
-    }
 }
 
 jar.finalizedBy('reobfJar')
