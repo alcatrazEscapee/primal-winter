@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
@@ -59,6 +60,23 @@ public abstract class LevelRendererMixin
             return true;
         }
         return biome.warmEnoughToRain(pos);
+    }
+
+    @Redirect(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;getLightColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I"))
+    private int getAdjustedLightColorForSnow(BlockAndTintGetter level, BlockPos pos)
+    {
+        final int packedLight = LevelRenderer.getLightColor(level, pos);
+        if (Config.INSTANCE.weatherRenderChanges.get())
+        {
+            // Adjusts the light color via a heuristic that mojang uses to make snow appear more white
+            // This targets both paths, but since we always use the rain rendering, it's fine.
+            final int lightU = packedLight & 0xffff;
+            final int lightV = (packedLight >> 16) & 0xffff;
+            final int brightLightU = (lightU * 3 + 240) / 4;
+            final int brightLightV = (lightV * 3 + 240) / 4;
+            return brightLightU | (brightLightV << 16);
+        }
+        return packedLight;
     }
 
     @Inject(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/BufferBuilder;begin(Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;Lcom/mojang/blaze3d/vertex/VertexFormat;)V"))
