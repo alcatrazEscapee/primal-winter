@@ -10,6 +10,7 @@
     "WorldGenRegionMixin"
   ],
   "client": [
+    "client.DimensionSpecialEffectsMixin",
     "client.LevelRendererMixin"
   ],
   "injectors": {

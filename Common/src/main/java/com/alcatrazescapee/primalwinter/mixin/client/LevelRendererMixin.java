@@ -160,19 +160,4 @@ public abstract class LevelRendererMixin
             }
         }
     }
-
-    @Redirect(method = "renderSky", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;getSunriseColor(FF)[F"))
-    private float[] preventSunriseColors(DimensionSpecialEffects effects, float skyAngle, float tickDelta)
-    {
-        if (Config.INSTANCE.weatherRenderChanges.get())
-        {
-            final BlockPos pos = Minecraft.getInstance().gameRenderer.getMainCamera().getBlockPosition();
-            final Holder<Biome> biome = level.getBiome(pos);
-            if (biome.value().coldEnoughToSnow(pos) && effects instanceof DimensionSpecialEffects.OverworldEffects)
-            {
-                return null;
-            }
-        }
-        return effects.getSunriseColor(skyAngle, tickDelta);
-    }
 }
