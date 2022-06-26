@@ -7,6 +7,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
@@ -79,8 +80,11 @@ public final class EventHandler
     {
         if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension().location()))
         {
-            // Copied from WeatherCommand
-            level.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
+            NewWorldSavedData.onlyForNewWorlds(level, () -> {
+                LOGGER.info("Modifying weather for world {}", level.dimension().location());
+                level.setWeatherParameters(0, Integer.MAX_VALUE, true, true);  // Copied from WeatherCommand
+                level.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, level.getServer());
+            });
         }
     }
 }
