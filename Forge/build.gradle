@@ -16,6 +16,7 @@ buildscript {
 plugins {
     id 'java'
     id 'idea'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -59,6 +60,17 @@ minecraft {
     }
 }
 
+configurations {
+    shadowLibrary
+    minecraftLibrary.extendsFrom(shadowLibrary)
+}
+
+repositories {
+    maven {
+        url = 'https://alcatrazescapee.jfrog.io/artifactory/mods'
+    }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -67,6 +79,8 @@ dependencies {
     }
 
     compileOnly project(":Common")
+
+    shadowLibrary "com.alcatrazescapee:epsilon:${epsilon_version}"
 }
 
 mixin {
@@ -85,3 +99,24 @@ processResources {
 }
 
 jar.finalizedBy('reobfJar')
+
+jar {
+    classifier 'slim'
+}
+
+shadowJar {
+    classifier ''
+    configurations = [project.configurations.shadowLibrary]
+    dependencies {
+        exclude(dependency { it.moduleGroup != 'com.alcatrazescapee' })
+    }
+    relocate 'com.alcatrazescapee.epsilon', 'com.alcatrazescapee.notreepunching.epsilon'
+    finalizedBy 'reobfShadowJar'
+}
+
+assemble.dependsOn(shadowJar)
+
+reobf {
+    shadowJar {}
+}
+

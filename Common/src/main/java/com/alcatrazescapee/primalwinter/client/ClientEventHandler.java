@@ -74,8 +74,8 @@ public final class ClientEventHandler
             final float height = Mth.cos(angle);
             final float delta = Mth.clamp((height + 0.4f) / 0.8f, 0, 1);
 
-            final int colorDay = Config.INSTANCE.fogColorDay.get();
-            final int colorNight = Config.INSTANCE.fogColorNight.get();
+            final int colorDay = Config.INSTANCE.fogColorDay.getAsInt();
+            final int colorNight = Config.INSTANCE.fogColorNight.getAsInt();
             final float red = ((colorDay >> 16) & 0xFF) * delta + ((colorNight >> 16) & 0xFF) * (1 - delta);
             final float green = ((colorDay >> 8) & 0xFF) * delta + ((colorNight >> 8) & 0xFF) * (1 - delta);
             final float blue = (colorDay & 0xFF) * delta + (colorNight & 0xFF) * (1 - delta);
@@ -123,7 +123,7 @@ public final class ClientEventHandler
             if (prevFogDensity > 0)
             {
                 final float scaledDelta = 1 - (1 - prevFogDensity) * (1 - prevFogDensity);
-                final float fogDensity = Config.INSTANCE.fogDensity.get().floatValue();
+                final float fogDensity = Config.INSTANCE.fogDensity.getAsFloat();
                 final float farPlaneScale = Mth.lerp(scaledDelta, 1f, fogDensity);
                 final float nearPlaneScale = Mth.lerp(scaledDelta, 1f, 0.3f * fogDensity);
                 callback.accept(nearPlaneScale, farPlaneScale);

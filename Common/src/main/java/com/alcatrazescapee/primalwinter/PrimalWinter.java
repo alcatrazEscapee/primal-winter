@@ -17,8 +17,6 @@ public final class PrimalWinter
     {
         LOGGER.info("Early XPlatform Setup");
 
-        Config.INSTANCE.earlySetup();
-
         PrimalWinterBlocks.BLOCKS.earlySetup();
         PrimalWinterBlocks.ITEMS.earlySetup();
         PrimalWinterWorldGen.Features.FEATURES.earlySetup();
@@ -41,5 +39,7 @@ public final class PrimalWinter
         PrimalWinterAmbience.SOUND_EVENTS.lateSetup();
 
         PrimalWinterBlocks.registerAxeStrippables();
+
+        Config.INSTANCE.load();
     }
 }

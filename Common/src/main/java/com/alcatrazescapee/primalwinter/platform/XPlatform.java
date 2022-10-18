@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform;
 
+import java.nio.file.Path;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
@@ -22,9 +23,11 @@ public interface XPlatform
 
     <T> RegistryInterface<T> registryInterface(Registry<T> registry);
 
-    Config createConfig();
-
     CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon);
 
+    // Platform APIs
+
     boolean isDedicatedClient();
+
+    Path configDir();
 }

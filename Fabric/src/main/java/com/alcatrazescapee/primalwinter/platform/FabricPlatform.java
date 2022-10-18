@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform;
 
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
@@ -21,12 +22,6 @@ public final class FabricPlatform implements XPlatform
     }
 
     @Override
-    public Config createConfig()
-    {
-        return FabricConfig.create();
-    }
-
-    @Override
     public CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon)
     {
         return FabricItemGroupBuilder.build(id, icon);
@@ -36,5 +31,11 @@ public final class FabricPlatform implements XPlatform
     public boolean isDedicatedClient()
     {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+    }
+
+    @Override
+    public Path configDir()
+    {
+        return FabricLoader.getInstance().getConfigDir();
     }
 }

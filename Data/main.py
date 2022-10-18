@@ -141,7 +141,7 @@ def main():
     common.flush()
 
 
-def vine_element(texture: str, tint: int) -> JsonObject:
+def vine_element(texture: str, tint: int | None) -> JsonObject:
     return {
         'from': [0, 0, 0.8],
         'to': [16, 16, 0.8],

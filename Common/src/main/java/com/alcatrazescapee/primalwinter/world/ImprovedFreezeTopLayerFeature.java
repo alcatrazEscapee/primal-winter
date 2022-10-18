@@ -184,7 +184,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
 
             int layers;
-            if (Config.INSTANCE.enableSnowAccumulationDuringWorldgen.get())
+            if (Config.INSTANCE.enableSnowAccumulationDuringWorldgen.getAsBoolean())
             {
                 layers = Mth.clamp(skyLight - random.nextInt(3) - countExposedFaces(level, pos), 1, 7);
             }

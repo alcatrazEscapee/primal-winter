@@ -33,7 +33,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -55,7 +57,7 @@ public abstract class LevelRendererMixin
     @Redirect(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/biome/Biome;warmEnoughToRain(Lnet/minecraft/core/BlockPos;)Z"))
     private boolean alwaysUseRainRendering(Biome biome, BlockPos pos)
     {
-        if (Config.INSTANCE.weatherRenderChanges.get())
+        if (Config.INSTANCE.weatherRenderChanges.getAsBoolean())
         {
             return true;
         }
@@ -66,7 +68,7 @@ public abstract class LevelRendererMixin
     private int getAdjustedLightColorForSnow(BlockAndTintGetter level, BlockPos pos)
     {
         final int packedLight = LevelRenderer.getLightColor(level, pos);
-        if (Config.INSTANCE.weatherRenderChanges.get())
+        if (Config.INSTANCE.weatherRenderChanges.getAsBoolean())
         {
             // Adjusts the light color via a heuristic that mojang uses to make snow appear more white
             // This targets both paths, but since we always use the rain rendering, it's fine.
@@ -82,15 +84,28 @@ public abstract class LevelRendererMixin
     @Inject(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/BufferBuilder;begin(Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;Lcom/mojang/blaze3d/vertex/VertexFormat;)V"))
     private void overrideWithSnowTextures(LightTexture lightTexture, float partialTick, double x, double y, double z, CallbackInfo ci)
     {
-        if (Config.INSTANCE.weatherRenderChanges.get())
+        if (Config.INSTANCE.weatherRenderChanges.getAsBoolean())
         {
             RenderSystem.setShaderTexture(0, SNOW_LOCATION);
         }
     }
 
+    @ModifyConstant(method = "renderSnowAndRain", constant = {@Constant(intValue = 5), @Constant(intValue = 10)})
+    private int modifySnowAmount(int constant)
+    {
+        // This constant is used to control how much snow is rendered - 5 with default, 10 with fancy graphics. By default, we bump this all the way to 15.
+        return Config.INSTANCE.snowDensity.getAsInt();
+    }
+
     @Inject(method = "tickRain", at = @At("HEAD"))
     private void addExtraSnowParticlesAndSounds(Camera camera, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.snowSounds.getAsBoolean())
+        {
+            // Prevent default rain/snow sounds by setting rainSoundTime to -1, which means the if() checking it will never pass
+            rainSoundTime = -1;
+        }
+
         final float rain = level.getRainLevel(1f) / (Minecraft.useFancyGraphics() ? 1f : 2f);
         if (rain > 0f)
         {
@@ -136,7 +151,7 @@ public abstract class LevelRendererMixin
             }
 
             // Added
-            if (windSoundTime-- < 0 && Config.INSTANCE.windSounds.get())
+            if (windSoundTime-- < 0 && Config.INSTANCE.windSounds.getAsBoolean())
             {
                 final BlockPos playerPos = camera.getBlockPosition();
                 final Entity entity = camera.getEntity();

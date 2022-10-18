@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.util;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
@@ -28,7 +29,7 @@ public final class EventHandler
 
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        final boolean enable = Config.INSTANCE.enableWeatherCommand.get();
+        final boolean enable = Config.INSTANCE.enableWeatherCommand.getAsBoolean();
         LOGGER.info("Vanilla /weather enabled = {}", enable);
         if (!enable)
         {
@@ -39,6 +40,11 @@ public final class EventHandler
                 return 0;
             }));
         }
+
+        dispatcher.register(Commands.literal("primalwinterReloadConfig").requires(c -> c.hasPermission(2)).executes(source -> {
+            Config.INSTANCE.load();
+            return Command.SINGLE_SUCCESS;
+        }));
     }
 
     /**
@@ -46,7 +52,7 @@ public final class EventHandler
      */
     public static void placeExtraSnow(ServerLevel level, ChunkAccess chunk)
     {
-        if (Config.INSTANCE.enableSnowAccumulationDuringWeather.get() && level.random.nextInt(16) == 0)
+        if (Config.INSTANCE.enableSnowAccumulationDuringWeather.getAsBoolean() && level.random.nextInt(16) == 0)
         {
             final int blockX = chunk.getPos().getMinBlockX();
             final int blockZ = chunk.getPos().getMinBlockZ();
@@ -78,7 +84,7 @@ public final class EventHandler
 
     public static void setLevelToThunder(LevelAccessor maybeLevel)
     {
-        if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension().location()))
+        if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension()))
         {
             NewWorldSavedData.onlyForNewWorlds(level, () -> {
                 LOGGER.info("Modifying weather for world {}", level.dimension().location());

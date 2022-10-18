@@ -22,7 +22,7 @@ public abstract class DimensionSpecialEffectsMixin
     {
         final float[] original = cir.getReturnValue();
         final Level level = Minecraft.getInstance().level;
-        if (original != null && Config.INSTANCE.weatherRenderChanges.get() && level != null)
+        if (original != null && Config.INSTANCE.skyRenderChanges.getAsBoolean() && level != null)
         {
             final BlockPos pos = Minecraft.getInstance().gameRenderer.getMainCamera().getBlockPosition();
             final Holder<Biome> biome = level.getBiome(pos);

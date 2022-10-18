@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform;
 
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import com.alcatrazescapee.primalwinter.util.Config;
 
@@ -18,12 +20,6 @@ public final class ForgePlatform implements XPlatform
     public <T> RegistryInterface<T> registryInterface(Registry<T> registry)
     {
         return new ForgeRegistryInterface<>(registry);
-    }
-
-    @Override
-    public Config createConfig()
-    {
-        return ForgeConfig.create();
     }
 
     @Override
@@ -42,5 +38,11 @@ public final class ForgePlatform implements XPlatform
     public boolean isDedicatedClient()
     {
         return FMLEnvironment.dist == Dist.CLIENT;
+    }
+
+    @Override
+    public Path configDir()
+    {
+        return FMLPaths.CONFIGDIR.get();
     }
 }
