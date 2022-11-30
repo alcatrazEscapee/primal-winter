@@ -3,10 +3,8 @@ package com.alcatrazescapee.primalwinter.client;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
-import com.alcatrazescapee.primalwinter.PrimalWinter;
 import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;

@@ -2,12 +2,10 @@ package com.alcatrazescapee.primalwinter.blocks;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -25,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import com.alcatrazescapee.primalwinter.PrimalWinter;
 import com.alcatrazescapee.primalwinter.mixin.AxeItemAccessor;
 import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;

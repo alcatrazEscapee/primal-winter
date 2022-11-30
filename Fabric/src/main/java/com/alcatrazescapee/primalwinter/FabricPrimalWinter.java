@@ -17,9 +17,8 @@ import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public final class FabricPrimalWinter implements ModInitializer
 {
@@ -29,7 +28,7 @@ public final class FabricPrimalWinter implements ModInitializer
         PrimalWinter.earlySetup();
         PrimalWinter.lateSetup();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> EventHandler.registerCommands(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) -> EventHandler.registerCommands(dispatcher));
         ServerWorldEvents.LOAD.register((server, level) -> EventHandler.setLevelToThunder(level));
 
         BiomeModifications.create(Helpers.identifier("winterize")).add(ModificationPhase.REPLACEMENTS, context -> {

@@ -113,7 +113,7 @@ public abstract class LevelRendererMixin
             final BlockPos cameraPos = new BlockPos(camera.getPosition());
             BlockPos pos = null;
 
-            final int particleCount = (int) (100.0F * rain * rain) / (minecraft.options.particles == ParticleStatus.DECREASED ? 2 : 1);
+            final int particleCount = (int) (100.0F * rain * rain) / (minecraft.options.particles().get() == ParticleStatus.DECREASED ? 2 : 1);
             for (int i = 0; i < particleCount; ++i)
             {
                 final BlockPos randomPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, cameraPos.offset(random.nextInt(21) - 10, 0, random.nextInt(21) - 10));
@@ -121,7 +121,7 @@ public abstract class LevelRendererMixin
                 if (randomPos.getY() > level.getMinBuildHeight() && randomPos.getY() <= cameraPos.getY() + 10 && randomPos.getY() >= cameraPos.getY() - 10 && biome.getPrecipitation() == Biome.Precipitation.SNOW && biome.coldEnoughToSnow(randomPos)) // Change: use SNOW and coldEnoughToSnow() instead
                 {
                     pos = randomPos.below();
-                    if (minecraft.options.particles == ParticleStatus.MINIMAL)
+                    if (minecraft.options.particles().get() == ParticleStatus.MINIMAL)
                     {
                         break;
                     }

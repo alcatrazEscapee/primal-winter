@@ -6,7 +6,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
@@ -36,7 +36,7 @@ public final class EventHandler
             // Vanilla weather command... NOT ALLOWED
             dispatcher.getRoot().getChildren().removeIf(node -> node.getName().equals("weather"));
             dispatcher.register(Commands.literal("weather").executes(source -> {
-                source.getSource().sendSuccess(new TextComponent("Not even a command can overcome this storm... (This command is disabled by Primal Winter)"), false);
+                source.getSource().sendSuccess(Component.literal("Not even a command can overcome this storm... (This command is disabled by Primal Winter)"), false);
                 return 0;
             }));
         }

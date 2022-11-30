@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -137,7 +138,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         }
     }
 
-    private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, Random random, int skyLight)
+    private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, RandomSource random, int skyLight)
     {
         final Biome biome = level.getBiome(pos).value();
         if (!biome.coldEnoughToSnow(pos) || biome.getPrecipitation() != Biome.Precipitation.SNOW)

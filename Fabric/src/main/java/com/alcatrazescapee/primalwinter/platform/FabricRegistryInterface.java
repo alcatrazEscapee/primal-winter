@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
-import com.alcatrazescapee.primalwinter.PrimalWinter;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import org.jetbrains.annotations.Nullable;
 

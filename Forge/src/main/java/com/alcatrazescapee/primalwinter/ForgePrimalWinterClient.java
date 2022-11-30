@@ -6,9 +6,9 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -25,9 +25,9 @@ public final class ForgePrimalWinterClient
         final IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
         modBus.addListener((FMLClientSetupEvent event) -> ClientEventHandler.setupClient());
-        modBus.addListener((ColorHandlerEvent.Block event) -> ClientEventHandler.setupBlockColors(event.getBlockColors()::register));
-        modBus.addListener((ColorHandlerEvent.Item event) -> ClientEventHandler.setupItemColors(event.getItemColors()::register));
-        modBus.addListener((ParticleFactoryRegisterEvent event) -> ClientEventHandler.setupParticleFactories(new ParticleProviderCallback()
+        modBus.addListener((RegisterColorHandlersEvent.Block event) -> ClientEventHandler.setupBlockColors(event::register));
+        modBus.addListener((RegisterColorHandlersEvent.Item event) -> ClientEventHandler.setupItemColors(event::register));
+        modBus.addListener((RegisterParticleProvidersEvent event) -> ClientEventHandler.setupParticleFactories(new ParticleProviderCallback()
         {
             @Override
             public <T extends ParticleOptions> void accept(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider)
@@ -36,13 +36,13 @@ public final class ForgePrimalWinterClient
             }
         }));
 
-        forgeBus.addListener((EntityViewRenderEvent.FogColors event) -> ClientEventHandler.renderFogColors(event.getCamera(), (float) event.getPartialTicks(), (red, green, blue) -> {
+        forgeBus.addListener((ViewportEvent.ComputeFogColor event) -> ClientEventHandler.renderFogColors(event.getCamera(), (float) event.getPartialTick(), (red, green, blue) -> {
             event.setRed(red);
             event.setBlue(blue);
             event.setGreen(green);
         }));
 
-        forgeBus.addListener((EntityViewRenderEvent.RenderFogEvent event) -> ClientEventHandler.renderFogDensity(event.getCamera(), (nearPlane, farPlane) -> {
+        forgeBus.addListener((ViewportEvent.RenderFog event) -> ClientEventHandler.renderFogDensity(event.getCamera(), (nearPlane, farPlane) -> {
             event.scaleNearPlaneDistance(nearPlane);
             event.scaleFarPlaneDistance(farPlane);
             event.setCanceled(true);

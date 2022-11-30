@@ -35,7 +35,7 @@ public abstract class FogRendererMixin
     }
 
     @Inject(method = "setupFog", at = @At("TAIL"))
-    private static void modifyFogDensity(Camera camera, FogRenderer.FogMode mode, float unused1, boolean unused2, CallbackInfo ci)
+    private static void modifyFogDensity(Camera camera, FogRenderer.FogMode mode, float unused1, boolean unused2, float unused3, CallbackInfo ci)
     {
         ClientEventHandler.renderFogDensity(camera, (nearPlane, farPlane) -> {
             RenderSystem.setShaderFogStart(nearPlane * RenderSystem.getShaderFogStart());

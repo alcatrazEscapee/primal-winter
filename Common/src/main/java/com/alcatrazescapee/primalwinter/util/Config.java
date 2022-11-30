@@ -60,9 +60,13 @@ public enum Config
     {
         final SpecBuilder builder = Spec.builder();
 
-        builder.push("general");
+        builder
+            .comment(
+                "This is the config file for the Primal Winter mod",
+                "In order to reload these settings in-game, you must run /primalwinterReloadConfig"
+            )
+            .push("general");
 
-        // Common
         enableWeatherCommand = builder
             .comment("Should the vanilla /weather be disabled? Any changes require a world restart to take effect.")
             .define("enableWeatherCommand", false);
@@ -115,7 +119,6 @@ public enum Config
 
         builder.swap("client");
 
-        // Client
         fogDensity = builder
             .comment("How dense the fog effect during a snowstorm is.")
             .define("fogDensity", 0.1f, 0f, 1f);

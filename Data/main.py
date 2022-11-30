@@ -137,6 +137,9 @@ def main():
 
     common.block_tag('minecraft:animals_spawnable_on', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
 
+    # Forge biome modifier
+    forge.data(('forge', 'biome_modifier', 'instance'), {'type': 'primalwinter:instance'})
+
     # Only flush common
     common.flush()
 

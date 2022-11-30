@@ -14,12 +14,14 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.BaseDiskFeature;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.DiskFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -39,7 +41,7 @@ public final class PrimalWinterWorldGen
 
         public static final RegistryHolder<ImprovedFreezeTopLayerFeature> FREEZE_TOP_LAYER = register("freeze_top_layer", ImprovedFreezeTopLayerFeature::new, NoneFeatureConfiguration.CODEC);
         public static final RegistryHolder<ImprovedIceSpikeFeature> ICE_SPIKES = register("ice_spikes", ImprovedIceSpikeFeature::new, NoneFeatureConfiguration.CODEC);
-        public static final RegistryHolder<BaseDiskFeature> DISK = register("disk", BaseDiskFeature::new, DiskConfiguration.CODEC);
+        public static final RegistryHolder<DiskFeature> DISK = register("disk", DiskFeature::new, DiskConfiguration.CODEC);
 
         private static <C extends FeatureConfiguration, F extends Feature<C>> RegistryHolder<F> register(String name, Function<Codec<C>, F> feature, Codec<C> codec)
         {
@@ -54,20 +56,31 @@ public final class PrimalWinterWorldGen
         public static final RegistryHolder<ConfiguredFeature<?, ?>> FREEZE_TOP_LAYER = register("freeze_top_layer", Features.FREEZE_TOP_LAYER, () -> NoneFeatureConfiguration.INSTANCE);
         public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_SPIKES = register("ice_spikes", Features.ICE_SPIKES, () -> NoneFeatureConfiguration.INSTANCE);
 
-        public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_PATCH = register("ice_patch", Features.DISK, () -> new DiskConfiguration(Blocks.PACKED_ICE.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
-        public static final RegistryHolder<ConfiguredFeature<?, ?>> SNOW_PATCH = register("snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.SNOW_BLOCK.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
-        public static final RegistryHolder<ConfiguredFeature<?, ?>> POWDER_SNOW_PATCH = register("powder_snow_patch", Features.DISK, () -> new DiskConfiguration(Blocks.POWDER_SNOW.defaultBlockState(), UniformInt.of(2, 3), 1, snowyReplaceableBlocks()));
+        public static final RegistryHolder<ConfiguredFeature<?, ?>> ICE_PATCH = register("ice_patch", Features.DISK, () -> new DiskConfiguration(RuleBasedBlockStateProvider.simple(Blocks.PACKED_ICE), snowyReplaceableBlocks(), UniformInt.of(2, 3), 1));
+        public static final RegistryHolder<ConfiguredFeature<?, ?>> SNOW_PATCH = register("snow_patch", Features.DISK, () -> new DiskConfiguration(RuleBasedBlockStateProvider.simple(Blocks.SNOW_BLOCK), snowyReplaceableBlocks(), UniformInt.of(2, 3), 1));
+        public static final RegistryHolder<ConfiguredFeature<?, ?>> POWDER_SNOW_PATCH = register("powder_snow_patch", Features.DISK, () -> new DiskConfiguration(RuleBasedBlockStateProvider.simple(Blocks.POWDER_SNOW), snowyReplaceableBlocks(), UniformInt.of(2, 3), 1));
 
         private static <C extends FeatureConfiguration, F extends Feature<C>> RegistryHolder<ConfiguredFeature<?, ?>> register(String name, Supplier<F> feature, Supplier<C> config)
         {
             return CONFIGURED_FEATURES.register(name, () -> new ConfiguredFeature<>(feature.get(), config.get()));
         }
 
-        private static List<BlockState> snowyReplaceableBlocks()
+        private static BlockPredicate snowyReplaceableBlocks()
         {
-            return Stream.of(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.PODZOL, Blocks.COARSE_DIRT, Blocks.MYCELIUM, Blocks.SNOW_BLOCK, Blocks.ICE, Blocks.SAND, Blocks.RED_SAND, PrimalWinterBlocks.SNOWY_DIRT.get(), PrimalWinterBlocks.SNOWY_COARSE_DIRT.get(), PrimalWinterBlocks.SNOWY_SAND.get(), PrimalWinterBlocks.SNOWY_RED_SAND.get())
-                .map(Block::defaultBlockState)
-                .toList();
+            return BlockPredicate.matchesBlocks(
+                Blocks.DIRT,
+                Blocks.GRASS_BLOCK,
+                Blocks.PODZOL,
+                Blocks.COARSE_DIRT,
+                Blocks.MYCELIUM,
+                Blocks.SNOW_BLOCK,
+                Blocks.ICE,
+                Blocks.SAND,
+                Blocks.RED_SAND,
+                PrimalWinterBlocks.SNOWY_DIRT.get(),
+                PrimalWinterBlocks.SNOWY_COARSE_DIRT.get(),
+                PrimalWinterBlocks.SNOWY_SAND.get(),
+                PrimalWinterBlocks.SNOWY_RED_SAND.get());
         }
     }
 
