@@ -2,14 +2,6 @@
 
 _A horrible accident has left the world - the **entire** world - a frozen wasteland. Unending snowstorms rage across the land, from forests, to plains, to jungles, to deserts. The air is thick with fog and wind howls across the landscape. Will you be able to survive in this primordial winter?_
 
-### Availability
-
-Primal Winter is available for the following Minecraft and mod loader versions:
-
-- 1.18.2: Fabric and Forge
-- 1.16.2: Fabric and Forge
-- 1.15.2: Forge
-
 ### Features
 
 This mod will turn your entire world into a frozen wasteland. It adds several new blocks, and has many client side aesthetic tweaks to immerse yourself in the winter wonderland you now inhabit.
