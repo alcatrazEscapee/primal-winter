@@ -79,7 +79,7 @@ tasks.withType<JavaCompile> {
 tasks {
 
     jar {
-        classifier = "slim"
+        archiveClassifier.set("slim")
         from("LICENSE") {
             rename { "${it}_${modName}" }
         }

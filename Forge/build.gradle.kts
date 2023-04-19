@@ -98,12 +98,12 @@ tasks.withType<JavaCompile> {
 
 tasks {
     jar {
-        classifier = "slim"
+        archiveClassifier.set("slim")
         finalizedBy("reobfJar")
     }
 
     shadowJar {
-        classifier = ""
+        archiveClassifier.set("")
         configurations = listOf(shadowLibrary)
         dependencies {
             exclude(dependency(KotlinClosure1<ResolvedDependency, Boolean>({

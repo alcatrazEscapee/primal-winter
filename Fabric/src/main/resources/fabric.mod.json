@@ -27,9 +27,9 @@
     "${modId}.common.mixins.json"
   ],
   "depends": {
-    "fabricloader": "${fabricLoaderVersionRange}",
-    "fabric": "${fabricVersionRange}",
-    "minecraft": "${minecraftVersionRange}",
+    "fabricloader": ">=${fabricLoaderVersion}",
+    "fabric": ">=${fabricVersion}",
+    "minecraft": ">=${minecraftVersion}",
     "java": ">=${modJavaVersion}"
   }
 }
