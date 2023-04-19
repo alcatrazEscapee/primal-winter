@@ -1,13 +1,9 @@
-import groovy.lang.Closure
-
 plugins {
     java
     idea
     id("fabric-loom") version "0.12-SNAPSHOT"
     id("io.github.juuxel.loom-quiltflower") version("1.7.2")
     id("com.github.johnrengelman.shadow") version("7.1.2")
-    //id("net.darkhax.curseforgegradle") version("1.0.8")
-    //id("com.modrinth.minotaur") version("2.+")
 }
 
 // From gradle.properties
@@ -21,14 +17,14 @@ val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
 val epsilonVersion: String by extra
 
-val shadowLibrary: Configuration = configurations.create("shadowLibrary")
+val shadowLibrary: Configuration by configurations.creating
 
 configurations {
     implementation.get().extendsFrom(shadowLibrary)
 }
 
 base {
-    archivesName.set("${modId}-forge-${minecraftVersion}")
+    archivesName.set("${modId}-fabric-${minecraftVersion}")
 }
 
 repositories {
@@ -55,6 +51,7 @@ dependencies {
 
 loom {
 
+    @Suppress("UnstableApiUsage")
     mixin {
         defaultRefmapName.set("${modId}.refmap.json")
     }
@@ -75,6 +72,10 @@ loom {
     }
 }
 
+tasks.withType<JavaCompile> {
+    source(project(":Common").sourceSets.main.get().allSource)
+}
+
 tasks {
 
     jar {
@@ -88,9 +89,9 @@ tasks {
         from(sourceSets.main.get().output)
         configurations = listOf(shadowLibrary)
         dependencies {
-            exclude(dependency(closureOf<ResolvedDependency> {
+            exclude(dependency(KotlinClosure1<ResolvedDependency, Boolean>({
                 moduleGroup != modGroup
-            }))
+            })))
         }
         relocate("com.alcatrazescapee.epsilon", "${modGroup}.${modId}.epsilon")
     }
@@ -98,5 +99,15 @@ tasks {
     remapJar {
         dependsOn(shadowJar)
         inputFile.set(shadowJar.get().archiveFile)
+    }
+
+    processResources {
+        from(project(":Common").sourceSets.main.get().resources)
+    }
+}
+
+idea {
+    module {
+        excludeDirs.add(file("run"))
     }
 }

@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${version}",
-  "name": "${mod_name}",
-  "description": "A horrible accident has left the world - the entire world - a frozen wasteland. Unending snowstorms rage across the land, from forests, to plains, to jungles, to deserts. The air is thick with fog and wind howls across the landscape. Will you be able to survive in this primordial winter?",
+  "id": "${modId}",
+  "version": "${modVersion}",
+  "name": "${modName}",
+  "description": "${modDescription}",
   "authors": [
-    "${mod_author}"
+    "${modAuthor}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/primalwinter",
-    "sources": "https://github.com/alcatrazEscapee/primal-winter"
+    "homepage": "${modHomeUrl}",
+    "sources": "${modIssueUrl}"
   },
   "license": "MIT",
-  "icon": "assets/primalwinter/logo.png",
+  "icon": "assets/${modId}/logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -23,14 +23,13 @@
     ]
   },
   "mixins": [
-    "primalwinter.mixins.json",
-    "primalwinter.common.mixins.json"
+    "${modId}.mixins.json",
+    "${modId}.common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13",
-    "fabric": "*",
-    "minecraft": "1.19.x",
-    "java": ">=17"
+    "fabricloader": "${fabricLoaderVersionRange}",
+    "fabric": "${fabricVersionRange}",
+    "minecraft": "${minecraftVersionRange}",
+    "java": ">=${modJavaVersion}"
   }
 }
-  

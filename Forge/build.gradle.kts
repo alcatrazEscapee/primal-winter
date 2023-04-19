@@ -17,7 +17,7 @@ val forgeVersion: String by extra
 val parchmentVersionForge: String by extra
 val epsilonVersion: String by extra
 
-val shadowLibrary = configurations.create("shadowLibrary")
+val shadowLibrary: Configuration by configurations.creating
 
 configurations {
     implementation.get().extendsFrom(shadowLibrary)
@@ -73,6 +73,12 @@ mixin {
     config("${modId}.common.mixins.json")
 }
 
+// Creates the 'reobfShadowJar' task
+reobf {
+    register("shadowJar")
+}
+
+
 // Workaround for a bug in Forge / Mixin gradle where the refmap won't be added to the jar unless Forge java compile is done
 // From https://github.com/gamma-delta/HexMod/blob/main/Forge/build.gradle#L161
 tasks.register("invalidateJavaForRefmap") {
@@ -85,6 +91,11 @@ tasks.register("invalidateJavaForRefmap") {
     }
 }
 
+tasks.withType<JavaCompile> {
+    source(project(":Common").sourceSets.main.get().allSource)
+    shouldRunAfter(tasks.named("invalidateJavaForRefmap"))
+}
+
 tasks {
     jar {
         classifier = "slim"
@@ -95,20 +106,20 @@ tasks {
         classifier = ""
         configurations = listOf(shadowLibrary)
         dependencies {
-            exclude(dependency(closureOf<ResolvedDependency> {
+            exclude(dependency(KotlinClosure1<ResolvedDependency, Boolean>({
                 moduleGroup != modGroup
-            }))
+            })))
         }
         relocate("com.alcatrazescapee.epsilon", "${modGroup}.${modId}.epsilon")
         finalizedBy("reobfShadowJar")
     }
 
-    reobf {
-        shadowJar {}
-    }
-
     assemble {
         dependsOn(shadowJar)
+    }
+
+    processResources {
+        from(project(":Common").sourceSets.main.get().resources)
     }
 }
 
