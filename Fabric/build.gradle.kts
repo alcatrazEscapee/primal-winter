@@ -29,6 +29,7 @@ base {
 
 repositories {
     maven(url = "https://alcatrazescapee.jfrog.io/artifactory/mods")
+    maven(url = "https://maven.parchmentmc.org")
 }
 
 dependencies {
