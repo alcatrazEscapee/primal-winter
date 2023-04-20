@@ -8,7 +8,13 @@ val minecraftVersion: String by extra
 val epsilonVersion: String by extra
 
 repositories {
-    maven(url = "https://alcatrazescapee.jfrog.io/artifactory/mods")
+    fun exclusiveMaven(url: String, filter: Action<InclusiveRepositoryContentDescriptor>) =
+        exclusiveContent {
+            forRepository { maven(url) }
+            filter(filter)
+        }
+
+    exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") { includeGroup("com.alcatrazescapee") }
 }
 
 minecraft {

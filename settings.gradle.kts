@@ -1,9 +1,27 @@
 pluginManagement {
     repositories {
-        maven(url = "https://maven.minecraftforge.net")
-        maven(url = "https://maven.parchmentmc.org")
-        maven(url = "https://maven.fabricmc.net/")
-        maven(url = "https://repo.spongepowered.org/repository/maven-public/")
+        fun exclusiveMaven(url: String, filter: Action<InclusiveRepositoryContentDescriptor>) =
+            exclusiveContent {
+                forRepository { maven(url) }
+                filter(filter)
+            }
+
+        exclusiveMaven("https://maven.minecraftforge.net") {
+            includeGroupByRegex("net\\.minecraftforge.*")
+        }
+        exclusiveMaven("https://maven.parchmentmc.org") {
+            includeGroupByRegex("org\\.parchmentmc.*")
+        }
+        exclusiveMaven("https://maven.fabricmc.net/") {
+            includeGroup("net.fabricmc")
+            includeGroup("fabric-loom")
+        }
+        exclusiveMaven("https://repo.spongepowered.org/repository/maven-public/") {
+            includeGroupByRegex("org\\.spongepowered.*")
+        }
+        exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") {
+            includeGroupByRegex("com\\.alcatrazescapee.*")
+        }
 
         gradlePluginPortal()
     }

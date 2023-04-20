@@ -28,8 +28,14 @@ base {
 }
 
 repositories {
-    maven(url = "https://alcatrazescapee.jfrog.io/artifactory/mods")
-    maven(url = "https://maven.parchmentmc.org")
+    fun exclusiveMaven(url: String, filter: Action<InclusiveRepositoryContentDescriptor>) =
+        exclusiveContent {
+            forRepository { maven(url) }
+            filter(filter)
+        }
+
+    exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") { includeGroup("com.alcatrazescapee") }
+    exclusiveMaven("https://maven.parchmentmc.org") { includeGroupByRegex("org\\.parchmentmc.*") }
 }
 
 dependencies {
