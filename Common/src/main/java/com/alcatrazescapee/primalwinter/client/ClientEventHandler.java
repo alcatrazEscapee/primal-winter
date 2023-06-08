@@ -32,6 +32,7 @@ public final class ClientEventHandler
 
     public static void setupClient()
     {
+        XPlatformClient.INSTANCE.setRenderType(PrimalWinterBlocks.SNOWY_MANGROVE_ROOTS.get(), RenderType.cutout());
         XPlatformClient.INSTANCE.setRenderType(PrimalWinterBlocks.SNOWY_VINE.get(), RenderType.cutout());
     }
 
@@ -45,7 +46,7 @@ public final class ClientEventHandler
                 return world != null && pos != null ? BiomeColors.getAverageFoliageColor(world, pos) : FoliageColor.getDefaultColor();
             }
             return 0xFFFFFF;
-        }, PrimalWinterBlocks.SNOWY_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_DARK_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_JUNGLE_LEAVES.get(), PrimalWinterBlocks.SNOWY_ACACIA_LEAVES.get(), PrimalWinterBlocks.SNOWY_VINE.get());
+        }, PrimalWinterBlocks.SNOWY_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_DARK_OAK_LEAVES.get(), PrimalWinterBlocks.SNOWY_JUNGLE_LEAVES.get(), PrimalWinterBlocks.SNOWY_ACACIA_LEAVES.get(), PrimalWinterBlocks.SNOWY_MANGROVE_LEAVES.get(), PrimalWinterBlocks.SNOWY_VINE.get());
     }
 
     public static void setupItemColors(ItemColorCallback colors)

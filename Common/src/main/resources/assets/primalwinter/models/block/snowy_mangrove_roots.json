@@ -1,0 +1,8 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "parent": "block/mangrove_roots",
+  "textures": {
+    "top": "primalwinter:block/snowy_mangrove_roots_top",
+    "side": "primalwinter:block/snowy_mangrove_roots_side"
+  }
+}

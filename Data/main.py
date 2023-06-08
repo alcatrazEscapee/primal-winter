@@ -51,7 +51,7 @@ def main():
         'primalwinter.subtitle.wind': 'Wind Blows'
     })
 
-    for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel', 'stone', 'granite', 'diorite', 'andesite', 'white_terracotta', 'orange_terracotta', 'terracotta', 'yellow_terracotta', 'brown_terracotta', 'red_terracotta', 'light_gray_terracotta'):
+    for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel', 'mud', 'stone', 'granite', 'diorite', 'andesite', 'white_terracotta', 'orange_terracotta', 'terracotta', 'yellow_terracotta', 'brown_terracotta', 'red_terracotta', 'light_gray_terracotta'):
         b = common.blockstate('snowy_' + block)
         b.with_item_model()
         b.with_block_model(textures={
@@ -65,7 +65,7 @@ def main():
                 'name': 'minecraft:blocks/%s' % block
             }
         })
-        b.with_lang(lang('snowy ' + block))
+        b.with_lang(lang('snowy %s', block))
 
     for block in ('dirt', 'coarse_dirt', 'sand', 'red_sand', 'gravel'):
         common.block_tag('minecraft:mineable/shovel', 'primalwinter:snowy_%s' % block)
@@ -110,7 +110,7 @@ def main():
     b.with_tag('minecraft:climbable')
     common.item_model('snowy_vine', 'block/vine', 'primalwinter:block/snowy_leaves_overlay')
 
-    for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce'):
+    for wood in ('oak', 'dark_oak', 'acacia', 'jungle', 'birch', 'spruce', 'cherry', 'mangrove'):
         b = common.blockstate('snowy_%s_log' % wood, variants={
             'axis=y': {'model': 'primalwinter:block/snowy_%s_log' % wood},
             'axis=z': {'model': 'primalwinter:block/snowy_%s_log' % wood, 'x': 90},
@@ -148,6 +148,30 @@ def main():
         b.with_tag('minecraft:mineable/hoe')
         b.with_tag('minecraft:%s_leaves' % wood)
         b.with_tag('minecraft:leaves')
+
+    b = common.blockstate('snowy_mangrove_roots')
+    b.with_block_model({
+        'top': 'primalwinter:block/snowy_mangrove_roots_top',
+        'side': 'primalwinter:block/snowy_mangrove_roots_side'
+    }, parent='block/mangrove_roots')
+    b.with_item_model()
+    b.with_lang(lang('snowy mangrove roots'))
+    b.with_tag('minecraft:frogs_spawnable_on')
+    b.with_tag('minecraft:mineable/axe')
+
+    b = common.blockstate('snowy_muddy_mangrove_roots', variants={
+        'axis=x': {'model': 'primalwinter:block/snowy_muddy_mangrove_roots', 'x': 90, 'y': 90},
+        'axis=y': {'model': 'primalwinter:block/snowy_muddy_mangrove_roots'},
+        'axis=z': {'model': 'primalwinter:block/snowy_muddy_mangrove_roots', 'x': 90},
+    })
+    b.with_block_model({
+        'end': 'primalwinter:block/snowy_muddy_mangrove_roots_top',
+        'side': 'primalwinter:block/snowy_muddy_mangrove_roots_side'
+    }, parent='minecraft:block/cube_column')
+    b.with_item_model()
+    b.with_lang(lang('snowy muddy mangrove roots'))
+    b.with_tag('minecraft:frogs_spawnable_on')
+    b.with_tag('minecraft:mineable/shovel')
 
     # Template leaves model
     common.block_model('snowy_leaves', textures={

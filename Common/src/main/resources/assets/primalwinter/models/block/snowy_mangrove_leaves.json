@@ -1,0 +1,8 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "parent": "primalwinter:block/snowy_leaves",
+  "textures": {
+    "all": "block/mangrove_leaves",
+    "overlay": "primalwinter:block/snowy_leaves_overlay"
+  }
+}
