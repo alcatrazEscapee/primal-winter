@@ -34,5 +34,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "PrimalWinter-1.19"
+rootProject.name = "PrimalWinter-1.20"
 include("Common", "Fabric", "Forge")

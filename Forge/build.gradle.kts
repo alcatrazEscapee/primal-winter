@@ -14,7 +14,8 @@ val modGroup: String by extra
 
 val minecraftVersion: String by extra
 val forgeVersion: String by extra
-val parchmentVersionForge: String by extra
+val parchmentVersion: String by extra
+val parchmentMinecraftVersion: String by extra
 val epsilonVersion: String by extra
 
 val shadowLibrary: Configuration by configurations.creating
@@ -51,7 +52,7 @@ dependencies {
 }
 
 minecraft {
-    mappings("parchment", parchmentVersionForge)
+    mappings("parchment", "${parchmentMinecraftVersion}-${parchmentVersion}-${parchmentMinecraftVersion}")
 
     runs {
         all {

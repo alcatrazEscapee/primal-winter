@@ -12,7 +12,8 @@ val modName: String by extra
 val modGroup: String by extra
 
 val minecraftVersion: String by extra
-val parchmentVersionFabric: String by extra
+val parchmentVersion: String by extra
+val parchmentMinecraftVersion: String by extra
 val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
 val epsilonVersion: String by extra
@@ -44,7 +45,7 @@ dependencies {
     @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${minecraftVersion}:${parchmentVersionFabric}@zip")
+        parchment("org.parchmentmc.data:parchment-${parchmentMinecraftVersion}:${parchmentVersion}@zip")
     })
 
     modImplementation(group = "net.fabricmc", name = "fabric-loader", version = fabricLoaderVersion)
