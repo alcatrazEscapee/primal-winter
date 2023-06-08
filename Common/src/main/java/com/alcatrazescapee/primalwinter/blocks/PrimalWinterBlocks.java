@@ -5,11 +5,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DirtPathBlock;
@@ -20,19 +18,18 @@ import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 
 import com.alcatrazescapee.primalwinter.mixin.AxeItemAccessor;
 import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import com.alcatrazescapee.primalwinter.platform.RegistryInterface;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
-import com.alcatrazescapee.primalwinter.util.Helpers;
 
 public final class PrimalWinterBlocks
 {
-    public static final RegistryInterface<Block> BLOCKS = XPlatform.INSTANCE.registryInterface(Registry.BLOCK);
-    public static final RegistryInterface<Item> ITEMS = XPlatform.INSTANCE.registryInterface(Registry.ITEM);
+    public static final RegistryInterface<Block> BLOCKS = XPlatform.INSTANCE.registryInterface(BuiltInRegistries.BLOCK);
+    public static final RegistryInterface<Item> ITEMS = XPlatform.INSTANCE.registryInterface(BuiltInRegistries.ITEM);
 
     public static final RegistryHolder<Block> SNOWY_DIRT = register("snowy_dirt", () -> new Block(Block.Properties.copy(Blocks.DIRT)));
     public static final RegistryHolder<Block> SNOWY_COARSE_DIRT = register("snowy_coarse_dirt", () -> new Block(Block.Properties.copy(Blocks.COARSE_DIRT)));
@@ -56,12 +53,12 @@ public final class PrimalWinterBlocks
 
     public static final RegistryHolder<Block> SNOWY_DIRT_PATH = register("snowy_dirt_path", () -> new DirtPathBlock(Block.Properties.copy(Blocks.DIRT_PATH)) {});
 
-    public static final RegistryHolder<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> log(MaterialColor.WOOD, MaterialColor.PODZOL));
-    public static final RegistryHolder<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> log(MaterialColor.SAND, MaterialColor.QUARTZ));
-    public static final RegistryHolder<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> log(MaterialColor.PODZOL, MaterialColor.COLOR_BROWN));
-    public static final RegistryHolder<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> log(MaterialColor.DIRT, MaterialColor.PODZOL));
-    public static final RegistryHolder<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> log(MaterialColor.COLOR_BROWN, MaterialColor.COLOR_BROWN));
-    public static final RegistryHolder<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> log(MaterialColor.COLOR_ORANGE, MaterialColor.STONE));
+    public static final RegistryHolder<Block> SNOWY_OAK_LOG = register("snowy_oak_log", () -> log(MapColor.WOOD, MapColor.PODZOL));
+    public static final RegistryHolder<Block> SNOWY_BIRCH_LOG = register("snowy_birch_log", () -> log(MapColor.SAND, MapColor.QUARTZ));
+    public static final RegistryHolder<Block> SNOWY_SPRUCE_LOG = register("snowy_spruce_log", () -> log(MapColor.PODZOL, MapColor.COLOR_BROWN));
+    public static final RegistryHolder<Block> SNOWY_JUNGLE_LOG = register("snowy_jungle_log", () -> log(MapColor.DIRT, MapColor.PODZOL));
+    public static final RegistryHolder<Block> SNOWY_DARK_OAK_LOG = register("snowy_dark_oak_log", () -> log(MapColor.COLOR_BROWN, MapColor.COLOR_BROWN));
+    public static final RegistryHolder<Block> SNOWY_ACACIA_LOG = register("snowy_acacia_log", () -> log(MapColor.COLOR_ORANGE, MapColor.STONE));
 
     public static final RegistryHolder<Block> SNOWY_OAK_LEAVES = register("snowy_oak_leaves", () -> new LeavesBlock(Block.Properties.copy(Blocks.OAK_LEAVES)));
     public static final RegistryHolder<Block> SNOWY_BIRCH_LEAVES = register("snowy_birch_leaves", () -> new LeavesBlock(Block.Properties.copy(Blocks.BIRCH_LEAVES)));
@@ -132,20 +129,16 @@ public final class PrimalWinterBlocks
         AxeItemAccessor.accessor$setStrippables(strippables);
     }
 
-    private static Block log(MaterialColor topColor, MaterialColor barkColor)
+    private static Block log(MapColor topColor, MapColor barkColor)
     {
-        return new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topColor : barkColor).strength(2.0F).sound(SoundType.WOOD));
+        return new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topColor : barkColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava());
     }
 
     private static <T extends Block> RegistryHolder<T> register(String name, Supplier<T> blockFactory)
     {
         final RegistryHolder<T> block = BLOCKS.register(name, blockFactory);
-        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(Tab.TAB)));
+        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        PrimalWinterItemGroups.ENTRIES.add(block);
         return block;
-    }
-
-    public static final class Tab
-    {
-        public static final CreativeModeTab TAB = XPlatform.INSTANCE.creativeTab(Helpers.identifier("items"), () -> new ItemStack(SNOWY_DIRT.get()));
     }
 }

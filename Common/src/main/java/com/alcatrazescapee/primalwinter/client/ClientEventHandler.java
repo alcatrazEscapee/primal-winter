@@ -70,7 +70,7 @@ public final class ClientEventHandler
         if (camera.getEntity() instanceof Player player && camera.getFluidInCamera() == FogType.NONE && prevFogDensity > 0f)
         {
             // Calculate color based on time of day
-            final float angle = player.level.getSunAngle(partialTick);
+            final float angle = player.level().getSunAngle(partialTick);
             final float height = Mth.cos(angle);
             final float delta = Mth.clamp((height + 0.4f) / 0.8f, 0, 1);
 
@@ -96,11 +96,11 @@ public final class ClientEventHandler
 
             float expectedFogDensity = 0f;
 
-            final Level level = player.level;
+            final Level level = player.level();
             final Biome biome = level.getBiome(camera.getBlockPosition()).value();
-            if (level.isRaining() && biome.getPrecipitation() == Biome.Precipitation.SNOW && biome.coldEnoughToSnow(camera.getBlockPosition()))
+            if (level.isRaining() && biome.coldEnoughToSnow(camera.getBlockPosition()))
             {
-                final int light = level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition()));
+                final int light = level.getBrightness(LightLayer.SKY, BlockPos.containing(player.getEyePosition()));
                 expectedFogDensity = Mth.clampedMap(light, 0f, 15f, 0f, 1f);
             }
 

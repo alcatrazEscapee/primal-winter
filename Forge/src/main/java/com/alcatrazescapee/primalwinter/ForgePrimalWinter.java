@@ -1,12 +1,16 @@
 package com.alcatrazescapee.primalwinter;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.BiomeModifier;
@@ -23,7 +27,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.Config;
 import com.alcatrazescapee.primalwinter.util.EventHandler;
-import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,7 +35,10 @@ import net.minecraftforge.registries.RegistryObject;
 public final class ForgePrimalWinter
 {
     public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, PrimalWinter.MOD_ID);
-    public static final RegistryObject<Codec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> Codec.unit(Instance.INSTANCE));
+    public static final RegistryObject<Codec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> RecordCodecBuilder.create(instance -> instance.group(
+        PlacedFeature.LIST_CODEC.fieldOf("surface_structures").forGetter(c -> c.surfaceStructures),
+        PlacedFeature.LIST_CODEC.fieldOf("top_layer_modification").forGetter(c -> c.topLayerModification)
+    ).apply(instance, Instance::new)));
 
     public ForgePrimalWinter()
     {
@@ -53,10 +59,8 @@ public final class ForgePrimalWinter
         }
     }
 
-    enum Instance implements BiomeModifier
+    record Instance(HolderSet<PlacedFeature> surfaceStructures, HolderSet<PlacedFeature> topLayerModification) implements BiomeModifier
     {
-        INSTANCE;
-
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
         {
@@ -66,7 +70,7 @@ public final class ForgePrimalWinter
             }
 
             final ClimateSettingsBuilder climate = builder.getClimateSettings();
-            climate.setPrecipitation(Biome.Precipitation.SNOW);
+            climate.setHasPrecipitation(true);
             climate.setTemperature(-0.5f);
             climate.setTemperatureModifier(Biome.TemperatureModifier.NONE);
 
@@ -75,11 +79,17 @@ public final class ForgePrimalWinter
                 .waterFogColor(0x050533);
 
             final BiomeGenerationSettingsBuilder settings = builder.getGenerationSettings();
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.ICE_SPIKES.holder());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.ICE_PATCH.holder());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.SNOW_PATCH.holder());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.POWDER_SNOW_PATCH.holder());
-            settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, PrimalWinterWorldGen.Placed.FREEZE_TOP_LAYER.holder());
+            for (Holder<PlacedFeature> feature : surfaceStructures)
+            {
+                settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, feature);
+            }
+
+            settings.getFeatures(GenerationStep.Decoration.TOP_LAYER_MODIFICATION)
+                .removeIf(holder -> holder.unwrapKey().map(key -> key == MiscOverworldPlacements.FREEZE_TOP_LAYER).orElse(false));
+            for (Holder<PlacedFeature> feature : topLayerModification)
+            {
+                settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, feature);
+            }
 
             final MobSpawnSettingsBuilder spawns = builder.getMobSpawnSettings();
             spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 60, 1, 3));

@@ -1,18 +1,12 @@
 package com.alcatrazescapee.primalwinter.platform;
 
 import java.nio.file.Path;
-import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-
-import com.alcatrazescapee.primalwinter.util.Config;
 
 public final class ForgePlatform implements XPlatform
 {
@@ -23,15 +17,9 @@ public final class ForgePlatform implements XPlatform
     }
 
     @Override
-    public CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon)
+    public CreativeModeTab.Builder creativeTab()
     {
-        return new CreativeModeTab(id.getNamespace() + "." + id.getPath()) {
-            @Override
-            public ItemStack makeIcon()
-            {
-                return icon.get();
-            }
-        };
+        return CreativeModeTab.builder();
     }
 
     @Override

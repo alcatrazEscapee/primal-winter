@@ -2,6 +2,12 @@ from mcresources import ResourceManager, utils
 from mcresources.type_definitions import JsonObject
 
 
+def rarity(rarity: int): return 'minecraft:rarity_filter', {'chance': rarity}
+def biome(): return 'minecraft:biome'
+def square(): return 'minecraft:in_square'
+def heightmap(heightmap: str): return 'minecraft:heightmap', {'heightmap': heightmap}
+
+
 def main():
     mod_id = 'primalwinter'
     root_dir = '../%s/src/main/resources'
@@ -18,8 +24,30 @@ def main():
     for rm in each:
         utils.clean_generated_resources('/'.join(rm.resource_dir))
 
+    def config(_state: str): return {
+        'state_provider': {'rules': [], 'fallback': {
+            'type': 'minecraft:simple_state_provider',
+            'state': utils.block_state(_state)
+        }},
+        'target': {'type': 'minecraft:matching_block_tag', 'tag': '%s:replaceable_with_snowy_stuff' % mod_id},
+        'radius': {'type': 'minecraft:uniform', 'value': {'min_inclusive': 2, 'max_inclusive': 3}},
+        'half_height': 1
+    }
+
+    common.configured_feature('freeze_top_layer', '%s:freeze_top_layer' % mod_id)
+    common.configured_feature('ice_spikes', '%s:ice_spikes' % mod_id)
+    common.configured_feature('ice_patch', '%s:disk' % mod_id, config('minecraft:ice'))
+    common.configured_feature('snow_patch', '%s:disk' % mod_id, config('minecraft:snow'))
+    common.configured_feature('powder_snow_patch', '%s:disk' % mod_id, config('minecraft:powder_snow'))
+
+    common.placed_feature('freeze_top_layer', '%s:freeze_top_layer' % mod_id)
+    common.placed_feature('ice_spikes', '%s:ice_spikes' % mod_id, rarity(8), square(), heightmap('OCEAN_FLOOR'), biome())
+    common.placed_feature('ice_patch', '%s:ice_patch' % mod_id, square(), heightmap('OCEAN_FLOOR'), biome())
+    common.placed_feature('snow_patch', '%s:snow_patch' % mod_id, square(), heightmap('OCEAN_FLOOR'), biome())
+    common.placed_feature('powder_snow_patch', '%s:powder_snow_patch' % mod_id, square(), heightmap('MOTION_BLOCKING'), biome())
+
     common.lang({
-        'itemGroup.primalwinter.items': 'Primal Winter',
+        'primalwinter.items': 'Primal Winter',
         'primalwinter.subtitle.wind': 'Wind Blows'
     })
 
@@ -136,9 +164,14 @@ def main():
     }, 'assets')
 
     common.block_tag('minecraft:animals_spawnable_on', 'minecraft:snow_block', 'minecraft:snow', 'primalwinter:snowy_dirt', 'primalwinter:snowy_sand')
+    common.block_tag('replaceable_with_snowy_stuff', 'minecraft:dirt', 'minecraft:grass_block', 'minecraft:podzol', 'minecraft:coarse_dirt', 'minecraft:mycelium', 'minecraft:snow_block', 'minecraft:ice', 'minecraft:sand', 'minecraft:red_sand', 'primalwinter:snowy_dirt', 'primalwinter:snowy_coarse_dirt', 'primalwinter:snowy_sand', 'primalwinter:snowy_red_sand')
 
     # Forge biome modifier
-    forge.data(('forge', 'biome_modifier', 'instance'), {'type': 'primalwinter:instance'})
+    forge.data(('forge', 'biome_modifier', 'instance'), {
+        'type': 'primalwinter:instance',
+        'surface_structures': ['primalwinter:ice_spikes', 'primalwinter:ice_patch', 'primalwinter:snow_patch', 'primalwinter:powder_snow_patch'],
+        'top_layer_modification': ['primalwinter:freeze_top_layer']
+    })
 
     # Only flush common
     common.flush()

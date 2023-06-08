@@ -3,13 +3,13 @@ package com.alcatrazescapee.primalwinter.platform;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricPlatform implements XPlatform
@@ -21,9 +21,9 @@ public final class FabricPlatform implements XPlatform
     }
 
     @Override
-    public CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon)
+    public CreativeModeTab.Builder creativeTab()
     {
-        return FabricItemGroupBuilder.build(id, icon);
+        return FabricItemGroup.builder();
     }
 
     @Override

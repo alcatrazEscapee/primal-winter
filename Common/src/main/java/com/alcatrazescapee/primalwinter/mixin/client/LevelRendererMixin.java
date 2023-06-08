@@ -6,12 +6,10 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -54,14 +52,14 @@ public abstract class LevelRendererMixin
 
     private int windSoundTime;
 
-    @Redirect(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/biome/Biome;warmEnoughToRain(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean alwaysUseRainRendering(Biome biome, BlockPos pos)
+    @Redirect(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/biome/Biome;getPrecipitationAt(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/biome/Biome$Precipitation;"))
+    private Biome.Precipitation alwaysUseRainRendering(Biome biome, BlockPos pos)
     {
         if (Config.INSTANCE.weatherRenderChanges.getAsBoolean())
         {
-            return true;
+            return Biome.Precipitation.RAIN;
         }
-        return biome.warmEnoughToRain(pos);
+        return biome.getPrecipitationAt(pos);
     }
 
     @Redirect(method = "renderSnowAndRain", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;getLightColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I"))
@@ -110,7 +108,7 @@ public abstract class LevelRendererMixin
         if (rain > 0f)
         {
             final Random random = new Random((long) ticks * 312987231L);
-            final BlockPos cameraPos = new BlockPos(camera.getPosition());
+            final BlockPos cameraPos = BlockPos.containing(camera.getPosition());
             BlockPos pos = null;
 
             final int particleCount = (int) (100.0F * rain * rain) / (minecraft.options.particles().get() == ParticleStatus.DECREASED ? 2 : 1);
@@ -118,7 +116,7 @@ public abstract class LevelRendererMixin
             {
                 final BlockPos randomPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, cameraPos.offset(random.nextInt(21) - 10, 0, random.nextInt(21) - 10));
                 final Biome biome = level.getBiome(randomPos).value();
-                if (randomPos.getY() > level.getMinBuildHeight() && randomPos.getY() <= cameraPos.getY() + 10 && randomPos.getY() >= cameraPos.getY() - 10 && biome.getPrecipitation() == Biome.Precipitation.SNOW && biome.coldEnoughToSnow(randomPos)) // Change: use SNOW and coldEnoughToSnow() instead
+                if (randomPos.getY() > level.getMinBuildHeight() && randomPos.getY() <= cameraPos.getY() + 10 && randomPos.getY() >= cameraPos.getY() - 10 && biome.coldEnoughToSnow(randomPos)) // Change: use SNOW and coldEnoughToSnow() instead
                 {
                     pos = randomPos.below();
                     if (minecraft.options.particles().get() == ParticleStatus.MINIMAL)
@@ -155,8 +153,8 @@ public abstract class LevelRendererMixin
             {
                 final BlockPos playerPos = camera.getBlockPosition();
                 final Entity entity = camera.getEntity();
-                int light = camera.getEntity().level.getBrightness(LightLayer.SKY, playerPos);
-                if (light > 3 && entity.level.isRaining() && entity.level.getBiome(playerPos).value().coldEnoughToSnow(playerPos))
+                int light = camera.getEntity().level().getBrightness(LightLayer.SKY, playerPos);
+                if (light > 3 && entity.level().isRaining() && entity.level().getBiome(playerPos).value().coldEnoughToSnow(playerPos))
                 {
                     // In a windy location, play wind sounds
                     float volumeModifier = 0.2f + (light - 3) * 0.01f;

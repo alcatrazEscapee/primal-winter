@@ -141,7 +141,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
     private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, RandomSource random, int skyLight)
     {
         final Biome biome = level.getBiome(pos).value();
-        if (!biome.coldEnoughToSnow(pos) || biome.getPrecipitation() != Biome.Precipitation.SNOW)
+        if (!biome.coldEnoughToSnow(pos))
         {
             return;
         }
@@ -162,7 +162,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         }
 
         // Then, try and place snow layers / ice at the current location
-        if (fluidState.getType() == Fluids.WATER && (state.getBlock() instanceof LiquidBlock || state.getMaterial().isReplaceable()))
+        if (fluidState.getType() == Fluids.WATER && (state.getBlock() instanceof LiquidBlock || state.canBeReplaced()))
         {
             level.setBlock(pos, Blocks.ICE.defaultBlockState(), 2);
             if (!(state.getBlock() instanceof LiquidBlock))
@@ -174,7 +174,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         {
             level.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 2);
         }
-        else if (Blocks.SNOW.defaultBlockState().canSurvive(level, pos) && state.getMaterial().isReplaceable())
+        else if (Blocks.SNOW.defaultBlockState().canSurvive(level, pos) && state.canBeReplaced())
         {
             // Special exceptions
             BlockPos posUp = pos.above();

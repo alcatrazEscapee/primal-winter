@@ -22,6 +22,6 @@ public interface RegistryHolder<T> extends Supplier<T>
 
     default Holder<T> holder()
     {
-        return registry().getOrCreateHolderOrThrow(key());
+        return registry().getHolderOrThrow(key());
     }
 }

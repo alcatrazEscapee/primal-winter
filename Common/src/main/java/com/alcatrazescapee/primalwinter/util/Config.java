@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -105,7 +106,7 @@ public enum Config
                 Level.NETHER,
                 Level.END
             ), Type.STRING_LIST.map(
-                list -> list.stream().map(name -> ResourceKey.create(Registry.DIMENSION_REGISTRY, ParseError.require(() -> new ResourceLocation(name)))).toList(),
+                list -> list.stream().map(name -> ResourceKey.create(Registries.DIMENSION, ParseError.require(() -> new ResourceLocation(name)))).toList(),
                 list -> list.stream().map(rl -> rl.location().toString()).toList(),
                 TypeValue::new
             ));

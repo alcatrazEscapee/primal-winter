@@ -52,7 +52,7 @@ dependencies {
 }
 
 minecraft {
-    mappings("parchment", "${parchmentMinecraftVersion}-${parchmentVersion}-${parchmentMinecraftVersion}")
+    mappings("parchment", "${parchmentMinecraftVersion}-${parchmentVersion}-${minecraftVersion}")
 
     runs {
         all {

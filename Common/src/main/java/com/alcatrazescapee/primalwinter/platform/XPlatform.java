@@ -23,7 +23,7 @@ public interface XPlatform
 
     <T> RegistryInterface<T> registryInterface(Registry<T> registry);
 
-    CreativeModeTab creativeTab(ResourceLocation id, Supplier<ItemStack> icon);
+    CreativeModeTab.Builder creativeTab();
 
     // Platform APIs
 

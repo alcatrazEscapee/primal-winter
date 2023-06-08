@@ -1,0 +1,28 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "type": "primalwinter:disk",
+  "config": {
+    "state_provider": {
+      "rules": [],
+      "fallback": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:powder_snow",
+          "Properties": {}
+        }
+      }
+    },
+    "target": {
+      "type": "minecraft:matching_block_tag",
+      "tag": "primalwinter:replaceable_with_snowy_stuff"
+    },
+    "radius": {
+      "type": "minecraft:uniform",
+      "value": {
+        "min_inclusive": 2,
+        "max_inclusive": 3
+      }
+    },
+    "half_height": 1
+  }
+}

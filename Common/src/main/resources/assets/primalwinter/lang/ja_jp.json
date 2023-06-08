@@ -1,6 +1,5 @@
 {
-  "__comment__": "This file was automatically created by mcresources",
-  "itemGroup.primalwinter.items": "Primal Winter",
+  "primalwinter.items": "Primal Winter",
   "primalwinter.subtitle.wind": "Wind Blows",
   "block.primalwinter.snowy_dirt": "雪の積もった土",
   "block.primalwinter.snowy_coarse_dirt": "雪の積もった粗い土",

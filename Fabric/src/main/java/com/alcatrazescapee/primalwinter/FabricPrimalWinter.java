@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import com.alcatrazescapee.primalwinter.util.Config;
 import com.alcatrazescapee.primalwinter.util.EventHandler;
 import com.alcatrazescapee.primalwinter.util.Helpers;
-import com.alcatrazescapee.primalwinter.world.PrimalWinterWorldGen;
+import com.alcatrazescapee.primalwinter.world.PrimalWinterFeatures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -37,7 +37,7 @@ public final class FabricPrimalWinter implements ModInitializer
         }, context -> {
             final BiomeModificationContext.WeatherContext weather = context.getWeather();
             weather.setTemperature(-0.5f);
-            weather.setPrecipitation(Biome.Precipitation.SNOW);
+            weather.setPrecipitation(true);
             weather.setTemperatureModifier(Biome.TemperatureModifier.NONE);
 
             final BiomeModificationContext.EffectsContext effects = context.getEffects();
@@ -45,12 +45,12 @@ public final class FabricPrimalWinter implements ModInitializer
             effects.setWaterFogColor(0x050533);
 
             final BiomeModificationContext.GenerationSettingsContext settings = context.getGenerationSettings();
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.ICE_SPIKES.key());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.ICE_PATCH.key());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.SNOW_PATCH.key());
-            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterWorldGen.Placed.POWDER_SNOW_PATCH.key());
-            settings.removeFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, MiscOverworldPlacements.FREEZE_TOP_LAYER.unwrapKey().orElseThrow());
-            settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, PrimalWinterWorldGen.Placed.FREEZE_TOP_LAYER.key());
+            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterFeatures.Keys.ICE_SPIKES);
+            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterFeatures.Keys.ICE_PATCH);
+            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterFeatures.Keys.SNOW_PATCH);
+            settings.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, PrimalWinterFeatures.Keys.POWDER_SNOW_PATCH);
+            settings.removeFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, MiscOverworldPlacements.FREEZE_TOP_LAYER);
+            settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, PrimalWinterFeatures.Keys.FREEZE_TOP_LAYER);
 
             final BiomeModificationContext.SpawnSettingsContext spawns = context.getSpawnSettings();
             spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 60, 1, 3));

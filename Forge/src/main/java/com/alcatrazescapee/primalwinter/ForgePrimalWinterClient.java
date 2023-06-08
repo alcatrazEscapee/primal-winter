@@ -1,7 +1,6 @@
 package com.alcatrazescapee.primalwinter;
 
 import java.util.function.Function;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
@@ -32,7 +31,7 @@ public final class ForgePrimalWinterClient
             @Override
             public <T extends ParticleOptions> void accept(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider)
             {
-                Minecraft.getInstance().particleEngine.register(type, provider::apply);
+                event.registerSpriteSet(type, provider::apply);
             }
         }));
 
