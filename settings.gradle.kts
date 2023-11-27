@@ -19,7 +19,7 @@ pluginManagement {
         exclusiveMaven("https://repo.spongepowered.org/repository/maven-public/") {
             includeGroupByRegex("org\\.spongepowered.*")
         }
-        exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") {
+        exclusiveMaven("https://alcatrazescapee.com/maven") {
             includeGroupByRegex("com\\.alcatrazescapee.*")
         }
 

@@ -14,7 +14,7 @@ repositories {
             filter(filter)
         }
 
-    exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") { includeGroup("com.alcatrazescapee") }
+    exclusiveMaven("https://alcatrazescapee.com/maven") { includeGroup("com.alcatrazescapee") }
 }
 
 minecraft {
@@ -23,5 +23,6 @@ minecraft {
 
 dependencies {
     compileOnly(group = "org.spongepowered", name = "mixin", version = "0.8.5")
+    compileOnly(group = "org.ow2.asm", name = "asm-tree", version = "9.5")
     compileOnly(group = "com.alcatrazescapee", name = "epsilon", version = epsilonVersion)
 }

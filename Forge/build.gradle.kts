@@ -35,7 +35,7 @@ repositories {
             filter(filter)
         }
 
-    exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") { includeGroup("com.alcatrazescapee") }
+    exclusiveMaven("https://alcatrazescapee.com/maven") { includeGroup("com.alcatrazescapee") }
     exclusiveMaven("https://maven.parchmentmc.org") { includeGroupByRegex("org\\.parchmentmc.*") }
 }
 
