@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
@@ -88,7 +89,12 @@ public abstract class LevelRendererMixin
         }
     }
 
-    @ModifyConstant(method = "renderSnowAndRain", constant = {@Constant(intValue = 5), @Constant(intValue = 10)})
+    // Use slice here to only change constants between "RenderSystem.enableDepthTest();" and "RenderSystem.depthMask(Z);".
+    // This is to prevent a crash with OptiFine installed as the mixin was changing another value which caused an ArrayOutOfBounds error.
+    @ModifyConstant(method = "renderSnowAndRain", constant = {@Constant(intValue = 5), @Constant(intValue = 10)}, slice = @Slice(
+            from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableDepthTest()V"),
+            to = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;depthMask(Z)V"))
+    )
     private int modifySnowAmount(int constant)
     {
         // This constant is used to control how much snow is rendered - 5 with default, 10 with fancy graphics. By default, we bump this all the way to 15.
