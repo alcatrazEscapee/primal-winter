@@ -1,6 +1,6 @@
 # Loader Metadata
 modLoader = "javafml"
-loaderVersion = "${forgeVersionRange}"
+loaderVersion = "${neoForgeVersionRange}"
 license = "MIT"
 issueTrackerURL = "${modIssueUrl}"
 
@@ -9,20 +9,22 @@ issueTrackerURL = "${modIssueUrl}"
     version = "${modVersion}"
     displayName = "${modName}"
     displayURL = "${modHomeUrl}"
-    logoFile = "logo.png"
     authors = "${modAuthor}"
     description = "${modDescription}"
 
+[[mixins]]
+    config = "${modId}.mixins.json"
+
 [[dependencies.${modId}]]
-    modId = "forge"
-    mandatory = true
-    versionRange = "${forgeVersionRange}"
+    modId = "neoforge"
+    type = "required"
+    versionRange = "${neoForgeVersionRange}"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.${modId}]]
     modId = "minecraft"
-    mandatory = true
+    type = "required"
     versionRange = "${minecraftVersionRange}"
     ordering = "NONE"
     side = "BOTH"

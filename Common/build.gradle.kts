@@ -1,27 +1,25 @@
 plugins {
-    java
-    id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
+    id("net.neoforged.moddev") version "0.1.112"
 }
 
-// From gradle.properties
-val minecraftVersion: String by extra
+val parchmentMinecraftVersion: String by extra
+val parchmentVersion: String by extra
+val commonNeoFormVersion: String by extra
 val epsilonVersion: String by extra
-
-repositories {
-    fun exclusiveMaven(url: String, filter: Action<InclusiveRepositoryContentDescriptor>) =
-        exclusiveContent {
-            forRepository { maven(url) }
-            filter(filter)
-        }
-
-    exclusiveMaven("https://alcatrazescapee.jfrog.io/artifactory/mods") { includeGroup("com.alcatrazescapee") }
-}
-
-minecraft {
-    version(minecraftVersion)
-}
 
 dependencies {
     compileOnly(group = "org.spongepowered", name = "mixin", version = "0.8.5")
     compileOnly(group = "com.alcatrazescapee", name = "epsilon", version = epsilonVersion)
+
+    compileOnly(group = "io.github.llamalad7", name = "mixinextras-common", version = "0.3.5")
+    annotationProcessor(group = "io.github.llamalad7", name = "mixinextras-common", version = "0.3.5")
+}
+
+neoForge {
+    neoFormVersion.set(commonNeoFormVersion)
+
+    parchment {
+        minecraftVersion.set(parchmentMinecraftVersion)
+        mappingsVersion.set(parchmentVersion)
+    }
 }
