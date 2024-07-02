@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "minecraft:block/red_terracotta",
+    "side": "primalwinter:block/snowy_red_terracotta",
+    "top": "minecraft:block/snow"
+  }
+}

@@ -1,5 +1,4 @@
 {
-  "__comment__": "Simplified Chinese Translation for Primal Winter",
   "primalwinter.items": "原始寒冬",
   "primalwinter.subtitle.wind": "风",
   "block.primalwinter.snowy_dirt": "积雪的泥土",
@@ -31,5 +30,12 @@
   "block.primalwinter.snowy_birch_log": "冰冻的白桦原木",
   "block.primalwinter.snowy_birch_leaves": "冰冻的白桦树叶",
   "block.primalwinter.snowy_spruce_log": "冰冻的云杉原木",
-  "block.primalwinter.snowy_spruce_leaves": "冰冻的云杉树叶"
+  "block.primalwinter.snowy_spruce_leaves": "冰冻的云杉树叶",
+  "block.primalwinter.snowy_mud": "Snowy Mud",
+  "block.primalwinter.snowy_cherry_log": "Snowy Cherry Log",
+  "block.primalwinter.snowy_cherry_leaves": "Snowy Cherry Leaves",
+  "block.primalwinter.snowy_mangrove_log": "Snowy Mangrove Log",
+  "block.primalwinter.snowy_mangrove_leaves": "Snowy Mangrove Leaves",
+  "block.primalwinter.snowy_mangrove_roots": "Snowy Mangrove Roots",
+  "block.primalwinter.snowy_muddy_mangrove_roots": "Snowy Muddy Mangrove Roots"
 }

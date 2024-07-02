@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/dirt_path",
+  "textures": {
+    "side": "minecraft:block/snow",
+    "top": "primalwinter:block/snowy_dirt_path_side"
+  }
+}

@@ -8,7 +8,7 @@
 
 !/**/build.gradle.kts
 !/**/src/**/*.*
-!/Data/main.py
+!/Common/generated/resources/data/**/*.*
 
 !/img/**/*.png
 

@@ -1,0 +1,19 @@
+{
+  "values": [
+    "minecraft:dirt",
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:coarse_dirt",
+    "minecraft:mycelium",
+    "minecraft:snow_block",
+    "minecraft:ice",
+    "minecraft:sand",
+    "minecraft:red_sand",
+    "minecraft:gravel",
+    "primalwinter:snowy_dirt",
+    "primalwinter:snowy_coarse_dirt",
+    "primalwinter:snowy_sand",
+    "primalwinter:snowy_red_sand",
+    "primalwinter:snowy_gravel"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "primalwinter:instance",
+  "surface_structures": [
+    "primalwinter:ice_spikes",
+    "primalwinter:ice_patch",
+    "primalwinter:snow_patch",
+    "primalwinter:powder_snow_patch"
+  ],
+  "top_layer_modification": "primalwinter:freeze_top_layer"
+}

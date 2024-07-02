@@ -1,8 +1,0 @@
-{
-  "__comment__": "This file was automatically created by mcresources",
-  "parent": "block/dirt_path",
-  "textures": {
-    "top": "minecraft:block/snow",
-    "side": "primalwinter:block/snowy_dirt_path_side"
-  }
-}

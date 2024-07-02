@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "minecraft:block/red_sand",
+    "side": "primalwinter:block/snowy_red_sand",
+    "top": "minecraft:block/snow"
+  }
+}

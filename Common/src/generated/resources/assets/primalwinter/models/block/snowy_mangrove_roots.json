@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/mangrove_roots",
+  "textures": {
+    "side": "primalwinter:block/snowy_mangrove_roots_side",
+    "top": "primalwinter:block/snowy_mangrove_roots_top"
+  }
+}

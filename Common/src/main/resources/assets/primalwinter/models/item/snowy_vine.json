@@ -1,8 +1,0 @@
-{
-  "__comment__": "This file was automatically created by mcresources",
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "block/vine",
-    "layer1": "primalwinter:block/snowy_leaves_overlay"
-  }
-}

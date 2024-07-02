@@ -1,9 +1,0 @@
-{
-  "__comment__": "This file was automatically created by mcresources",
-  "parent": "block/cube_bottom_top",
-  "textures": {
-    "side": "primalwinter:block/snowy_white_terracotta",
-    "bottom": "minecraft:block/white_terracotta",
-    "top": "minecraft:block/snow"
-  }
-}

@@ -30,5 +30,12 @@
   "block.primalwinter.snowy_birch_log": "凍ったシラカバの原木",
   "block.primalwinter.snowy_birch_leaves": "雪の積もったシラカバの葉",
   "block.primalwinter.snowy_spruce_log": "凍ったトウヒの原木",
-  "block.primalwinter.snowy_spruce_leaves": "雪の積もったトウヒの葉"
+  "block.primalwinter.snowy_spruce_leaves": "雪の積もったトウヒの葉",
+  "block.primalwinter.snowy_mud": "Snowy Mud",
+  "block.primalwinter.snowy_cherry_log": "Snowy Cherry Log",
+  "block.primalwinter.snowy_cherry_leaves": "Snowy Cherry Leaves",
+  "block.primalwinter.snowy_mangrove_log": "Snowy Mangrove Log",
+  "block.primalwinter.snowy_mangrove_leaves": "Snowy Mangrove Leaves",
+  "block.primalwinter.snowy_mangrove_roots": "Snowy Mangrove Roots",
+  "block.primalwinter.snowy_muddy_mangrove_roots": "Snowy Muddy Mangrove Roots"
 }

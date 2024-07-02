@@ -1,8 +1,0 @@
-{
-  "__comment__": "This file was automatically created by mcresources",
-  "parent": "block/cube_column",
-  "textures": {
-    "side": "primalwinter:block/snowy_oak_log",
-    "end": "primalwinter:block/snowy_oak_log_top"
-  }
-}

@@ -23,3 +23,7 @@ neoForge {
         mappingsVersion.set(parchmentVersion)
     }
 }
+
+sourceSets.main {
+    resources { srcDir("src/generated/resources/") }
+}
