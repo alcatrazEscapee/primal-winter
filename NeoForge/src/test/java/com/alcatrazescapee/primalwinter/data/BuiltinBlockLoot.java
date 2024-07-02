@@ -59,6 +59,8 @@ public final class BuiltinBlockLoot extends BlockLootSubProvider
         dropOther(SNOWY_MANGROVE_ROOTS.get(), Blocks.MANGROVE_ROOTS);
         dropOther(SNOWY_MUDDY_MANGROVE_ROOTS.get(), Blocks.MUDDY_MANGROVE_ROOTS);
         add(SNOWY_VINE.get(), BlockLootSubProvider::createShearsOnlyDrop);
+        dropOther(SNOWY_SUGAR_CANE.get(), Blocks.SUGAR_CANE);
+        dropOther(SNOWY_CACTUS.get(), Blocks.CACTUS);
     }
 
     @Override

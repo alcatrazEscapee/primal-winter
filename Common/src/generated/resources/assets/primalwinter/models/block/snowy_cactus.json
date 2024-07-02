@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cactus",
+  "textures": {
+    "bottom": "primalwinter:block/snowy_cactus_bottom",
+    "side": "primalwinter:block/snowy_cactus_side",
+    "top": "primalwinter:block/snowy_cactus_top"
+  }
+}

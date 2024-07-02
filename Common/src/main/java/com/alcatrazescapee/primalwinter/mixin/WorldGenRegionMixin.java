@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import com.alcatrazescapee.primalwinter.util.Config;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
@@ -28,7 +27,7 @@ public abstract class WorldGenRegionMixin
         {
             return stateIn;
         }
-        final Supplier<? extends Block> block = PrimalWinterBlocks.SNOWY_TREE_BLOCKS.get(stateIn.getBlock());
+        final Supplier<? extends Block> block = PrimalWinterBlocks.SNOWY_DIRECT_REPLACEMENT_BLOCKS.get(stateIn.getBlock());
         if (block == null)
         {
             return stateIn;

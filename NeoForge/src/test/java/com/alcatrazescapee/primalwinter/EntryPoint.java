@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import com.alcatrazescapee.primalwinter.data.BuiltinBlockLoot;
 import com.alcatrazescapee.primalwinter.data.BuiltinBlockTags;
+import com.alcatrazescapee.primalwinter.data.BuiltinEntityTags;
 import com.alcatrazescapee.primalwinter.data.BuiltinFeatures;
 import com.alcatrazescapee.primalwinter.data.BuiltinI18n;
 import com.alcatrazescapee.primalwinter.data.BuiltinModels;
@@ -30,6 +31,7 @@ public final class EntryPoint
         event.getGenerator().addProvider(true, new BuiltinI18n(event));
         event.getGenerator().addProvider(true, new BuiltinModels(event));
         event.getGenerator().addProvider(true, new BuiltinBlockTags(event));
+        event.getGenerator().addProvider(true, new BuiltinEntityTags(event));
         event.getGenerator().addProvider(true,
             (DataProvider.Factory<? extends DataProvider>) output -> new LootTableProvider(
                 output, Set.of(), List.of(

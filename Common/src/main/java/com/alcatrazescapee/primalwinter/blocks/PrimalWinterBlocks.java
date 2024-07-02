@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.MangroveRootsBlock;
 import net.minecraft.world.level.block.MudBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -76,7 +75,9 @@ public final class PrimalWinterBlocks
     public static final RegistryHolder<Block> SNOWY_MANGROVE_ROOTS = register("snowy_mangrove_roots", () -> new MangroveRootsBlock(ofFullCopy(Blocks.MANGROVE_ROOTS)) {});
     public static final RegistryHolder<Block> SNOWY_MUDDY_MANGROVE_ROOTS = register("snowy_muddy_mangrove_roots", () -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).strength(0.7F).sound(SoundType.MUDDY_MANGROVE_ROOTS)));
 
-    public static final RegistryHolder<Block> SNOWY_VINE = register("snowy_vine", () -> new VineBlock(ofFullCopy(Blocks.VINE)));
+    public static final RegistryHolder<Block> SNOWY_VINE = register("snowy_vine", () -> new SnowyVineBlock(ofFullCopy(Blocks.VINE)));
+    public static final RegistryHolder<Block> SNOWY_SUGAR_CANE = register("snowy_sugar_cane", () -> new SnowySugarCaneBlock(ofFullCopy(Blocks.SUGAR_CANE)));
+    public static final RegistryHolder<Block> SNOWY_CACTUS = register("snowy_cactus", () -> new SnowyCactusBlock(ofFullCopy(Blocks.CACTUS)));
 
     public static final Map<Block, Supplier<Block>> SNOWY_TERRAIN_BLOCKS = new HashMap<>(new ImmutableMap.Builder<Block, Supplier<Block>>()
         .put(Blocks.DIRT, SNOWY_DIRT)
@@ -107,7 +108,7 @@ public final class PrimalWinterBlocks
         .put(Blocks.PACKED_ICE, () -> Blocks.SNOW_BLOCK)
         .build();
 
-    public static final Map<Block, Supplier<? extends Block>> SNOWY_TREE_BLOCKS = new ImmutableMap.Builder<Block, Supplier<? extends Block>>()
+    public static final Map<Block, Supplier<? extends Block>> SNOWY_DIRECT_REPLACEMENT_BLOCKS = new ImmutableMap.Builder<Block, Supplier<? extends Block>>()
         .put(Blocks.OAK_LOG, SNOWY_OAK_LOG)
         .put(Blocks.BIRCH_LOG, SNOWY_BIRCH_LOG)
         .put(Blocks.SPRUCE_LOG, SNOWY_SPRUCE_LOG)
@@ -127,6 +128,8 @@ public final class PrimalWinterBlocks
         .put(Blocks.MANGROVE_ROOTS, SNOWY_MANGROVE_ROOTS)
         .put(Blocks.MUDDY_MANGROVE_ROOTS, SNOWY_MUDDY_MANGROVE_ROOTS)
         .put(Blocks.VINE, SNOWY_VINE)
+        .put(Blocks.SUGAR_CANE, SNOWY_SUGAR_CANE)
+        .put(Blocks.CACTUS, SNOWY_CACTUS)
         .build();
 
     public static final Map<Supplier<? extends Block>, Supplier<? extends Block>> SNOWY_LOG_STRIPPING_BLOCKS = new ImmutableMap.Builder<Supplier<? extends Block>, Supplier<? extends Block>>()

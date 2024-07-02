@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.client;
 
+import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FogType;
 
@@ -32,8 +34,15 @@ public final class ClientEventHandler
 
     public static void setupClient()
     {
-        XPlatformClient.INSTANCE.setRenderType(PrimalWinterBlocks.SNOWY_MANGROVE_ROOTS.get(), RenderType.cutout());
-        XPlatformClient.INSTANCE.setRenderType(PrimalWinterBlocks.SNOWY_VINE.get(), RenderType.cutout());
+        cutout(PrimalWinterBlocks.SNOWY_MANGROVE_ROOTS);
+        cutout(PrimalWinterBlocks.SNOWY_VINE);
+        cutout(PrimalWinterBlocks.SNOWY_SUGAR_CANE);
+        cutout(PrimalWinterBlocks.SNOWY_CACTUS);
+    }
+
+    private static void cutout(Supplier<Block> block)
+    {
+        XPlatformClient.INSTANCE.setRenderType(block.get(), RenderType.cutout());
     }
 
     public static void setupBlockColors(BlockColorCallback colors)

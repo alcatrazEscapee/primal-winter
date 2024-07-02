@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:dirt",
+    "#minecraft:sand",
+    "minecraft:sugar_cane",
+    "primalwinter:snowy_sugar_cane",
+    "primalwinter:snowy_sand",
+    "primalwinter:snowy_red_sand",
+    "primalwinter:snowy_dirt",
+    "primalwinter:snowy_coarse_dirt",
+    "primalwinter:snowy_mud",
+    "primalwinter:snowy_muddy_mangrove_roots"
+  ]
+}

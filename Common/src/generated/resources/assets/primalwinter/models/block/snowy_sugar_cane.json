@@ -1,0 +1,7 @@
+{
+  "parent": "primalwinter:block/overlay_tinted_cross",
+  "textures": {
+    "cross": "primalwinter:block/snowy_sugar_cane",
+    "overlay": "primalwinter:block/snowy_sugar_cane_overlay"
+  }
+}

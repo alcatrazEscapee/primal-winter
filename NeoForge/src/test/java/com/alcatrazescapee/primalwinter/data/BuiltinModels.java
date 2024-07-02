@@ -73,6 +73,16 @@ public final class BuiltinModels extends BlockStateProvider
             modLoc("block/snowy_muddy_mangrove_roots_side"),
             modLoc("block/snowy_muddy_mangrove_roots_top")));
         vineBlock(SNOWY_VINE);
+        simpleBlock(SNOWY_SUGAR_CANE.get(), models()
+            .withExistingParent(name(SNOWY_SUGAR_CANE), modLoc("block/overlay_tinted_cross"))
+            .texture("cross", modLoc("block/snowy_sugar_cane"))
+            .texture("overlay", modLoc("block/snowy_sugar_cane_overlay")));
+        itemModels().basicItem(SNOWY_SUGAR_CANE.id());
+        simpleBlockWithItem(SNOWY_CACTUS.get(), models()
+            .withExistingParent(name(SNOWY_CACTUS), mcLoc("block/cactus"))
+            .texture("bottom", modLoc("block/snowy_cactus_bottom"))
+            .texture("top", modLoc("block/snowy_cactus_top"))
+            .texture("side", modLoc("block/snowy_cactus_side")));
     }
 
     void snowyBlock(Supplier<Block> block)

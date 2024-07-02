@@ -10,7 +10,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import static com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks.*;
 import static com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags.*;
 
-public class BuiltinBlockTags extends BlockTagsProvider
+public final class BuiltinBlockTags extends BlockTagsProvider
 {
     public BuiltinBlockTags(GatherDataEvent event)
     {
@@ -49,7 +49,27 @@ public class BuiltinBlockTags extends BlockTagsProvider
                 Blocks.SEAGRASS,
                 Blocks.TALL_SEAGRASS,
                 Blocks.KELP,
-                Blocks.KELP_PLANT);
+                Blocks.KELP_PLANT,
+                Blocks.SWEET_BERRY_BUSH);
+        tag(SNOWY_CACTUS_SURVIVES_ON).add(
+            Blocks.CACTUS,
+            Blocks.SAND,
+            Blocks.RED_SAND,
+            SNOWY_SAND.get(),
+            SNOWY_CACTUS.get(),
+            SNOWY_RED_SAND.get());
+        tag(SNOWY_SUGAR_CANE_SURVIVES_ON)
+            .addTag(BlockTags.DIRT)
+            .addTag(BlockTags.SAND)
+            .add(
+                Blocks.SUGAR_CANE,
+                SNOWY_SUGAR_CANE.get(),
+                SNOWY_SAND.get(),
+                SNOWY_RED_SAND.get(),
+                SNOWY_DIRT.get(),
+                SNOWY_COARSE_DIRT.get(),
+                SNOWY_MUD.get(),
+                SNOWY_MUDDY_MANGROVE_ROOTS.get());
 
         tag(BlockTags.DIRT).add(
             SNOWY_DIRT.get(),
@@ -119,7 +139,8 @@ public class BuiltinBlockTags extends BlockTagsProvider
 
         tag(BlockTags.MINEABLE_WITH_AXE).add(
             SNOWY_MANGROVE_ROOTS.get(),
-            SNOWY_VINE.get());
+            SNOWY_VINE.get(),
+            SNOWY_SUGAR_CANE.get());
         tag(BlockTags.MINEABLE_WITH_SHOVEL).add(
             SNOWY_DIRT.get(),
             SNOWY_COARSE_DIRT.get(),
@@ -150,6 +171,8 @@ public class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_ACACIA_LEAVES.get(),
             SNOWY_CHERRY_LEAVES.get(),
             SNOWY_MANGROVE_LEAVES.get());
-        tag(BlockTags.SWORD_EFFICIENT).add(SNOWY_VINE.get());
+        tag(BlockTags.SWORD_EFFICIENT).add(
+            SNOWY_VINE.get(),
+            SNOWY_SUGAR_CANE.get());
     }
 }

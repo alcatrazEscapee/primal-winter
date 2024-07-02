@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "primalwinter:item/snowy_sugar_cane"
+  }
+}
