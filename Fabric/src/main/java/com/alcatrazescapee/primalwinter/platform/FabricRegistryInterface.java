@@ -29,10 +29,9 @@ public final class FabricRegistryInterface<T> implements RegistryInterface<T>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V extends T> RegistryHolder<V> register(String name, Supplier<? extends V> factory)
     {
-        final Holder<V> holder = new Holder<>(Helpers.identifier(name), (Registry<V>) registry, factory);
+        final Holder<V> holder = new Holder<>(Helpers.identifier(name), factory);
         holders.add(holder);
         return holder;
     }
@@ -40,14 +39,12 @@ public final class FabricRegistryInterface<T> implements RegistryInterface<T>
     private static class Holder<T> implements RegistryHolder<T>
     {
         private final ResourceLocation id;
-        private final Registry<T> registry;
         private final Supplier<? extends T> factory;
         private @Nullable T value;
 
-        Holder(ResourceLocation id, Registry<T> registry, Supplier<? extends T> factory)
+        Holder(ResourceLocation id, Supplier<? extends T> factory)
         {
             this.id = id;
-            this.registry = registry;
             this.factory = factory;
         }
 
@@ -62,12 +59,6 @@ public final class FabricRegistryInterface<T> implements RegistryInterface<T>
         public ResourceLocation id()
         {
             return id;
-        }
-
-        @Override
-        public Registry<T> registry()
-        {
-            return registry;
         }
 
         private void register(Registry<? super T> registry)

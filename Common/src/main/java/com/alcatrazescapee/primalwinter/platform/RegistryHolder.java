@@ -12,16 +12,4 @@ public interface RegistryHolder<T> extends Supplier<T>
     T get();
 
     ResourceLocation id();
-
-    Registry<T> registry();
-
-    default ResourceKey<T> key()
-    {
-        return ResourceKey.create(registry().key(), id());
-    }
-
-    default Holder<T> holder()
-    {
-        return registry().getHolderOrThrow(key());
-    }
 }

@@ -2,44 +2,42 @@ package com.alcatrazescapee.primalwinter.platform;
 
 import java.util.function.Supplier;
 
+import com.alcatrazescapee.primalwinter.ForgePrimalWinter;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
 import com.alcatrazescapee.primalwinter.PrimalWinter;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public final class ForgeRegistryInterface<T> implements RegistryInterface<T>
 {
-    private final Registry<T> registry;
-    private final DeferredRegister<T> deferred;
+    @VisibleForTesting public final DeferredRegister<T> deferred;
 
     public ForgeRegistryInterface(Registry<T> registry)
     {
-        this.registry = registry;
         this.deferred = DeferredRegister.create(registry.key(), PrimalWinter.MOD_ID);
     }
 
     @Override
     public void earlySetup()
     {
-        deferred.register(FMLJavaModLoadingContext.get().getModEventBus());
+        deferred.register(ForgePrimalWinter.EVENT_BUS);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V extends T> RegistryHolder<V> register(String name, Supplier<? extends V> factory)
     {
-        return new Holder<>(deferred.register(name, factory), (Registry<V>) registry);
+        return new Holder<>(deferred.register(name, factory));
     }
 
-    record Holder<T>(RegistryObject<T> obj, Registry<T> registry) implements RegistryHolder<T>
+    record Holder<T, V extends T>(DeferredHolder<T, V> obj) implements RegistryHolder<V>
     {
         @Override
-        public T get()
+        public V get()
         {
-            return obj.get();
+            return obj.value();
         }
 
         @Override

@@ -1,16 +1,20 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.alcatrazescapee.primalwinter.client.ReloadableLevelRenderer;
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.Registry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biomes;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.biome.Biome;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.slf4j.Logger;
 
 import com.alcatrazescapee.epsilon.EpsilonUtil;
@@ -31,17 +35,18 @@ public enum Config
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    // Common
+    // Server Only
     public final BoolValue enableWeatherCommand;
 
     public final BoolValue enableSnowAccumulationDuringWorldgen;
     public final BoolValue enableSnowAccumulationDuringWeather;
 
-    public final TypeValue<List<ResourceLocation>> nonWinterBiomes;
-    public final TypeValue<List<ResourceKey<Level>>> nonWinterDimensions;
+    // Server Only - Synced
+    private final TypeValue<Set<ResourceKey<Level>>> winterDimensions;
 
-    public final BoolValue invertNonWinterBiomes;
-    public final BoolValue invertNonWinterDimensions;
+    // Server Synced
+    private Set<ResourceKey<Biome>> winterBiomesView = Set.of();
+    private Set<ResourceKey<Level>> winterDimensionsView = Set.of();
 
     // Client
     public final FloatValue fogDensity;
@@ -51,9 +56,6 @@ public enum Config
 
     public final IntValue fogColorDay;
     public final IntValue fogColorNight;
-
-    public final BoolValue weatherRenderChanges;
-    public final BoolValue skyRenderChanges;
 
     private final Spec spec;
 
@@ -82,41 +84,23 @@ public enum Config
             .comment("If true, snow will be layered higher than one layer during weather (snow).")
             .define("enableSnowAccumulationDuringWeather", true);
 
-        nonWinterBiomes = builder
-            .comment("A list of biome IDs that will not be forcibly converted to frozen wastelands. Any changes requires a MC restart to take effect.")
-            .define("nonWinterBiomes", Stream.of(
-                Biomes.NETHER_WASTES,
-                Biomes.CRIMSON_FOREST,
-                Biomes.WARPED_FOREST,
-                Biomes.BASALT_DELTAS,
-                Biomes.SOUL_SAND_VALLEY,
-                Biomes.END_BARRENS,
-                Biomes.END_HIGHLANDS,
-                Biomes.END_MIDLANDS,
-                Biomes.THE_END,
-                Biomes.THE_VOID
-            ).map(ResourceKey::location).toList(), Type.STRING_LIST.map(
-                list -> list.stream().map(name -> ParseError.require(() -> new ResourceLocation(name))).toList(),
-                list -> list.stream().map(ResourceLocation::toString).toList(),
-                TypeValue::new
-            ));
-        nonWinterDimensions = builder
-            .comment("A list of dimension IDs that will not have winter weather effects set.")
-            .define("nonWinterDimensions", List.of(
-                Level.NETHER,
-                Level.END
+        winterDimensions = builder
+            .comment(
+                "A list of dimensions that will be modified by Primal Winter.",
+                "Dimensions on this list, and all biomes that they may generate, **will** be modified. Note that this means if",
+                "a biome is generated in a winter dimension, and a non-winter dimension **that biome will be broken**."
+            )
+            .define("winterDimensions", Set.of(
+                Level.OVERWORLD
             ), Type.STRING_LIST.map(
-                list -> list.stream().map(name -> ResourceKey.create(Registries.DIMENSION, ParseError.require(() -> new ResourceLocation(name)))).toList(),
-                list -> list.stream().map(rl -> rl.location().toString()).toList(),
+                list -> list.stream()
+                    .map(name -> ResourceKey.create(Registries.DIMENSION, ParseError.require(() -> ResourceLocation.parse(name))))
+                    .collect(Collectors.toSet()),
+                set -> set.stream()
+                    .map(rl -> rl.location().toString())
+                    .toList(),
                 TypeValue::new
             ));
-
-        invertNonWinterBiomes = builder
-            .comment("If true, the 'nonWinterBiomes' config option will be interpreted as a list of winter biomes, and all others will be ignored.")
-            .define("invertNonWinterBiomes", false);
-        invertNonWinterDimensions = builder
-            .comment("If true, the 'nonWinterDimensions' config option will be interpreted as a list of winter dimensions, and all others will be ignored.")
-            .define("invertNonWinterDimensions", false);
 
         builder.swap("client");
 
@@ -148,13 +132,6 @@ public enum Config
                 IntValue::new
             ));
 
-        weatherRenderChanges = builder
-            .comment("Changes the weather renderer to one which renders faster, denser snow.")
-            .define("weatherRenderChanges", true);
-        skyRenderChanges = builder
-            .comment("Changes the sky renderer to one which does not render sunrise or sunset effects during a snowstorm.")
-            .define("skyRenderChanges", true);
-
         spec = builder
             .pop()
             .build();
@@ -166,19 +143,52 @@ public enum Config
         EpsilonUtil.parse(spec, Path.of(XPlatform.INSTANCE.configDir().toString(), PrimalWinter.MOD_ID + ".toml"), LOGGER::warn);
     }
 
-    public boolean isWinterDimension(ResourceKey<Level> dimension)
+    public void loadWinterBiomes(MinecraftServer server)
     {
-        final Stream<ResourceKey<Level>> stream = INSTANCE.nonWinterDimensions.get().stream();
-        return INSTANCE.invertNonWinterDimensions.getAsBoolean() ? stream.anyMatch(dimension::equals) : stream.noneMatch(dimension::equals);
+        winterDimensionsView = winterDimensions.get();
+        winterBiomesView = server.levelKeys()
+            .stream()
+            .filter(this::isWinterDimension)
+            .flatMap(dimension -> Optional.ofNullable(server.getLevel(dimension))
+                .map(level -> level
+                    .getChunkSource()
+                    .getGenerator()
+                    .getBiomeSource()
+                    .possibleBiomes()
+                    .stream()
+                )
+                .orElse(Stream.empty()))
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .collect(Collectors.toSet());
+        LOGGER.info("Loaded winter dimensions = {} biomes = {}", winterDimensionsView.size(), winterBiomesView.size());
+        XPlatform.INSTANCE.sendToAll(server, createSyncPacket());
     }
 
-    public boolean isWinterBiome(@Nullable ResourceLocation name)
+    @CheckReturnValue
+    public ConfigPacket createSyncPacket()
     {
-        if (name != null)
-        {
-            final Stream<ResourceLocation> stream = INSTANCE.nonWinterBiomes.get().stream();
-            return INSTANCE.invertNonWinterBiomes.getAsBoolean() ? stream.anyMatch(name::equals) : stream.noneMatch(name::equals);
-        }
-        return false;
+        return new ConfigPacket(winterDimensions.get());
+    }
+
+    public void onSync(ConfigPacket packet)
+    {
+        winterDimensionsView = packet.winterDimensions();
+        ((ReloadableLevelRenderer) Minecraft.getInstance().levelRenderer).primalWinter$reload();
+    }
+
+    /**
+     * @return {@code true} if this dimensions is a winter dimension.
+     */
+    public boolean isWinterDimension(ResourceKey<Level> dimension)
+    {
+        return winterDimensionsView.contains(dimension);
+    }
+
+    /**
+     * @return {@code true} if this is a winter biome, when queried from server. <strong>Not valid on client!</strong>
+     */
+    public boolean isWinterBiome(ResourceKey<Biome> biome)
+    {
+        return winterBiomesView.contains(biome);
     }
 }

@@ -1,41 +1,60 @@
 package com.alcatrazescapee.primalwinter;
 
-import com.mojang.serialization.Codec;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import com.alcatrazescapee.primalwinter.platform.ForgePlatform;
+import com.alcatrazescapee.primalwinter.platform.NetworkSetupCallback;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ClimateSettingsBuilder;
-import net.minecraftforge.common.world.MobSpawnSettingsBuilder;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.Config;
 import com.alcatrazescapee.primalwinter.util.EventHandler;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.BiomeGenerationSettingsBuilder;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ClimateSettingsBuilder;
+import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(PrimalWinter.MOD_ID)
 public final class ForgePrimalWinter
 {
-    public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, PrimalWinter.MOD_ID);
-    public static final RegistryObject<Codec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> RecordCodecBuilder.create(instance -> instance.group(
+    public static final IEventBus EVENT_BUS = Objects.requireNonNull(ModList.get()
+        .getModContainerById(PrimalWinter.MOD_ID)
+        .orElseThrow()
+        .getEventBus());
+
+    public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, PrimalWinter.MOD_ID);
+    public static final Supplier<MapCodec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> RecordCodecBuilder.mapCodec(instance -> instance.group(
         PlacedFeature.LIST_CODEC.fieldOf("surface_structures").forGetter(c -> c.surfaceStructures),
         PlacedFeature.LIST_CODEC.fieldOf("top_layer_modification").forGetter(c -> c.topLayerModification)
     ).apply(instance, Instance::new)));
@@ -44,27 +63,45 @@ public final class ForgePrimalWinter
     {
         PrimalWinter.earlySetup();
 
-        final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        final IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+        EVENT_BUS.addListener((FMLCommonSetupEvent event) -> PrimalWinter.lateSetup());
+        EVENT_BUS.addListener((RegisterPayloadHandlersEvent event) -> {
+            final PayloadRegistrar register = event.registrar(ModList.get().getModFileById(PrimalWinter.MOD_ID).versionString());
+            PrimalWinter.networkingSetup(new NetworkSetupCallback() {
+                @Override
+                public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<ByteBuf, T> codec, Consumer<T> handler)
+                {
+                    register.playToClient(type, codec, (payload, context) -> context.enqueueWork(() -> handler.accept(payload)));
+                }
+            });
+        });
+        BIOME_MODIFIERS.register(EVENT_BUS);
 
-        modBus.addListener((FMLCommonSetupEvent event) -> PrimalWinter.lateSetup());
-        BIOME_MODIFIERS.register(modBus);
+        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> EventHandler.registerCommands(event.getDispatcher()));
+        NeoForge.EVENT_BUS.addListener((LevelEvent.Load event) -> EventHandler.setLevelToThunder(event.getLevel()));
+        NeoForge.EVENT_BUS.addListener((ServerStartedEvent event) -> EventHandler.onServerStarting(event.getServer()));
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player)
+            {
+                EventHandler.onPlayerJoinWorld(player);
+            }
+        });
 
-        forgeBus.addListener((RegisterCommandsEvent event) -> EventHandler.registerCommands(event.getDispatcher()));
-        forgeBus.addListener((LevelEvent.Load event) -> EventHandler.setLevelToThunder(event.getLevel()));
-
-        if (XPlatform.INSTANCE.isDedicatedClient())
+        if (FMLLoader.getDist() == Dist.CLIENT)
         {
             ForgePrimalWinterClient.setupClient();
         }
     }
 
-    record Instance(HolderSet<PlacedFeature> surfaceStructures, HolderSet<PlacedFeature> topLayerModification) implements BiomeModifier
+    public record Instance(
+        HolderSet<PlacedFeature> surfaceStructures,
+        HolderSet<PlacedFeature> topLayerModification
+    )
+        implements BiomeModifier
     {
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
         {
-            if (biome.unwrapKey().map(k -> !Config.INSTANCE.isWinterBiome(k.location())).orElse(true) || phase != Phase.MODIFY)
+            if (biome.unwrapKey().filter(Config.INSTANCE::isWinterBiome).isEmpty() || phase != Phase.MODIFY)
             {
                 return;
             }
@@ -97,7 +134,7 @@ public final class ForgePrimalWinter
         }
 
         @Override
-        public Codec<? extends BiomeModifier> codec()
+        public MapCodec<? extends BiomeModifier> codec()
         {
             return CODEC.get();
         }

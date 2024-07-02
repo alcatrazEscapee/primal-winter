@@ -3,10 +3,12 @@ package com.alcatrazescapee.primalwinter.platform;
 import java.nio.file.Path;
 
 import net.minecraft.core.Registry;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class ForgePlatform implements XPlatform
 {
@@ -23,14 +25,20 @@ public final class ForgePlatform implements XPlatform
     }
 
     @Override
-    public boolean isDedicatedClient()
-    {
-        return FMLEnvironment.dist == Dist.CLIENT;
-    }
-
-    @Override
     public Path configDir()
     {
         return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public void sendToPlayer(ServerPlayer player, CustomPacketPayload packet)
+    {
+        PacketDistributor.sendToPlayer(player, packet);
+    }
+
+    @Override
+    public void sendToAll(MinecraftServer server, CustomPacketPayload packet)
+    {
+        PacketDistributor.sendToAllPlayers(packet);
     }
 }

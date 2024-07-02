@@ -105,6 +105,10 @@ public final class ClientEventHandler
                 expectedFogDensity = Mth.clampedMap(light, 0f, 15f, 0f, 1f);
             }
 
+            // Scale the output by the render distance, so changes to the render distance don't
+            // visually affect the fog depth
+            expectedFogDensity *= 12f * 16f / Minecraft.getInstance().gameRenderer.getRenderDistance();
+
             // Smoothly interpolate fog towards the expected value - increasing faster than it decreases
             if (expectedFogDensity > prevFogDensity)
             {

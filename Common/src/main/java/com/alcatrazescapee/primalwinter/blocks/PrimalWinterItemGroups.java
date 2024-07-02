@@ -11,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+@SuppressWarnings("unused")
 public final class PrimalWinterItemGroups
 {
     public static final RegistryInterface<CreativeModeTab> TABS = XPlatform.INSTANCE.registryInterface(BuiltInRegistries.CREATIVE_MODE_TAB);

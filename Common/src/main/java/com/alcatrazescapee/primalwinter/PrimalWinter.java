@@ -1,6 +1,8 @@
 package com.alcatrazescapee.primalwinter;
 
 import com.alcatrazescapee.primalwinter.blocks.PrimalWinterItemGroups;
+import com.alcatrazescapee.primalwinter.platform.NetworkSetupCallback;
+import com.alcatrazescapee.primalwinter.util.ConfigPacket;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
@@ -40,5 +42,10 @@ public final class PrimalWinter
         PrimalWinterBlocks.registerAxeStrippables();
 
         Config.INSTANCE.load();
+    }
+
+    public static void networkingSetup(NetworkSetupCallback callback)
+    {
+        callback.registerS2C(ConfigPacket.TYPE, ConfigPacket.CODEC, Config.INSTANCE::onSync);
     }
 }

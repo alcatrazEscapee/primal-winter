@@ -28,7 +28,7 @@ public abstract class WorldGenRegionMixin
         {
             return stateIn;
         }
-        final Supplier<Block> block = PrimalWinterBlocks.SNOWY_TREE_BLOCKS.get(stateIn.getBlock());
+        final Supplier<? extends Block> block = PrimalWinterBlocks.SNOWY_TREE_BLOCKS.get(stateIn.getBlock());
         if (block == null)
         {
             return stateIn;

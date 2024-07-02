@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.util;
 
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
@@ -7,7 +8,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LightLayer;
@@ -43,6 +46,7 @@ public final class EventHandler
 
         dispatcher.register(Commands.literal("primalwinterReloadConfig").requires(c -> c.hasPermission(2)).executes(source -> {
             Config.INSTANCE.load();
+            Config.INSTANCE.loadWinterBiomes(source.getSource().getServer());
             return Command.SINGLE_SUCCESS;
         }));
     }
@@ -92,5 +96,15 @@ public final class EventHandler
                 level.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, level.getServer());
             });
         }
+    }
+
+    public static void onServerStarting(MinecraftServer server)
+    {
+        Config.INSTANCE.loadWinterBiomes(server);
+    }
+
+    public static void onPlayerJoinWorld(ServerPlayer player)
+    {
+        XPlatform.INSTANCE.sendToPlayer(player, Config.INSTANCE.createSyncPacket());
     }
 }

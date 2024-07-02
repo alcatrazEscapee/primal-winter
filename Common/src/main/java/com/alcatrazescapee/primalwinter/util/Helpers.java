@@ -10,7 +10,7 @@ public final class Helpers
 {
     public static ResourceLocation identifier(String name)
     {
-        return new ResourceLocation(PrimalWinter.MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(PrimalWinter.MOD_ID, name);
     }
 
     public static BlockState copyProperties(BlockState oldState, BlockState newState)

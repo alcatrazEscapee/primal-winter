@@ -5,7 +5,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 
-import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,8 +12,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.alcatrazescapee.primalwinter.client.ClientEventHandler;
-import com.alcatrazescapee.primalwinter.platform.client.FogColorCallback;
-import com.alcatrazescapee.primalwinter.platform.client.FogDensityCallback;
 
 @Mixin(FogRenderer.class)
 public abstract class FogRendererMixin

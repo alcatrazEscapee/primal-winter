@@ -22,14 +22,9 @@ public abstract class DimensionSpecialEffectsMixin
     {
         final float[] original = cir.getReturnValue();
         final Level level = Minecraft.getInstance().level;
-        if (original != null && Config.INSTANCE.skyRenderChanges.getAsBoolean() && level != null)
+        if (original != null && level != null && Config.INSTANCE.isWinterDimension(level.dimension()))
         {
-            final BlockPos pos = Minecraft.getInstance().gameRenderer.getMainCamera().getBlockPosition();
-            final Holder<Biome> biome = level.getBiome(pos);
-            if (biome.value().coldEnoughToSnow(pos) && ((Object) this) instanceof DimensionSpecialEffects.OverworldEffects)
-            {
-                cir.setReturnValue(null);
-            }
+            cir.setReturnValue(null);
         }
     }
 }
