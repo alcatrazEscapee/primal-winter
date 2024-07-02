@@ -3,7 +3,13 @@
   "minVersion": "0.8",
   "package": "com.alcatrazescapee.primalwinter.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": ["AxeItemAccessor", "RegistrySynchronizationMixin", "ServerLevelMixin", "SurfaceSystemMixin", "WorldGenRegionMixin"],
+  "mixins": [
+    "AxeItemAccessor",
+    "RegistrySynchronizationMixin",
+    "ServerLevelMixin",
+    "SurfaceSystemMixin",
+    "WorldGenRegionMixin"
+  ],
   "client": [
     "client.DimensionSpecialEffectsMixin",
     "client.LevelRendererMixin"

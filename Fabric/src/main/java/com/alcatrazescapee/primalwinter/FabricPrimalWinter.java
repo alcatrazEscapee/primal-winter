@@ -31,9 +31,12 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import org.jetbrains.annotations.Nullable;
 
 public final class FabricPrimalWinter implements ModInitializer
 {
+    public static @Nullable MinecraftServer server = null;
+
     @Override
     public void onInitialize()
     {
@@ -49,12 +52,18 @@ public final class FabricPrimalWinter implements ModInitializer
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) -> EventHandler.registerCommands(dispatcher));
         ServerWorldEvents.LOAD.register((server, level) -> EventHandler.setLevelToThunder(level));
-        ServerLifecycleEvents.SERVER_STARTED.register(EventHandler::onServerStarting);
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> EventHandler.onPlayerJoinWorld(handler.player));
 
         BiomeModifications.create(Helpers.identifier("winterize")).add(
             ModificationPhase.REPLACEMENTS,
-            context -> Config.INSTANCE.isWinterBiome(context.getBiomeKey()),
+            context -> {
+                if (server != null)
+                {
+                    Config.INSTANCE.loadWinterBiomes(server);
+                    server = null; // Don't leak the server later, we only need it once to initialize
+                }
+                return Config.INSTANCE.isWinterBiome(context.getBiomeKey());
+            },
             context -> {
                 final BiomeModificationContext.WeatherContext weather = context.getWeather();
                 weather.setTemperature(-0.5f);

@@ -1,10 +1,8 @@
 package com.alcatrazescapee.primalwinter.util;
 
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import com.alcatrazescapee.primalwinter.client.ReloadableLevelRenderer;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -165,7 +163,7 @@ public enum Config
                 .stream())
             .flatMap(holder -> holder.unwrapKey().stream())
             .collect(Collectors.toSet());
-        LOGGER.info("Loaded winter dimensions = {} biomes = {}", winterDimensionsView.size(), winterBiomesView.size());
+        LOGGER.info("Loaded winter dimensions={}, biomes={}", winterDimensionsView.size(), winterBiomesView.size());
         XPlatform.INSTANCE.sendToAll(server, createSyncPacket());
     }
 
