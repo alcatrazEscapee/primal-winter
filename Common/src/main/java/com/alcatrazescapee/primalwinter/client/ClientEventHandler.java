@@ -116,7 +116,7 @@ public final class ClientEventHandler
 
             // Scale the output by the render distance, so changes to the render distance don't
             // visually affect the fog depth
-            expectedFogDensity *= 12f * 16f / Minecraft.getInstance().gameRenderer.getRenderDistance();
+            final float renderDistanceAdjustment = (12f * 16f) / Minecraft.getInstance().gameRenderer.getRenderDistance();
 
             // Smoothly interpolate fog towards the expected value - increasing faster than it decreases
             if (expectedFogDensity > prevFogDensity)
@@ -138,8 +138,8 @@ public final class ClientEventHandler
             {
                 final float scaledDelta = 1 - (1 - prevFogDensity) * (1 - prevFogDensity);
                 final float fogDensity = Config.INSTANCE.fogDensity.getAsFloat();
-                final float farPlaneScale = Mth.lerp(scaledDelta, 1f, fogDensity);
-                final float nearPlaneScale = Mth.lerp(scaledDelta, 1f, 0.3f * fogDensity);
+                final float farPlaneScale = Mth.lerp(scaledDelta, 1f, fogDensity) * renderDistanceAdjustment;
+                final float nearPlaneScale = Mth.lerp(scaledDelta, 1f, 0.3f * fogDensity) * renderDistanceAdjustment;
                 callback.accept(nearPlaneScale, farPlaneScale);
             }
         }
