@@ -38,13 +38,13 @@ neoForge {
     runs {
         configureEach {
             additionalRuntimeClasspath("com.alcatrazescapee:epsilon:$epsilonVersion")
+            jvmArgument("-XX:+AllowEnhancedClassRedefinition")
         }
         register("client") { client() }
         register("server") { server() }
         register("data") {
             data()
             sourceSet = sourceSets.test
-            ideName = "Common - Data"
             programArguments.addAll("--all", "--mod", modId, "--output", file("../Common/src/generated/resources").absolutePath, "--existing",  file("../Common/src/main/resources").absolutePath)
         }
     }
