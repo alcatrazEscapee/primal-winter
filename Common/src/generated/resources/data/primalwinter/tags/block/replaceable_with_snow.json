@@ -1,0 +1,16 @@
+{
+  "values": [
+    "#minecraft:flowers",
+    "minecraft:tall_grass",
+    "minecraft:short_grass",
+    "minecraft:fern",
+    "minecraft:large_fern",
+    "minecraft:dead_bush",
+    "minecraft:brown_mushroom",
+    "minecraft:red_mushroom",
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:kelp",
+    "minecraft:kelp_plant"
+  ]
+}

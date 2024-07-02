@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
+import com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +15,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -45,14 +46,13 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         final BlockPos pos = context.origin();
         final BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
-
-        // First, find the highest and lowest exposed y pos in the chunk
+        // First, find the highest exposed y position in the chunk
         int maxY = 0;
         for (int x = 0; x < 16; ++x)
         {
             for (int z = 0; z < 16; ++z)
             {
-                int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX() + x, pos.getZ() + z);
+                final int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX() + x, pos.getZ() + z);
                 if (maxY < y)
                 {
                     maxY = y;
@@ -61,7 +61,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         }
 
         // Then, step downwards, tracking the exposure to sky at each step
-        int[] skyLights = new int[16 * 16], prevSkyLights = new int[16 * 16];
+        final int[] skyLights = new int[16 * 16], prevSkyLights = new int[16 * 16];
         Arrays.fill(prevSkyLights, 7);
         for (int y = maxY; y >= 0; y--)
         {
@@ -69,13 +69,15 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             {
                 for (int z = 0; z < 16; ++z)
                 {
-                    final int skyLight = prevSkyLights[x + 16 * z];
                     cursor.set(pos.getX() + x, y, pos.getZ() + z);
+
+                    final int index = x + 16 * z;
+                    final int skyLight = prevSkyLights[index];
                     final BlockState state = level.getBlockState(cursor);
                     if (state.isAir())
                     {
                         // Continue skylight downwards
-                        skyLights[x + 16 * z] = prevSkyLights[x + 16 * z];
+                        skyLights[index] = prevSkyLights[index];
                         extendSkyLights(skyLights, x, z);
                     }
                     if (skyLight > 0)
@@ -118,7 +120,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         visited.add(new Vec3i(startX, 0, startZ));
         while (!positions.isEmpty())
         {
-            final Vec3i position = positions.remove(0);
+            final Vec3i position = positions.removeFirst();
             for (Direction direction : Direction.Plane.HORIZONTAL)
             {
                 final int nextX = position.getX() + direction.getStepX();
@@ -140,29 +142,16 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
 
     private void placeSnowAndIce(WorldGenLevel level, BlockPos pos, BlockState state, RandomSource random, int skyLight)
     {
-        final Biome biome = level.getBiome(pos).value();
-        if (!biome.coldEnoughToSnow(pos))
-        {
-            return;
-        }
-
         final FluidState fluidState = level.getFluidState(pos);
         final BlockPos posDown = pos.below();
         final BlockState stateDown = level.getBlockState(posDown);
 
-        // First, possibly replace the block below. This may have impacts on being able to add snow on top
-        if (state.isAir())
-        {
-            final Block replacementBlock = PrimalWinterBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
-            if (replacementBlock != null)
-            {
-                BlockState replacementState = replacementBlock.defaultBlockState();
-                level.setBlock(posDown, replacementState, 2);
-            }
-        }
+        // Replace certain special terrain blocks first - this may have impact on being able to place snow on top,
+        // so we do it early.
+        replaceWith(PrimalWinterBlocks.SNOWY_SPECIAL_TERRAIN_BLOCKS, level, posDown, stateDown);
 
         // Then, try and place snow layers / ice at the current location
-        if (fluidState.getType() == Fluids.WATER && (state.getBlock() instanceof LiquidBlock || state.canBeReplaced()))
+        if (fluidState.getType() == Fluids.WATER && (state.getBlock() instanceof LiquidBlock || canBeReplacedWithSnow(state)))
         {
             level.setBlock(pos, Blocks.ICE.defaultBlockState(), 2);
             if (!(state.getBlock() instanceof LiquidBlock))
@@ -174,7 +163,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         {
             level.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 2);
         }
-        else if (Blocks.SNOW.defaultBlockState().canSurvive(level, pos) && state.canBeReplaced())
+        else if (Blocks.SNOW.defaultBlockState().canSurvive(level, pos) && canBeReplacedWithSnow(state))
         {
             // Special exceptions
             BlockPos posUp = pos.above();
@@ -193,15 +182,10 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             {
                 layers = 1;
             }
-            level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(BlockStateProperties.LAYERS, layers), 3);
 
-            // Replace the below block as well
-            Block replacementBlock = PrimalWinterBlocks.SNOWY_TERRAIN_BLOCKS.getOrDefault(stateDown.getBlock(), () -> null).get();
-            if (replacementBlock != null)
-            {
-                BlockState replacementState = replacementBlock.defaultBlockState();
-                level.setBlock(posDown, replacementState, 2);
-            }
+            // First, possibly replace the block below. This may have impacts on being able to add snow on top
+            replaceWith(PrimalWinterBlocks.SNOWY_TERRAIN_BLOCKS, level, posDown, stateDown);
+            level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(BlockStateProperties.LAYERS, layers), 3);
         }
     }
 
@@ -210,12 +194,27 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
         int count = 0;
         for (Direction direction : Direction.Plane.HORIZONTAL)
         {
-            BlockPos posAt = pos.relative(direction);
+            final BlockPos posAt = pos.relative(direction);
             if (!level.getBlockState(posAt).isFaceSturdy(level, posAt, direction.getOpposite()))
             {
                 count++;
             }
         }
         return count;
+    }
+
+    private void replaceWith(Map<Block, Supplier<Block>> blocks, WorldGenLevel level, BlockPos pos, BlockState state)
+    {
+        final Supplier<Block> replacementSupplier = blocks.get(state.getBlock());
+        if (replacementSupplier != null)
+        {
+            final BlockState replacementState = replacementSupplier.get().defaultBlockState();
+            level.setBlock(pos, replacementState, 2);
+        }
+    }
+
+    private boolean canBeReplacedWithSnow(BlockState state)
+    {
+        return state.isAir() || state.is(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOW);
     }
 }

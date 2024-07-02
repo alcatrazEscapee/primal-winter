@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.alcatrazescapee.epsilon.EpsilonUtil;
@@ -45,6 +46,7 @@ public enum Config
     private final TypeValue<Set<ResourceKey<Level>>> winterDimensions;
 
     // Server Synced
+    private @Nullable MinecraftServer serverView = null;
     private Set<ResourceKey<Biome>> winterBiomesView = Set.of();
     private Set<ResourceKey<Level>> winterDimensionsView = Set.of();
 
@@ -139,25 +141,28 @@ public enum Config
 
     public void load()
     {
-        LOGGER.info("Loading Primal Winter Config");
+        LOGGER.info("Loading Config");
         EpsilonUtil.parse(spec, Path.of(XPlatform.INSTANCE.configDir().toString(), PrimalWinter.MOD_ID + ".toml"), LOGGER::warn);
     }
 
     public void loadWinterBiomes(MinecraftServer server)
     {
+        if (server == serverView)
+        {
+            return;
+        }
+        serverView = server;
         winterDimensionsView = winterDimensions.get();
-        winterBiomesView = server.levelKeys()
+        winterBiomesView = server.registryAccess()
+            .registryOrThrow(Registries.LEVEL_STEM)
+            .entrySet()
             .stream()
-            .filter(this::isWinterDimension)
-            .flatMap(dimension -> Optional.ofNullable(server.getLevel(dimension))
-                .map(level -> level
-                    .getChunkSource()
-                    .getGenerator()
-                    .getBiomeSource()
-                    .possibleBiomes()
-                    .stream()
-                )
-                .orElse(Stream.empty()))
+            .filter(e -> isWinterDimension(ResourceKey.create(Registries.DIMENSION, e.getKey().location())))
+            .flatMap(e -> e.getValue()
+                .generator()
+                .getBiomeSource()
+                .possibleBiomes()
+                .stream())
             .flatMap(holder -> holder.unwrapKey().stream())
             .collect(Collectors.toSet());
         LOGGER.info("Loaded winter dimensions = {} biomes = {}", winterDimensionsView.size(), winterBiomesView.size());

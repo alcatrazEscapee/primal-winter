@@ -13,6 +13,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -44,6 +45,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 @Mod(PrimalWinter.MOD_ID)
 public final class ForgePrimalWinter
@@ -78,7 +80,6 @@ public final class ForgePrimalWinter
 
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> EventHandler.registerCommands(event.getDispatcher()));
         NeoForge.EVENT_BUS.addListener((LevelEvent.Load event) -> EventHandler.setLevelToThunder(event.getLevel()));
-        NeoForge.EVENT_BUS.addListener((ServerStartedEvent event) -> EventHandler.onServerStarting(event.getServer()));
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player)
             {
@@ -101,6 +102,10 @@ public final class ForgePrimalWinter
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
         {
+            // Need to trigger this here, as it is too late when done via server-about-to-start event, which fires right after biome modifications
+            final MinecraftServer server = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer(), "Server should exist");
+            Config.INSTANCE.loadWinterBiomes(server);
+
             if (biome.unwrapKey().filter(Config.INSTANCE::isWinterBiome).isEmpty() || phase != Phase.MODIFY)
             {
                 return;

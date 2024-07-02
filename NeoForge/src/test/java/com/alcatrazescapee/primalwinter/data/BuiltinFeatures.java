@@ -2,6 +2,7 @@ package com.alcatrazescapee.primalwinter.data;
 
 import java.util.function.Supplier;
 import com.alcatrazescapee.primalwinter.util.Helpers;
+import com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags;
 import com.alcatrazescapee.primalwinter.world.PrimalWinterFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -47,7 +48,7 @@ public final class BuiltinFeatures
     {
         return new DiskConfiguration(
             RuleBasedBlockStateProvider.simple(block),
-            BlockPredicate.matchesTag(BuiltinTags.Block.REPLACEABLE_WITH_SNOWY_STUFF),
+            BlockPredicate.matchesTag(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOWY_STUFF),
             UniformInt.of(2, 3), 1
         );
     }

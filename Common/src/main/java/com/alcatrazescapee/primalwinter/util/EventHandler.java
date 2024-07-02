@@ -98,11 +98,6 @@ public final class EventHandler
         }
     }
 
-    public static void onServerStarting(MinecraftServer server)
-    {
-        Config.INSTANCE.loadWinterBiomes(server);
-    }
-
     public static void onPlayerJoinWorld(ServerPlayer player)
     {
         XPlatform.INSTANCE.sendToPlayer(player, Config.INSTANCE.createSyncPacket());
