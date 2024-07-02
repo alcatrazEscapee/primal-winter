@@ -9,22 +9,25 @@ import com.alcatrazescapee.primalwinter.PrimalWinter;
 
 public final class NewWorldSavedData extends SavedData
 {
-    private static final String ID = PrimalWinter.MOD_ID;
-
-    @SuppressWarnings("ConstantConditions") // In NF, the method is patched to allow null
+    @SuppressWarnings("ConstantConditions") // In NF, the method is patched to allow null, in Fabric, they're a mixin
     public static void onlyForNewWorlds(ServerLevel level, Runnable action)
     {
         level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(
             () -> {
                 action.run();
                 return new NewWorldSavedData();
-            }, (tag, provider) -> new NewWorldSavedData(), null), ID);
+            }, (tag, provider) -> new NewWorldSavedData(), null), PrimalWinter.MOD_ID);
+    }
+
+    @Override
+    public boolean isDirty()
+    {
+        return true; // Assume it is always dirty, so it is always saved, so we don't run this on existing worlds
     }
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries)
     {
-        tag.putBoolean("new_world", false);
         return tag;
     }
 }
