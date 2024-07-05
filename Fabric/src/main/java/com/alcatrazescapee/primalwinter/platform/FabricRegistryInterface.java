@@ -2,6 +2,7 @@ package com.alcatrazescapee.primalwinter.platform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
@@ -51,8 +52,7 @@ public final class FabricRegistryInterface<T> implements RegistryInterface<T>
         @Override
         public T get()
         {
-            if (value == null) throw new NullPointerException("Registry object not present: " + id);
-            return value;
+            return Objects.requireNonNull(value, "Registry object not present");
         }
 
         @Override

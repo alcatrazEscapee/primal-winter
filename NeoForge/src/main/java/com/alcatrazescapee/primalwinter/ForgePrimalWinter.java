@@ -102,10 +102,6 @@ public final class ForgePrimalWinter
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
         {
-            // Need to trigger this here, as it is too late when done via server-about-to-start event, which fires right after biome modifications
-            final MinecraftServer server = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer(), "Server should exist");
-            Config.INSTANCE.loadWinterBiomes(server);
-
             if (biome.unwrapKey().filter(Config.INSTANCE::isWinterBiome).isEmpty() || phase != Phase.MODIFY)
             {
                 return;

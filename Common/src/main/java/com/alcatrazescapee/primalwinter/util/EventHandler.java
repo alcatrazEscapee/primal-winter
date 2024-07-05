@@ -56,14 +56,15 @@ public final class EventHandler
      */
     public static void placeExtraSnow(ServerLevel level, ChunkAccess chunk)
     {
-        if (Config.INSTANCE.enableSnowAccumulationDuringWeather.getAsBoolean() && level.random.nextInt(16) == 0)
+        if (Config.INSTANCE.isWinterDimension(level.dimension()) &&
+            Config.INSTANCE.enableSnowAccumulationDuringWeather.getAsBoolean() &&
+            level.random.nextInt(16) == 0)
         {
             final int blockX = chunk.getPos().getMinBlockX();
             final int blockZ = chunk.getPos().getMinBlockZ();
             final BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, level.getBlockRandomPos(blockX, 0, blockZ, 15));
             final BlockState state = level.getBlockState(pos);
-            final Biome biome = level.getBiome(pos).value();
-            if (level.isRaining() && biome.coldEnoughToSnow(pos) && level.getBrightness(LightLayer.BLOCK, pos) < 10)
+            if (level.getBrightness(LightLayer.BLOCK, pos) < 10)
             {
                 if (state.getBlock() == Blocks.SNOW)
                 {

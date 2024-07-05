@@ -107,8 +107,7 @@ public final class ClientEventHandler
             float expectedFogDensity = 0f;
 
             final Level level = player.level();
-            final Biome biome = level.getBiome(camera.getBlockPosition()).value();
-            if (level.isRaining() && biome.coldEnoughToSnow(camera.getBlockPosition()))
+            if (Config.INSTANCE.isWinterDimension(level.dimension()))
             {
                 final int light = level.getBrightness(LightLayer.SKY, BlockPos.containing(player.getEyePosition()));
                 expectedFogDensity = Mth.clampedMap(light, 0f, 15f, 0f, 1f);

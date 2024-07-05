@@ -13,7 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.CheckReturnValue;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.alcatrazescapee.epsilon.EpsilonUtil;
@@ -44,7 +43,6 @@ public enum Config
     private final TypeValue<Set<ResourceKey<Level>>> winterDimensions;
 
     // Server Synced
-    private @Nullable MinecraftServer serverView = null;
     private Set<ResourceKey<Biome>> winterBiomesView = Set.of();
     private Set<ResourceKey<Level>> winterDimensionsView = Set.of();
 
@@ -145,11 +143,6 @@ public enum Config
 
     public void loadWinterBiomes(MinecraftServer server)
     {
-        if (server == serverView)
-        {
-            return;
-        }
-        serverView = server;
         winterDimensionsView = winterDimensions.get();
         winterBiomesView = server.registryAccess()
             .registryOrThrow(Registries.LEVEL_STEM)
@@ -192,6 +185,7 @@ public enum Config
      */
     public boolean isWinterBiome(ResourceKey<Biome> biome)
     {
+        assert winterDimensionsView.isEmpty() || !winterBiomesView.isEmpty(); // Config loaded check, allowing for no enabled winter dimensions
         return winterBiomesView.contains(biome);
     }
 }

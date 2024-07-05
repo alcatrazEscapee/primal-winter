@@ -56,14 +56,7 @@ public final class FabricPrimalWinter implements ModInitializer
 
         BiomeModifications.create(Helpers.identifier("winterize")).add(
             ModificationPhase.REPLACEMENTS,
-            context -> {
-                if (server != null)
-                {
-                    Config.INSTANCE.loadWinterBiomes(server);
-                    server = null; // Don't leak the server later, we only need it once to initialize
-                }
-                return Config.INSTANCE.isWinterBiome(context.getBiomeKey());
-            },
+            context -> Config.INSTANCE.isWinterBiome(context.getBiomeKey()),
             context -> {
                 final BiomeModificationContext.WeatherContext weather = context.getWeather();
                 weather.setTemperature(-0.5f);
