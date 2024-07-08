@@ -140,7 +140,10 @@ public final class BuiltinBlockTags extends BlockTagsProvider
         tag(BlockTags.MINEABLE_WITH_AXE).add(
             SNOWY_MANGROVE_ROOTS.get(),
             SNOWY_VINE.get(),
-            SNOWY_SUGAR_CANE.get());
+            SNOWY_SUGAR_CANE.get(),
+            SNOWY_BROWN_MUSHROOM_BLOCK.get(),
+            SNOWY_RED_MUSHROOM_BLOCK.get(),
+            SNOWY_MUSHROOM_STEM.get());
         tag(BlockTags.MINEABLE_WITH_SHOVEL).add(
             SNOWY_DIRT.get(),
             SNOWY_COARSE_DIRT.get(),

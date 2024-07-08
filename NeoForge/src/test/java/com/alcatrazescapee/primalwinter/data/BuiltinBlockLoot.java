@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -61,6 +62,9 @@ public final class BuiltinBlockLoot extends BlockLootSubProvider
         add(SNOWY_VINE.get(), BlockLootSubProvider::createShearsOnlyDrop);
         dropOther(SNOWY_SUGAR_CANE.get(), Blocks.SUGAR_CANE);
         dropOther(SNOWY_CACTUS.get(), Blocks.CACTUS);
+        add(SNOWY_BROWN_MUSHROOM_BLOCK.get(), b -> createMushroomBlockDrop(b, Items.BROWN_MUSHROOM));
+        add(SNOWY_RED_MUSHROOM_BLOCK.get(), b -> createMushroomBlockDrop(b, Items.RED_MUSHROOM));
+        otherWhenSilkTouch(SNOWY_MUSHROOM_STEM.get(), Blocks.MUSHROOM_STEM);
     }
 
     @Override

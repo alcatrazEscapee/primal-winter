@@ -58,5 +58,8 @@ public class BuiltinI18n extends LanguageProvider
         addBlock(SNOWY_VINE, "Frozen Vine");
         addBlock(SNOWY_SUGAR_CANE, "Frozen Sugar Cane");
         addBlock(SNOWY_CACTUS, "Frozen Cactus");
+        addBlock(SNOWY_BROWN_MUSHROOM_BLOCK, "Frosted Brown Mushroom Block");
+        addBlock(SNOWY_RED_MUSHROOM_BLOCK, "Frosted Red Mushroom Block");
+        addBlock(SNOWY_MUSHROOM_STEM, "Frosted Mushroom Stem");
     }
 }

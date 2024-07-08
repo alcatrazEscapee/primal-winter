@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CherryLeavesBlock;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.DirtPathBlock;
+import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.MangroveRootsBlock;
 import net.minecraft.world.level.block.MudBlock;
@@ -79,6 +80,10 @@ public final class PrimalWinterBlocks
     public static final RegistryHolder<Block> SNOWY_SUGAR_CANE = register("snowy_sugar_cane", () -> new SnowySugarCaneBlock(ofFullCopy(Blocks.SUGAR_CANE)));
     public static final RegistryHolder<Block> SNOWY_CACTUS = register("snowy_cactus", () -> new SnowyCactusBlock(ofFullCopy(Blocks.CACTUS)));
 
+    public static final RegistryHolder<Block> SNOWY_BROWN_MUSHROOM_BLOCK = register("snowy_brown_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.BROWN_MUSHROOM_BLOCK)));
+    public static final RegistryHolder<Block> SNOWY_RED_MUSHROOM_BLOCK = register("snowy_red_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.RED_MUSHROOM_BLOCK)));
+    public static final RegistryHolder<Block> SNOWY_MUSHROOM_STEM = register("snowy_mushroom_stem", () -> new HugeMushroomBlock(ofFullCopy(Blocks.MUSHROOM_STEM)));
+
     public static final Map<Block, Supplier<Block>> SNOWY_TERRAIN_BLOCKS = new HashMap<>(new ImmutableMap.Builder<Block, Supplier<Block>>()
         .put(Blocks.DIRT, SNOWY_DIRT)
         .put(Blocks.GRASS_BLOCK, SNOWY_DIRT)
@@ -130,6 +135,9 @@ public final class PrimalWinterBlocks
         .put(Blocks.VINE, SNOWY_VINE)
         .put(Blocks.SUGAR_CANE, SNOWY_SUGAR_CANE)
         .put(Blocks.CACTUS, SNOWY_CACTUS)
+        .put(Blocks.BROWN_MUSHROOM_BLOCK, SNOWY_BROWN_MUSHROOM_BLOCK)
+        .put(Blocks.RED_MUSHROOM_BLOCK, SNOWY_RED_MUSHROOM_BLOCK)
+        .put(Blocks.MUSHROOM_STEM, SNOWY_MUSHROOM_STEM)
         .build();
 
     public static final Map<Supplier<? extends Block>, Supplier<? extends Block>> SNOWY_LOG_STRIPPING_BLOCKS = new ImmutableMap.Builder<Supplier<? extends Block>, Supplier<? extends Block>>()

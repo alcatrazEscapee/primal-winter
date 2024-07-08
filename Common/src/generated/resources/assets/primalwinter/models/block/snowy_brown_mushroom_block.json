@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_single_face",
+  "textures": {
+    "texture": "primalwinter:block/snowy_brown_mushroom_block"
+  }
+}

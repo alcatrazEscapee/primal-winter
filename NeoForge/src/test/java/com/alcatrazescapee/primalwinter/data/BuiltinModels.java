@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.VineBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -83,6 +84,9 @@ public final class BuiltinModels extends BlockStateProvider
             .texture("bottom", modLoc("block/snowy_cactus_bottom"))
             .texture("top", modLoc("block/snowy_cactus_top"))
             .texture("side", modLoc("block/snowy_cactus_side")));
+        mushroomBlock(SNOWY_BROWN_MUSHROOM_BLOCK);
+        mushroomBlock(SNOWY_RED_MUSHROOM_BLOCK);
+        mushroomBlock(SNOWY_MUSHROOM_STEM);
     }
 
     void snowyBlock(Supplier<Block> block)
@@ -139,8 +143,38 @@ public final class BuiltinModels extends BlockStateProvider
                 .condition(VineBlock.SOUTH, false)
                 .condition(VineBlock.WEST, false);
         }
-
         itemModels().getBuilder(name(block)).parent(model);
+    }
+
+    void mushroomBlock(Supplier<Block> block)
+    {
+        final String name = name(block);
+        final ModelFile outside = models().singleTexture(name, mcLoc("block/template_single_face"), modLoc("block/" + name));
+        final ModelFile inside = models().getExistingFile(mcLoc("block/mushroom_block_inside"));
+        final MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
+
+        record Part(BooleanProperty property, int xRot, int yRot) {}
+
+        for (Part part : new Part[] {
+            new Part(BlockStateProperties.NORTH, 0, 0),
+            new Part(BlockStateProperties.EAST, 0, 90),
+            new Part(BlockStateProperties.SOUTH, 0, 180),
+            new Part(BlockStateProperties.WEST, 0, 270),
+            new Part(BlockStateProperties.UP, 270, 0),
+            new Part(BlockStateProperties.DOWN, 90, 0),
+        }) {
+            builder.part().modelFile(outside)
+                .uvLock(part.property != BlockStateProperties.NORTH)
+                .rotationX(part.xRot).rotationY(part.yRot)
+                .addModel()
+                .condition(part.property, true);
+            builder.part().modelFile(inside)
+                .uvLock(false)
+                .rotationX(part.xRot).rotationY(part.yRot)
+                .addModel()
+                .condition(part.property, false);
+        }
+        simpleBlockItem(block.get(), models().cubeAll(name + "_inventory", modLoc("block/" + name)));
     }
 
     void simpleBlockWithItem(Supplier<Block> block, ModelFile model, Function<ModelFile, ConfiguredModel[]> models)

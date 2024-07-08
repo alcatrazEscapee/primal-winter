@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "primalwinter:block/snowy_red_mushroom_block"
+  }
+}

@@ -157,7 +157,6 @@ public enum Config
             .flatMap(holder -> holder.unwrapKey().stream())
             .collect(Collectors.toSet());
         LOGGER.info("Loaded winter dimensions={}, biomes={}", winterDimensionsView.size(), winterBiomesView.size());
-        XPlatform.INSTANCE.sendToAll(server, createSyncPacket());
     }
 
     @CheckReturnValue
