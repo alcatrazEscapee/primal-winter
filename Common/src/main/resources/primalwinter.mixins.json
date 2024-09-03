@@ -6,7 +6,6 @@
   "mixins": [
     "AxeItemAccessor",
     "MinecraftServerMixin",
-    "RegistrySynchronizationMixin",
     "ServerLevelMixin",
     "SurfaceSystemMixin",
     "WorldGenRegionMixin"
