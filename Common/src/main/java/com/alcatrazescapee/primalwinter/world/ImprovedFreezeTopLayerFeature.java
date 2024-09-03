@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -27,9 +29,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-
-import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.alcatrazescapee.primalwinter.util.Config;
 
 
 public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfiguration>
@@ -174,7 +173,7 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             }
 
             int layers;
-            if (Config.INSTANCE.enableSnowAccumulationDuringWorldgen.getAsBoolean())
+            if (XPlatform.INSTANCE.config().enableSnowAccumulationDuringWorldgen.getAsBoolean())
             {
                 layers = Mth.clamp(skyLight - random.nextInt(3) - countExposedFaces(level, pos), 1, 7);
             }

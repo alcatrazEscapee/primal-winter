@@ -8,8 +8,6 @@ val minecraftVersion: String by extra
 val neoForgeVersion: String by extra
 val parchmentVersion: String by extra
 val parchmentMinecraftVersion: String by extra
-val epsilonVersion: String by extra
-val epsilonVersionRange: String by extra
 
 base {
     archivesName.set("${modId}-neoforge-${minecraftVersion}")
@@ -17,12 +15,6 @@ base {
 
 dependencies {
     implementation(project(":Common"))
-    jarJar(implementation(group = "com.alcatrazescapee", name = "epsilon", version = epsilonVersion)) {
-        version {
-            strictly(epsilonVersionRange)
-            prefer(epsilonVersion)
-        }
-    }
 }
 
 neoForge {
@@ -37,7 +29,6 @@ neoForge {
 
     runs {
         configureEach {
-            additionalRuntimeClasspath("com.alcatrazescapee:epsilon:$epsilonVersion")
             jvmArgument("-XX:+AllowEnhancedClassRedefinition")
         }
         register("client") { client() }

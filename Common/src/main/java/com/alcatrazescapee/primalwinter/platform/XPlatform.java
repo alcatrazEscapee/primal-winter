@@ -25,6 +25,8 @@ public interface XPlatform
 
     Path configDir();
 
+    Config config();
+
     void sendToPlayer(ServerPlayer player, CustomPacketPayload packet);
     void sendToAll(MinecraftServer server, CustomPacketPayload packet);
 }

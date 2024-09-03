@@ -41,6 +41,16 @@
   "block.primalwinter.snowy_vine": "Frozen Vine",
   "block.primalwinter.snowy_white_terracotta": "Snowy White Terracotta",
   "block.primalwinter.snowy_yellow_terracotta": "Snowy Yellow Terracotta",
+  "primalwinter.config.enableSnowAccumulationDuringWeather": "Enable Snow Layering in Weather",
+  "primalwinter.config.enableSnowAccumulationDuringWorldgen": "Enable Snow Layering in World Generation",
+  "primalwinter.config.enableWeatherCommand": "Enable /weather Command",
+  "primalwinter.config.fogColorDay": "Daytime Fog Color",
+  "primalwinter.config.fogColorNight": "Nighttime Fog Color",
+  "primalwinter.config.fogDensity": "Fog Density",
+  "primalwinter.config.snowDensity": "Snow Density",
+  "primalwinter.config.snowSounds": "Snow Sounds",
+  "primalwinter.config.windSounds": "Wind Sounds",
+  "primalwinter.config.winterDimensions": "Winter Dimensions",
   "primalwinter.items": "Primal Winter",
   "primalwinter.subtitle.wind": "Wind Howls"
 }

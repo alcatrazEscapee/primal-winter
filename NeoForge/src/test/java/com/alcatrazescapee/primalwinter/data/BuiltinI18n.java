@@ -19,6 +19,17 @@ public class BuiltinI18n extends LanguageProvider
         add(MOD_ID + ".items", "Primal Winter");
         add(MOD_ID + ".subtitle.wind", "Wind Howls");
 
+        addConfig("enableWeatherCommand", "Enable /weather Command");
+        addConfig("enableSnowAccumulationDuringWorldgen", "Enable Snow Layering in World Generation");
+        addConfig("enableSnowAccumulationDuringWeather", "Enable Snow Layering in Weather");
+        addConfig("winterDimensions", "Winter Dimensions");
+        addConfig("fogDensity", "Fog Density");
+        addConfig("snowDensity", "Snow Density");
+        addConfig("snowSounds", "Snow Sounds");
+        addConfig("windSounds", "Wind Sounds");
+        addConfig("fogColorDay", "Daytime Fog Color");
+        addConfig("fogColorNight", "Nighttime Fog Color");
+
         addBlock(SNOWY_DIRT, "Snowy Dirt");
         addBlock(SNOWY_COARSE_DIRT, "Snowy Coarse Dirt");
         addBlock(SNOWY_SAND, "Snowy Sand");
@@ -61,5 +72,10 @@ public class BuiltinI18n extends LanguageProvider
         addBlock(SNOWY_BROWN_MUSHROOM_BLOCK, "Frosted Brown Mushroom Block");
         addBlock(SNOWY_RED_MUSHROOM_BLOCK, "Frosted Red Mushroom Block");
         addBlock(SNOWY_MUSHROOM_STEM, "Frosted Mushroom Stem");
+    }
+
+    private void addConfig(String key, String name)
+    {
+        add(MOD_ID + ".config." + key, name);
     }
 }

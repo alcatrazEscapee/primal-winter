@@ -1,7 +1,9 @@
 package com.alcatrazescapee.primalwinter.mixin;
 
 import java.util.function.Supplier;
-import com.alcatrazescapee.primalwinter.util.Config;
+import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.util.Helpers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.block.Block;
@@ -12,9 +14,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.alcatrazescapee.primalwinter.util.Helpers;
-
 @Mixin(WorldGenRegion.class)
 public abstract class WorldGenRegionMixin
 {
@@ -23,7 +22,7 @@ public abstract class WorldGenRegionMixin
     @ModifyVariable(method = "setBlock", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private BlockState replaceAllBlocksWithSnowyOnes(BlockState stateIn)
     {
-        if (!Config.INSTANCE.isWinterDimension(level.dimension()))
+        if (!XPlatform.INSTANCE.config().isWinterDimension(level.dimension()))
         {
             return stateIn;
         }

@@ -1,6 +1,8 @@
 package com.alcatrazescapee.primalwinter.mixin.client;
 
+import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
 import com.alcatrazescapee.primalwinter.client.ReloadableLevelRenderer;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -41,9 +43,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.alcatrazescapee.primalwinter.client.PrimalWinterAmbience;
-import com.alcatrazescapee.primalwinter.util.Config;
-
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin
     implements ReloadableLevelRenderer
@@ -64,7 +63,7 @@ public abstract class LevelRendererMixin
     @Override
     public void primalWinter$reload()
     {
-        primalWinter$isWinterDimension = level != null && Config.INSTANCE.isWinterDimension(level.dimension());
+        primalWinter$isWinterDimension = level != null && XPlatform.INSTANCE.config().isWinterDimension(level.dimension());
     }
 
     /**
@@ -98,7 +97,7 @@ public abstract class LevelRendererMixin
         final int blockX = Mth.floor(camX);
         final int blockY = Mth.floor(camY);
         final int blockZ = Mth.floor(camZ);
-        final int particleAmount = Config.INSTANCE.snowDensity.getAsInt();
+        final int particleAmount = XPlatform.INSTANCE.config().snowDensity.getAsInt();
         final BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
         assert level != null;
@@ -251,7 +250,7 @@ public abstract class LevelRendererMixin
             }
         }
 
-        if (pos != null && random.nextInt(3) < this.rainSoundTime++ && Config.INSTANCE.snowSounds.getAsBoolean())
+        if (pos != null && random.nextInt(3) < this.rainSoundTime++ && XPlatform.INSTANCE.config().snowSounds.getAsBoolean())
         {
             rainSoundTime = 0;
             if (pos.getY() > origin.getY() + 1 && level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, origin).getY() > Mth.floor(origin.getY()))
@@ -266,7 +265,7 @@ public abstract class LevelRendererMixin
         }
 
         // Added: wind sounds as well
-        if (primalWinter$windSoundTime-- < 0 && pos != null && Config.INSTANCE.windSounds.getAsBoolean())
+        if (primalWinter$windSoundTime-- < 0 && pos != null && XPlatform.INSTANCE.config().windSounds.getAsBoolean())
         {
             final int light = level.getBrightness(LightLayer.SKY, pos);
             if (light > 3)

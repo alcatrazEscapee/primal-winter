@@ -1,6 +1,14 @@
 package com.alcatrazescapee.primalwinter.client;
 
 import java.util.function.Supplier;
+import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.platform.client.BlockColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.FogColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.FogDensityCallback;
+import com.alcatrazescapee.primalwinter.platform.client.ItemColorCallback;
+import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
+import com.alcatrazescapee.primalwinter.platform.client.XPlatformClient;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -13,19 +21,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FogType;
-
-import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-import com.alcatrazescapee.primalwinter.platform.client.BlockColorCallback;
-import com.alcatrazescapee.primalwinter.platform.client.FogColorCallback;
-import com.alcatrazescapee.primalwinter.platform.client.FogDensityCallback;
-import com.alcatrazescapee.primalwinter.platform.client.ItemColorCallback;
-import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
-import com.alcatrazescapee.primalwinter.platform.client.XPlatformClient;
-import com.alcatrazescapee.primalwinter.util.Config;
 
 public final class ClientEventHandler
 {
@@ -84,8 +82,8 @@ public final class ClientEventHandler
             final float height = Mth.cos(angle);
             final float delta = Mth.clamp((height + 0.4f) / 0.8f, 0, 1);
 
-            final int colorDay = Config.INSTANCE.fogColorDay.getAsInt();
-            final int colorNight = Config.INSTANCE.fogColorNight.getAsInt();
+            final int colorDay = XPlatform.INSTANCE.config().fogColorDay.getAsInt();
+            final int colorNight = XPlatform.INSTANCE.config().fogColorNight.getAsInt();
             final float red = ((colorDay >> 16) & 0xFF) * delta + ((colorNight >> 16) & 0xFF) * (1 - delta);
             final float green = ((colorDay >> 8) & 0xFF) * delta + ((colorNight >> 8) & 0xFF) * (1 - delta);
             final float blue = (colorDay & 0xFF) * delta + (colorNight & 0xFF) * (1 - delta);
@@ -107,7 +105,7 @@ public final class ClientEventHandler
             float expectedFogDensity = 0f;
 
             final Level level = player.level();
-            if (Config.INSTANCE.isWinterDimension(level.dimension()))
+            if (XPlatform.INSTANCE.config().isWinterDimension(level.dimension()))
             {
                 final int light = level.getBrightness(LightLayer.SKY, BlockPos.containing(player.getEyePosition()));
                 expectedFogDensity = Mth.clampedMap(light, 0f, 15f, 0f, 1f);
@@ -136,7 +134,7 @@ public final class ClientEventHandler
             if (prevFogDensity > 0)
             {
                 final float scaledDelta = 1 - (1 - prevFogDensity) * (1 - prevFogDensity);
-                final float fogDensity = Config.INSTANCE.fogDensity.getAsFloat();
+                final float fogDensity = (float) XPlatform.INSTANCE.config().fogDensity.getAsDouble();
                 final float farPlaneScale = Mth.lerp(scaledDelta, 1f, fogDensity) * renderDistanceAdjustment;
                 final float nearPlaneScale = Mth.lerp(scaledDelta, 1f, 0.3f * fogDensity) * renderDistanceAdjustment;
                 callback.accept(nearPlaneScale, farPlaneScale);

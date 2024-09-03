@@ -1,6 +1,6 @@
 package com.alcatrazescapee.primalwinter.mixin;
 
-import com.alcatrazescapee.primalwinter.util.Config;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +18,6 @@ public abstract class MinecraftServerMixin
     @Inject(method = "<init>", at = @At("RETURN"))
     private void loadBiomesFromConfig(CallbackInfo ci)
     {
-        Config.INSTANCE.loadWinterBiomes((MinecraftServer) (Object) this);
+        XPlatform.INSTANCE.config().loadWinterBiomes((MinecraftServer) (Object) this);
     }
 }

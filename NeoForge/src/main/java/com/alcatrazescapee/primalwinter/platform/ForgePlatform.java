@@ -1,7 +1,6 @@
 package com.alcatrazescapee.primalwinter.platform;
 
 import java.nio.file.Path;
-
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
@@ -12,6 +11,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class ForgePlatform implements XPlatform
 {
+    private final ForgeConfig config = new ForgeConfig();
+
     @Override
     public <T> RegistryInterface<T> registryInterface(Registry<T> registry)
     {
@@ -28,6 +29,12 @@ public final class ForgePlatform implements XPlatform
     public Path configDir()
     {
         return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public Config config()
+    {
+        return config;
     }
 
     @Override

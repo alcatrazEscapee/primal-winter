@@ -1,17 +1,18 @@
 package com.alcatrazescapee.primalwinter;
 
 import java.util.function.Function;
+import com.alcatrazescapee.primalwinter.client.ClientEventHandler;
+import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-
-import com.alcatrazescapee.primalwinter.client.ClientEventHandler;
-import com.alcatrazescapee.primalwinter.platform.client.ParticleProviderCallback;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 
 public final class ForgePrimalWinterClient
@@ -41,5 +42,7 @@ public final class ForgePrimalWinterClient
             event.scaleFarPlaneDistance(farPlane);
             event.setCanceled(true);
         }));
+
+        ForgePrimalWinter.MOD.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 }

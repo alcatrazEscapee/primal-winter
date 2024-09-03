@@ -3,8 +3,10 @@ package com.alcatrazescapee.primalwinter;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import com.alcatrazescapee.primalwinter.platform.ForgePlatform;
+import com.alcatrazescapee.primalwinter.platform.ForgeConfig;
 import com.alcatrazescapee.primalwinter.platform.NetworkSetupCallback;
+import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import com.alcatrazescapee.primalwinter.util.EventHandler;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -13,7 +15,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -21,14 +22,12 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-
-import com.alcatrazescapee.primalwinter.platform.XPlatform;
-import com.alcatrazescapee.primalwinter.util.Config;
-import com.alcatrazescapee.primalwinter.util.EventHandler;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
@@ -40,20 +39,18 @@ import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 @Mod(PrimalWinter.MOD_ID)
 public final class ForgePrimalWinter
 {
-    public static final IEventBus EVENT_BUS = Objects.requireNonNull(ModList.get()
+    public static final ModContainer MOD = ModList.get()
         .getModContainerById(PrimalWinter.MOD_ID)
-        .orElseThrow()
-        .getEventBus());
+        .orElseThrow();
+    public static final IEventBus EVENT_BUS = Objects.requireNonNull(MOD.getEventBus());
 
     public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, PrimalWinter.MOD_ID);
     public static final Supplier<MapCodec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -87,6 +84,11 @@ public final class ForgePrimalWinter
             }
         });
 
+        final ForgeConfig config = (ForgeConfig) XPlatform.INSTANCE.config();
+
+        MOD.registerConfig(ModConfig.Type.COMMON, config.common);
+        MOD.registerConfig(ModConfig.Type.CLIENT, config.client);
+
         if (FMLLoader.getDist() == Dist.CLIENT)
         {
             ForgePrimalWinterClient.setupClient();
@@ -102,7 +104,7 @@ public final class ForgePrimalWinter
         @Override
         public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
         {
-            if (biome.unwrapKey().filter(Config.INSTANCE::isWinterBiome).isEmpty() || phase != Phase.MODIFY)
+            if (biome.unwrapKey().filter(XPlatform.INSTANCE.config()::isWinterBiome).isEmpty() || phase != Phase.MODIFY)
             {
                 return;
             }

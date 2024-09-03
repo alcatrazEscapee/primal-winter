@@ -1,71 +1,33 @@
-package com.alcatrazescapee.primalwinter.util;
+package com.alcatrazescapee.primalwinter.platform;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import com.alcatrazescapee.primalwinter.client.ReloadableLevelRenderer;
-import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import org.jetbrains.annotations.CheckReturnValue;
-import org.slf4j.Logger;
-
 import com.alcatrazescapee.epsilon.EpsilonUtil;
 import com.alcatrazescapee.epsilon.ParseError;
 import com.alcatrazescapee.epsilon.Spec;
 import com.alcatrazescapee.epsilon.SpecBuilder;
 import com.alcatrazescapee.epsilon.Type;
-import com.alcatrazescapee.epsilon.value.BoolValue;
-import com.alcatrazescapee.epsilon.value.FloatValue;
 import com.alcatrazescapee.epsilon.value.IntValue;
 import com.alcatrazescapee.epsilon.value.TypeValue;
 import com.alcatrazescapee.primalwinter.PrimalWinter;
-import com.alcatrazescapee.primalwinter.platform.XPlatform;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
-public enum Config
+public class FabricConfig extends Config
 {
-    INSTANCE;
-
-    private static final Logger LOGGER = LogUtils.getLogger();
-
-    // Server Only
-    public final BoolValue enableWeatherCommand;
-
-    public final BoolValue enableSnowAccumulationDuringWorldgen;
-    public final BoolValue enableSnowAccumulationDuringWeather;
-
-    // Server Only - Synced
     private final TypeValue<Set<ResourceKey<Level>>> winterDimensions;
-
-    // Server Synced
-    private Set<ResourceKey<Biome>> winterBiomesView = Set.of();
-    private Set<ResourceKey<Level>> winterDimensionsView = Set.of();
-
-    // Client
-    public final FloatValue fogDensity;
-    public final IntValue snowDensity;
-    public final BoolValue windSounds;
-    public final BoolValue snowSounds;
-
-    public final IntValue fogColorDay;
-    public final IntValue fogColorNight;
-
     private final Spec spec;
 
-    Config()
+    FabricConfig()
     {
         final SpecBuilder builder = Spec.builder();
 
         builder
-            .comment(
-                "This is the config file for the Primal Winter mod",
-                "In order to reload these settings in-game, you must run /primalwinterReloadConfig"
-            )
+            .comment("This is the config file for the Primal Winter mod")
             .push("general");
 
         enableWeatherCommand = builder
@@ -104,7 +66,7 @@ public enum Config
 
         fogDensity = builder
             .comment("How dense the fog effect during a snowstorm is.")
-            .define("fogDensity", 0.1f, 0f, 1f);
+            .define("fogDensity", 0.1f, 0f, 1f)::get;
         snowDensity = builder
             .comment("How visually dense the snow weather effect is. Normally, vanilla sets this to 5 with fast graphics, and 10 with fancy graphics.")
             .define("snowDensity", 15, 1, 15);
@@ -141,50 +103,9 @@ public enum Config
         EpsilonUtil.parse(spec, Path.of(XPlatform.INSTANCE.configDir().toString(), PrimalWinter.MOD_ID + ".toml"), LOGGER::warn);
     }
 
-    public void loadWinterBiomes(MinecraftServer server)
+    @Override
+    protected Collection<ResourceKey<Level>> winterDimensions()
     {
-        winterDimensionsView = winterDimensions.get();
-        winterBiomesView = server.registryAccess()
-            .registryOrThrow(Registries.LEVEL_STEM)
-            .entrySet()
-            .stream()
-            .filter(e -> isWinterDimension(ResourceKey.create(Registries.DIMENSION, e.getKey().location())))
-            .flatMap(e -> e.getValue()
-                .generator()
-                .getBiomeSource()
-                .possibleBiomes()
-                .stream())
-            .flatMap(holder -> holder.unwrapKey().stream())
-            .collect(Collectors.toSet());
-        LOGGER.info("Loaded winter dimensions={}, biomes={}", winterDimensionsView.size(), winterBiomesView.size());
-    }
-
-    @CheckReturnValue
-    public ConfigPacket createSyncPacket()
-    {
-        return new ConfigPacket(winterDimensions.get());
-    }
-
-    public void onSync(ConfigPacket packet)
-    {
-        winterDimensionsView = packet.winterDimensions();
-        ((ReloadableLevelRenderer) Minecraft.getInstance().levelRenderer).primalWinter$reload();
-    }
-
-    /**
-     * @return {@code true} if this dimensions is a winter dimension.
-     */
-    public boolean isWinterDimension(ResourceKey<Level> dimension)
-    {
-        return winterDimensionsView.contains(dimension);
-    }
-
-    /**
-     * @return {@code true} if this is a winter biome, when queried from server. <strong>Not valid on client!</strong>
-     */
-    public boolean isWinterBiome(ResourceKey<Biome> biome)
-    {
-        assert winterDimensionsView.isEmpty() || !winterBiomesView.isEmpty(); // Config loaded check, allowing for no enabled winter dimensions
-        return winterBiomesView.contains(biome);
+        return winterDimensions.get();
     }
 }

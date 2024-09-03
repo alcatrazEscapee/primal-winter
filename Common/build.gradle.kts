@@ -5,12 +5,9 @@ plugins {
 val parchmentMinecraftVersion: String by extra
 val parchmentVersion: String by extra
 val commonNeoFormVersion: String by extra
-val epsilonVersion: String by extra
 
 dependencies {
     compileOnly(group = "org.spongepowered", name = "mixin", version = "0.8.5")
-    compileOnly(group = "com.alcatrazescapee", name = "epsilon", version = epsilonVersion)
-
     compileOnly(group = "io.github.llamalad7", name = "mixinextras-common", version = "0.3.5")
     annotationProcessor(group = "io.github.llamalad7", name = "mixinextras-common", version = "0.3.5")
 }

@@ -1,5 +1,6 @@
 package com.alcatrazescapee.primalwinter.util;
 
+import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
@@ -21,15 +22,13 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.slf4j.Logger;
 
-import com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks;
-
 public final class EventHandler
 {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        final boolean enable = Config.INSTANCE.enableWeatherCommand.getAsBoolean();
+        final boolean enable = XPlatform.INSTANCE.config().enableWeatherCommand.getAsBoolean();
         LOGGER.info("Vanilla /weather enabled = {}", enable);
         if (!enable)
         {
@@ -47,8 +46,8 @@ public final class EventHandler
      */
     public static void placeExtraSnow(ServerLevel level, ChunkAccess chunk)
     {
-        if (Config.INSTANCE.isWinterDimension(level.dimension()) &&
-            Config.INSTANCE.enableSnowAccumulationDuringWeather.getAsBoolean() &&
+        if (XPlatform.INSTANCE.config().isWinterDimension(level.dimension()) &&
+            XPlatform.INSTANCE.config().enableSnowAccumulationDuringWeather.getAsBoolean() &&
             level.random.nextInt(16) == 0)
         {
             final int blockX = chunk.getPos().getMinBlockX();
@@ -80,7 +79,7 @@ public final class EventHandler
 
     public static void setLevelToThunder(LevelAccessor maybeLevel)
     {
-        if (maybeLevel instanceof ServerLevel level && Config.INSTANCE.isWinterDimension(level.dimension()))
+        if (maybeLevel instanceof ServerLevel level && XPlatform.INSTANCE.config().isWinterDimension(level.dimension()))
         {
             NewWorldSavedData.onlyForNewWorlds(level, () -> {
                 LOGGER.info("Modifying weather for world {}", level.dimension().location());
@@ -92,6 +91,6 @@ public final class EventHandler
 
     public static void onPlayerJoinWorld(ServerPlayer player)
     {
-        XPlatform.INSTANCE.sendToPlayer(player, Config.INSTANCE.createSyncPacket());
+        XPlatform.INSTANCE.sendToPlayer(player, XPlatform.INSTANCE.config().createSyncPacket());
     }
 }
