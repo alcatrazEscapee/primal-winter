@@ -70,7 +70,7 @@ public class ForgeConfig extends Config
         fogDensity = client
             .comment("", " How dense the fog effect during a snowstorm is.")
             .translation(key("fogDensity"))
-            .defineInRange("fogDensity", 0.1f, 0f, 1f);
+            .defineInRange("fogDensity", 0.1, 0, 1);
         snowDensity = client
             .comment("", " How visually dense the snow weather effect is. Normally, vanilla sets this to 5 with fast graphics, and 10 with fancy graphics.")
             .translation(key("snowDensity"))
@@ -88,12 +88,12 @@ public class ForgeConfig extends Config
         fogColorDayValue = client
             .comment("", " This is the fog color during the day. It must be an RGB hex string.")
             .translation(key("fogColorDay"))
-            .define("fogColorDay", "0xbfbfd8", this::isColor);
+            .define("fogColorDay", "bfbfd8", this::isColor);
         fogColorNight = () -> fogColorNightCache;
         fogColorNightValue = client
             .comment("", " This is the fog color during the night. It must be an RGB hex string.")
             .translation(key("fogColorNight"))
-            .define("fogColorNight", "0x0c0c19", this::isColor);
+            .define("fogColorNight", "0c0c19", this::isColor);
 
         this.common = common.build();
         this.client = client.build();

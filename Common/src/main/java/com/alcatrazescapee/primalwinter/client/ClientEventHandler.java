@@ -98,7 +98,7 @@ public final class ClientEventHandler
         {
             final long thisTick = Util.getMillis();
             final boolean firstTick = prevFogTick == -1;
-            final float deltaTick = firstTick ? 1e10f : (thisTick - prevFogTick) * 0.00015f;
+            final float deltaTick = firstTick ? 1e10f : (thisTick - prevFogTick) * 0.00005f;
 
             prevFogTick = thisTick;
 

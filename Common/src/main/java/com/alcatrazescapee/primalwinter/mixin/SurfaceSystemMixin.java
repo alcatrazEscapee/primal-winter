@@ -1,5 +1,7 @@
 package com.alcatrazescapee.primalwinter.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
@@ -14,13 +16,13 @@ import org.spongepowered.asm.mixin.injection.Slice;
 @Mixin(SurfaceSystem.class)
 public abstract class SurfaceSystemMixin
 {
-    @Redirect(
+    @WrapOperation(
         method = "buildSurface",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Holder;is(Lnet/minecraft/resources/ResourceKey;)Z", ordinal = 0),
         slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/SurfaceSystem;erodedBadlandsExtension(Lnet/minecraft/world/level/chunk/BlockColumn;IIILnet/minecraft/world/level/LevelHeightAccessor;)V"))
     )
-    private boolean useIcebergExtensionOnAllOceans(Holder<Biome> biome, ResourceKey<Biome> key)
+    private boolean useIcebergExtensionOnAllOceans(Holder<Biome> biome, ResourceKey<Biome> key, Operation<Boolean> original)
     {
-        return key == Biomes.FROZEN_OCEAN ? biome.is(BiomeTags.IS_OCEAN) : biome.is(key);
+        return biome.is(BiomeTags.IS_OCEAN) || original.call(biome, key);
     }
 }
