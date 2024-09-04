@@ -20,6 +20,21 @@ public final class BuiltinBlockTags extends BlockTagsProvider
     @Override
     protected void addTags(HolderLookup.Provider provider)
     {
+        tag(REPLACEABLE_WITH_SNOW)
+            .addTag(BlockTags.FLOWERS)
+            .add(
+                Blocks.TALL_GRASS,
+                Blocks.SHORT_GRASS,
+                Blocks.FERN,
+                Blocks.LARGE_FERN,
+                Blocks.DEAD_BUSH,
+                Blocks.BROWN_MUSHROOM,
+                Blocks.RED_MUSHROOM,
+                Blocks.SEAGRASS,
+                Blocks.TALL_SEAGRASS,
+                Blocks.KELP,
+                Blocks.KELP_PLANT,
+                Blocks.SWEET_BERRY_BUSH);
         tag(REPLACEABLE_WITH_SNOWY_STUFF).add(
             Blocks.DIRT,
             Blocks.GRASS_BLOCK,
@@ -36,28 +51,12 @@ public final class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_SAND.get(),
             SNOWY_RED_SAND.get(),
             SNOWY_GRAVEL.get());
-        tag(REPLACEABLE_WITH_SNOW)
-            .addTag(BlockTags.FLOWERS)
-            .add(
-                Blocks.TALL_GRASS,
-                Blocks.SHORT_GRASS,
-                Blocks.FERN,
-                Blocks.LARGE_FERN,
-                Blocks.DEAD_BUSH,
-                Blocks.BROWN_MUSHROOM,
-                Blocks.RED_MUSHROOM,
-                Blocks.SEAGRASS,
-                Blocks.TALL_SEAGRASS,
-                Blocks.KELP,
-                Blocks.KELP_PLANT,
-                Blocks.SWEET_BERRY_BUSH);
-        tag(SNOWY_CACTUS_SURVIVES_ON).add(
-            Blocks.CACTUS,
-            Blocks.SAND,
-            Blocks.RED_SAND,
-            SNOWY_SAND.get(),
+        tag(REPLACEABLE_WITH_SNOWY_BLOCK_UNDERNEATH).add(
+            SNOWY_VINE.get(),
+            SNOWY_SUGAR_CANE.get(),
             SNOWY_CACTUS.get(),
-            SNOWY_RED_SAND.get());
+            SNOWY_BAMBOO.get());
+
         tag(SNOWY_SUGAR_CANE_SURVIVES_ON)
             .addTag(BlockTags.DIRT)
             .addTag(BlockTags.SAND)
@@ -70,6 +69,16 @@ public final class BuiltinBlockTags extends BlockTagsProvider
                 SNOWY_COARSE_DIRT.get(),
                 SNOWY_MUD.get(),
                 SNOWY_MUDDY_MANGROVE_ROOTS.get());
+        tag(SNOWY_CACTUS_SURVIVES_ON).add(
+            Blocks.CACTUS,
+            Blocks.SAND,
+            Blocks.RED_SAND,
+            SNOWY_SAND.get(),
+            SNOWY_CACTUS.get(),
+            SNOWY_RED_SAND.get());
+        tag(SNOWY_BAMBOO_SURVIVES_ON)
+            .addTag(BlockTags.BAMBOO_PLANTABLE_ON)
+            .add(SNOWY_BAMBOO.get());
 
         tag(BlockTags.DIRT).add(
             SNOWY_DIRT.get(),

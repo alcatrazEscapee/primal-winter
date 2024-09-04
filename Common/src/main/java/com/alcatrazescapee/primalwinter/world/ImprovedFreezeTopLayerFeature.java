@@ -186,6 +186,13 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
             replaceWith(PrimalWinterBlocks.SNOWY_TERRAIN_BLOCKS, level, posDown, stateDown);
             level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(BlockStateProperties.LAYERS, layers), 3);
         }
+        else if (canBeReplacedUnderneathWithSnowyBlock(state))
+        {
+            // Note that snow cannot survive here (e.g. because the block is occupied above by something). However, in the case of some
+            // plants, and the block below is known (e.g. podzol below bamboo), we do a block replacement with a snowy-but-not-snow-layer
+            // block.
+            replaceWith(PrimalWinterBlocks.SNOWY_TERRAIN_BLOCKS, level, posDown, stateDown);
+        }
     }
 
     private int countExposedFaces(WorldGenLevel level, BlockPos pos)
@@ -215,5 +222,10 @@ public class ImprovedFreezeTopLayerFeature extends Feature<NoneFeatureConfigurat
     private boolean canBeReplacedWithSnow(BlockState state)
     {
         return state.isAir() || state.is(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOW);
+    }
+
+    private boolean canBeReplacedUnderneathWithSnowyBlock(BlockState state)
+    {
+        return state.is(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOWY_BLOCK_UNDERNEATH);
     }
 }

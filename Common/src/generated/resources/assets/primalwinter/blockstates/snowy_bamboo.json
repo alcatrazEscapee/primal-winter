@@ -1,0 +1,58 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "primalwinter:block/bamboo1_age0"
+        },
+        {
+          "model": "primalwinter:block/bamboo2_age0"
+        },
+        {
+          "model": "primalwinter:block/bamboo3_age0"
+        },
+        {
+          "model": "primalwinter:block/bamboo4_age0"
+        }
+      ],
+      "when": {
+        "age": "0"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "primalwinter:block/bamboo1_age1"
+        },
+        {
+          "model": "primalwinter:block/bamboo2_age1"
+        },
+        {
+          "model": "primalwinter:block/bamboo3_age1"
+        },
+        {
+          "model": "primalwinter:block/bamboo4_age1"
+        }
+      ],
+      "when": {
+        "age": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "primalwinter:block/bamboo_small_leaves"
+      },
+      "when": {
+        "leaves": "small"
+      }
+    },
+    {
+      "apply": {
+        "model": "primalwinter:block/bamboo_large_leaves"
+      },
+      "when": {
+        "leaves": "large"
+      }
+    }
+  ]
+}

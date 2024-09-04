@@ -79,6 +79,7 @@ public final class PrimalWinterBlocks
     public static final RegistryHolder<Block> SNOWY_VINE = register("snowy_vine", () -> new SnowyVineBlock(ofFullCopy(Blocks.VINE)));
     public static final RegistryHolder<Block> SNOWY_SUGAR_CANE = register("snowy_sugar_cane", () -> new SnowySugarCaneBlock(ofFullCopy(Blocks.SUGAR_CANE)));
     public static final RegistryHolder<Block> SNOWY_CACTUS = register("snowy_cactus", () -> new SnowyCactusBlock(ofFullCopy(Blocks.CACTUS)));
+    public static final RegistryHolder<Block> SNOWY_BAMBOO = register("snowy_bamboo", () -> new SnowyBambooBlock(ofFullCopy(Blocks.BAMBOO)));
 
     public static final RegistryHolder<Block> SNOWY_BROWN_MUSHROOM_BLOCK = register("snowy_brown_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.BROWN_MUSHROOM_BLOCK)));
     public static final RegistryHolder<Block> SNOWY_RED_MUSHROOM_BLOCK = register("snowy_red_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.RED_MUSHROOM_BLOCK)));
@@ -135,6 +136,7 @@ public final class PrimalWinterBlocks
         .put(Blocks.VINE, SNOWY_VINE)
         .put(Blocks.SUGAR_CANE, SNOWY_SUGAR_CANE)
         .put(Blocks.CACTUS, SNOWY_CACTUS)
+        .put(Blocks.BAMBOO, SNOWY_BAMBOO)
         .put(Blocks.BROWN_MUSHROOM_BLOCK, SNOWY_BROWN_MUSHROOM_BLOCK)
         .put(Blocks.RED_MUSHROOM_BLOCK, SNOWY_RED_MUSHROOM_BLOCK)
         .put(Blocks.MUSHROOM_STEM, SNOWY_MUSHROOM_STEM)

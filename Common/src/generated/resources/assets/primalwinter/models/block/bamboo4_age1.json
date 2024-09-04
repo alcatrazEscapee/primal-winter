@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/bamboo4_age1",
+  "textures": {
+    "all": "primalwinter:block/snowy_bamboo_stalk",
+    "particle": "primalwinter:block/snowy_bamboo_stalk"
+  }
+}
