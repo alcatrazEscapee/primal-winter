@@ -28,6 +28,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
@@ -51,6 +52,7 @@ public final class ForgePrimalWinter
         .getModContainerById(PrimalWinter.MOD_ID)
         .orElseThrow();
     public static final IEventBus EVENT_BUS = Objects.requireNonNull(MOD.getEventBus());
+    public static final ForgeConfig CONFIG = (ForgeConfig) XPlatform.INSTANCE.config();
 
     public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, PrimalWinter.MOD_ID);
     public static final Supplier<MapCodec<? extends Instance>> CODEC = BIOME_MODIFIERS.register("instance", () -> RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -73,6 +75,8 @@ public final class ForgePrimalWinter
                 }
             });
         });
+        EVENT_BUS.addListener((ModConfigEvent.Loading event) -> CONFIG.updateCaches());
+        EVENT_BUS.addListener((ModConfigEvent.Reloading event) -> CONFIG.updateCaches());
         BIOME_MODIFIERS.register(EVENT_BUS);
 
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> EventHandler.registerCommands(event.getDispatcher()));

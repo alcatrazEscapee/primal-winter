@@ -1,11 +1,7 @@
 package com.alcatrazescapee.primalwinter.platform;
 
-import java.nio.file.Path;
 import java.util.ServiceLoader;
 import net.minecraft.core.Registry;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 
 public interface XPlatform
@@ -23,10 +19,5 @@ public interface XPlatform
 
     CreativeModeTab.Builder creativeTab();
 
-    Path configDir();
-
     Config config();
-
-    void sendToPlayer(ServerPlayer player, CustomPacketPayload packet);
-    void sendToAll(MinecraftServer server, CustomPacketPayload packet);
 }

@@ -3,13 +3,15 @@ package com.alcatrazescapee.primalwinter.platform;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.IntSupplier;
 import com.alcatrazescapee.primalwinter.PrimalWinter;
+import com.alcatrazescapee.primalwinter.util.ConfigPacket;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ForgeConfig extends Config
 {
@@ -17,6 +19,12 @@ public class ForgeConfig extends Config
     public final ModConfigSpec client;
 
     private final ModConfigSpec.ConfigValue<List<? extends String>> winterDimensions;
+
+    private final ModConfigSpec.ConfigValue<String> fogColorDayValue;
+    private final ModConfigSpec.ConfigValue<String> fogColorNightValue;
+
+    private int fogColorDayCache = -1;
+    private int fogColorNightCache = -1;
 
     ForgeConfig()
     {
@@ -76,17 +84,25 @@ public class ForgeConfig extends Config
             .translation(key("windSounds"))
             .define("windSounds", true);
 
-        fogColorDay = extractColor(client
+        fogColorDay = () -> fogColorDayCache;
+        fogColorDayValue = client
             .comment("", " This is the fog color during the day. It must be an RGB hex string.")
             .translation(key("fogColorDay"))
-            .define("fogColorDay", "0xbfbfd8", this::isColor));
-        fogColorNight = extractColor(client
+            .define("fogColorDay", "0xbfbfd8", this::isColor);
+        fogColorNight = () -> fogColorNightCache;
+        fogColorNightValue = client
             .comment("", " This is the fog color during the night. It must be an RGB hex string.")
             .translation(key("fogColorNight"))
-            .define("fogColorNight", "0x0c0c19", this::isColor));
+            .define("fogColorNight", "0x0c0c19", this::isColor);
 
         this.common = common.build();
         this.client = client.build();
+    }
+
+    public void updateCaches()
+    {
+        fogColorDayCache = extractColor(fogColorDayValue);
+        fogColorNightCache = extractColor(fogColorNightValue);
     }
 
     @Override
@@ -98,6 +114,12 @@ public class ForgeConfig extends Config
             .filter(Objects::nonNull)
             .map(e -> ResourceKey.create(Registries.DIMENSION, e))
             .toList();
+    }
+
+    @Override
+    protected void syncTo(ServerPlayer player, ConfigPacket packet)
+    {
+        PacketDistributor.sendToPlayer(player, packet);
     }
 
     private String key(String path)
@@ -113,8 +135,9 @@ public class ForgeConfig extends Config
         return true;
     }
 
-    private IntSupplier extractColor(ModConfigSpec.ConfigValue<? extends String> value)
+    private int extractColor(ModConfigSpec.ConfigValue<String> value)
     {
-        return () -> Integer.parseInt(value.get(), 16);
+        try { return Integer.parseInt(value.get()); }
+        catch (NumberFormatException e) { return -1; }
     }
 }

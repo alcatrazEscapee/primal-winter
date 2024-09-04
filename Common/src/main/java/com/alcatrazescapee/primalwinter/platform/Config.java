@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -45,7 +46,7 @@ public abstract class Config
     public final void loadWinterBiomes(MinecraftServer server)
     {
         winterDimensionsView = ImmutableSet.copyOf(winterDimensions());
-        winterBiomesView = ImmutableSet.copyOf(server.registryAccess()
+        winterBiomesView = server.registryAccess()
             .registryOrThrow(Registries.LEVEL_STEM)
             .entrySet()
             .stream()
@@ -56,7 +57,7 @@ public abstract class Config
                 .possibleBiomes()
                 .stream())
             .flatMap(holder -> holder.unwrapKey().stream())
-            .toList());
+            .collect(ImmutableSet.toImmutableSet());
         LOGGER.info("Loaded winter dimensions={}, biomes={}", winterDimensionsView.size(), winterBiomesView.size());
     }
 
@@ -66,9 +67,14 @@ public abstract class Config
         return new ConfigPacket(winterDimensionsView);
     }
 
+    public final void syncTo(ServerPlayer player)
+    {
+        syncTo(player, new ConfigPacket(winterDimensionsView));
+    }
+
     public final void onSync(ConfigPacket packet)
     {
-        winterDimensionsView = packet.winterDimensions();
+        winterDimensionsView = ImmutableSet.copyOf(packet.winterDimensions());
         ((ReloadableLevelRenderer) Minecraft.getInstance().levelRenderer).primalWinter$reload();
     }
 
@@ -90,4 +96,5 @@ public abstract class Config
     }
 
     protected abstract Collection<ResourceKey<Level>> winterDimensions();
+    protected abstract void syncTo(ServerPlayer player, ConfigPacket packet);
 }

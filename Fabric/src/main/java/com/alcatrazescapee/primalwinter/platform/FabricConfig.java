@@ -12,9 +12,13 @@ import com.alcatrazescapee.epsilon.Type;
 import com.alcatrazescapee.epsilon.value.IntValue;
 import com.alcatrazescapee.epsilon.value.TypeValue;
 import com.alcatrazescapee.primalwinter.PrimalWinter;
+import com.alcatrazescapee.primalwinter.util.ConfigPacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 public class FabricConfig extends Config
@@ -100,12 +104,18 @@ public class FabricConfig extends Config
     public void load()
     {
         LOGGER.info("Loading Config");
-        EpsilonUtil.parse(spec, Path.of(XPlatform.INSTANCE.configDir().toString(), PrimalWinter.MOD_ID + ".toml"), LOGGER::warn);
+        EpsilonUtil.parse(spec, Path.of(FabricLoader.getInstance().getConfigDir().toString(), PrimalWinter.MOD_ID + ".toml"), LOGGER::warn);
     }
 
     @Override
     protected Collection<ResourceKey<Level>> winterDimensions()
     {
         return winterDimensions.get();
+    }
+
+    @Override
+    protected void syncTo(ServerPlayer player, ConfigPacket packet)
+    {
+        ServerPlayNetworking.send(player, packet);
     }
 }

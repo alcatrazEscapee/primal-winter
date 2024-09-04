@@ -91,6 +91,6 @@ public final class EventHandler
 
     public static void onPlayerJoinWorld(ServerPlayer player)
     {
-        XPlatform.INSTANCE.sendToPlayer(player, XPlatform.INSTANCE.config().createSyncPacket());
+        XPlatform.INSTANCE.config().syncTo(player);
     }
 }
