@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "primalwinter:block/snowy_lily_pad"
+      },
+      {
+        "model": "primalwinter:block/snowy_lily_pad",
+        "y": 90
+      },
+      {
+        "model": "primalwinter:block/snowy_lily_pad",
+        "y": 180
+      },
+      {
+        "model": "primalwinter:block/snowy_lily_pad",
+        "y": 270
+      }
+    ]
+  }
+}

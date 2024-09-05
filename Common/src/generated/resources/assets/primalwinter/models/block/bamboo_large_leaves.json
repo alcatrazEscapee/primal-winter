@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/bamboo_large_leaves",
   "textures": {
-    "all": "primalwinter:block/snowy_bamboo_large_leaves",
-    "particle": "primalwinter:block/snowy_bamboo_large_leaves"
+    "particle": "primalwinter:block/snowy_bamboo_large_leaves",
+    "texture": "primalwinter:block/snowy_bamboo_large_leaves"
   }
 }

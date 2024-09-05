@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import com.alcatrazescapee.primalwinter.PrimalWinter;
+import com.alcatrazescapee.primalwinter.platform.RegistryHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.BambooStalkBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -77,6 +79,8 @@ public final class BuiltinModels extends BlockStateProvider
         simpleBlockWithItem(SNOWY_MUDDY_MANGROVE_ROOTS.get(), models().cubeColumn(name(SNOWY_MUDDY_MANGROVE_ROOTS),
             modLoc("block/snowy_muddy_mangrove_roots_side"),
             modLoc("block/snowy_muddy_mangrove_roots_top")));
+        leavesBlock(SNOWY_AZALEA_LEAVES);
+        leavesBlock(SNOWY_FLOWERING_AZALEA_LEAVES);
         vineBlock(SNOWY_VINE);
         simpleBlock(SNOWY_SUGAR_CANE.get(), models()
             .withExistingParent(name(SNOWY_SUGAR_CANE), modLoc("block/overlay_tinted_cross"))
@@ -89,7 +93,7 @@ public final class BuiltinModels extends BlockStateProvider
             .texture("top", modLoc("block/snowy_cactus_top"))
             .texture("side", modLoc("block/snowy_cactus_side")));
         bambooBlock(SNOWY_BAMBOO);
-        itemModels().basicItem(SNOWY_BAMBOO.id());
+        lilyPadBlock(SNOWY_LILY_PAD);
         mushroomBlock(SNOWY_BROWN_MUSHROOM_BLOCK);
         mushroomBlock(SNOWY_RED_MUSHROOM_BLOCK);
         mushroomBlock(SNOWY_MUSHROOM_STEM);
@@ -152,7 +156,7 @@ public final class BuiltinModels extends BlockStateProvider
         itemModels().getBuilder(name(block)).parent(model);
     }
 
-    void bambooBlock(Supplier<Block> block)
+    void bambooBlock(RegistryHolder<Block> block)
     {
         final MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
         for (int age = 0; age <= 1; age++)
@@ -179,6 +183,24 @@ public final class BuiltinModels extends BlockStateProvider
                 .addModel()
                 .condition(BambooStalkBlock.LEAVES, leaves);
         }
+        itemModels().basicItem(block.id());
+    }
+
+    void lilyPadBlock(RegistryHolder<Block> block)
+    {
+        final BlockModelBuilder model = models().withExistingParent(name(block), mcLoc("block/lily_pad"))
+            .texture("particle", modLoc("block/snowy_lily_pad"))
+            .texture("texture", modLoc("block/snowy_lily_pad"));
+        getVariantBuilder(block.get())
+            .partialState()
+            .modelForState()
+            .modelFile(model).nextModel()
+            .modelFile(model).rotationY(90).nextModel()
+            .modelFile(model).rotationY(180).nextModel()
+            .modelFile(model).rotationY(270).addModel();
+        itemModels().getBuilder(block.id().toString())
+            .parent(new ModelFile.UncheckedModelFile("item/generated"))
+            .texture("layer0", modLoc("block/snowy_lily_pad"));
     }
 
     void mushroomBlock(Supplier<Block> block)

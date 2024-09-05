@@ -66,6 +66,8 @@ public class BuiltinI18n extends LanguageProvider
         addBlock(SNOWY_MANGROVE_LEAVES, "Frosted Mangrove Leaves");
         addBlock(SNOWY_MANGROVE_ROOTS, "Frosted Mangrove Roots");
         addBlock(SNOWY_MUDDY_MANGROVE_ROOTS, "Frosted Muddy Mangrove Roots");
+        addBlock(SNOWY_AZALEA_LEAVES, "Frosted Azalea Leaves");
+        addBlock(SNOWY_FLOWERING_AZALEA_LEAVES, "Frosted Flowering Azalea Leaves");
         addBlock(SNOWY_VINE, "Frozen Vine");
         addBlock(SNOWY_SUGAR_CANE, "Frozen Sugar Cane");
         addBlock(SNOWY_CACTUS, "Frozen Cactus");

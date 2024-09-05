@@ -19,18 +19,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import org.jetbrains.annotations.Nullable;
 
 public final class FabricPrimalWinter implements ModInitializer
 {
-    public static @Nullable MinecraftServer server = null;
-
     @Override
     public void onInitialize()
     {
@@ -70,9 +63,7 @@ public final class FabricPrimalWinter implements ModInitializer
                 settings.removeFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, MiscOverworldPlacements.FREEZE_TOP_LAYER);
                 settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, PrimalWinterFeatures.Keys.FREEZE_TOP_LAYER);
 
-                final BiomeModificationContext.SpawnSettingsContext spawns = context.getSpawnSettings();
-                spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 60, 1, 3));
-                spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.STRAY, 60, 1, 3));
+                PrimalWinterFeatures.addSpawns(context.getSpawnSettings()::addSpawn);
             });
     }
 }

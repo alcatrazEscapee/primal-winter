@@ -7,6 +7,7 @@ import com.alcatrazescapee.primalwinter.platform.ForgeConfig;
 import com.alcatrazescapee.primalwinter.platform.NetworkSetupCallback;
 import com.alcatrazescapee.primalwinter.platform.XPlatform;
 import com.alcatrazescapee.primalwinter.util.EventHandler;
+import com.alcatrazescapee.primalwinter.world.PrimalWinterFeatures;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -16,10 +17,7 @@ import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.api.distmarker.Dist;
@@ -35,7 +33,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.BiomeGenerationSettingsBuilder;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ClimateSettingsBuilder;
-import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -135,9 +132,7 @@ public final class ForgePrimalWinter
                 settings.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, feature);
             }
 
-            final MobSpawnSettingsBuilder spawns = builder.getMobSpawnSettings();
-            spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 60, 1, 3));
-            spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.STRAY, 60, 1, 3));
+            PrimalWinterFeatures.addSpawns(builder.getMobSpawnSettings()::addSpawn);
         }
 
         @Override

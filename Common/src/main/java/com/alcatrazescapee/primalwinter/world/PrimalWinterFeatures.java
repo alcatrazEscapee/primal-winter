@@ -1,11 +1,15 @@
 package com.alcatrazescapee.primalwinter.world;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import com.alcatrazescapee.primalwinter.util.Helpers;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.feature.DiskFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
@@ -43,5 +47,11 @@ public final class PrimalWinterFeatures
         {
             return ResourceKey.create(Registries.PLACED_FEATURE, Helpers.identifier(name));
         }
+    }
+
+    public static void addSpawns(BiConsumer<MobCategory, MobSpawnSettings.SpawnerData> spawns)
+    {
+        spawns.accept(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 30, 1, 3));
+        spawns.accept(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.STRAY, 400, 4, 4));
     }
 }

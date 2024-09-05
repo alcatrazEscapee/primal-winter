@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.MangroveRootsBlock;
 import net.minecraft.world.level.block.MudBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.WaterlilyBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -75,11 +76,14 @@ public final class PrimalWinterBlocks
     public static final RegistryHolder<Block> SNOWY_MANGROVE_LEAVES = register("snowy_mangrove_leaves", () -> new LeavesBlock(ofFullCopy(Blocks.MANGROVE_LEAVES)));
     public static final RegistryHolder<Block> SNOWY_MANGROVE_ROOTS = register("snowy_mangrove_roots", () -> new MangroveRootsBlock(ofFullCopy(Blocks.MANGROVE_ROOTS)) {});
     public static final RegistryHolder<Block> SNOWY_MUDDY_MANGROVE_ROOTS = register("snowy_muddy_mangrove_roots", () -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).strength(0.7F).sound(SoundType.MUDDY_MANGROVE_ROOTS)));
+    public static final RegistryHolder<Block> SNOWY_AZALEA_LEAVES = register("snowy_azalea_leaves", () -> new LeavesBlock(ofFullCopy(Blocks.AZALEA_LEAVES)));
+    public static final RegistryHolder<Block> SNOWY_FLOWERING_AZALEA_LEAVES = register("snowy_flowering_azalea_leaves", () -> new LeavesBlock(ofFullCopy(Blocks.FLOWERING_AZALEA_LEAVES)));
 
     public static final RegistryHolder<Block> SNOWY_VINE = register("snowy_vine", () -> new SnowyVineBlock(ofFullCopy(Blocks.VINE)));
     public static final RegistryHolder<Block> SNOWY_SUGAR_CANE = register("snowy_sugar_cane", () -> new SnowySugarCaneBlock(ofFullCopy(Blocks.SUGAR_CANE)));
     public static final RegistryHolder<Block> SNOWY_CACTUS = register("snowy_cactus", () -> new SnowyCactusBlock(ofFullCopy(Blocks.CACTUS)));
     public static final RegistryHolder<Block> SNOWY_BAMBOO = register("snowy_bamboo", () -> new SnowyBambooBlock(ofFullCopy(Blocks.BAMBOO)));
+    public static final RegistryHolder<Block> SNOWY_LILY_PAD = register("snowy_lily_pad", () -> new WaterlilyBlock(ofFullCopy(Blocks.LILY_PAD)) {});
 
     public static final RegistryHolder<Block> SNOWY_BROWN_MUSHROOM_BLOCK = register("snowy_brown_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.BROWN_MUSHROOM_BLOCK)));
     public static final RegistryHolder<Block> SNOWY_RED_MUSHROOM_BLOCK = register("snowy_red_mushroom_block", () -> new HugeMushroomBlock(ofFullCopy(Blocks.RED_MUSHROOM_BLOCK)));
@@ -133,10 +137,13 @@ public final class PrimalWinterBlocks
         .put(Blocks.MANGROVE_LEAVES, SNOWY_MANGROVE_LEAVES)
         .put(Blocks.MANGROVE_ROOTS, SNOWY_MANGROVE_ROOTS)
         .put(Blocks.MUDDY_MANGROVE_ROOTS, SNOWY_MUDDY_MANGROVE_ROOTS)
+        .put(Blocks.AZALEA_LEAVES, SNOWY_AZALEA_LEAVES)
+        .put(Blocks.FLOWERING_AZALEA_LEAVES, SNOWY_FLOWERING_AZALEA_LEAVES)
         .put(Blocks.VINE, SNOWY_VINE)
         .put(Blocks.SUGAR_CANE, SNOWY_SUGAR_CANE)
         .put(Blocks.CACTUS, SNOWY_CACTUS)
         .put(Blocks.BAMBOO, SNOWY_BAMBOO)
+        .put(Blocks.LILY_PAD, SNOWY_LILY_PAD)
         .put(Blocks.BROWN_MUSHROOM_BLOCK, SNOWY_BROWN_MUSHROOM_BLOCK)
         .put(Blocks.RED_MUSHROOM_BLOCK, SNOWY_RED_MUSHROOM_BLOCK)
         .put(Blocks.MUSHROOM_STEM, SNOWY_MUSHROOM_STEM)

@@ -60,10 +60,13 @@ public final class BuiltinBlockLoot extends BlockLootSubProvider
         add(SNOWY_MANGROVE_LEAVES.get(), this::createMangroveLeavesDrops);
         dropOther(SNOWY_MANGROVE_ROOTS.get(), Blocks.MANGROVE_ROOTS);
         dropOther(SNOWY_MUDDY_MANGROVE_ROOTS.get(), Blocks.MUDDY_MANGROVE_ROOTS);
+        add(SNOWY_AZALEA_LEAVES.get(), b -> createLeavesDrops(b, Blocks.AZALEA, NORMAL_LEAVES_SAPLING_CHANCES));
+        add(SNOWY_FLOWERING_AZALEA_LEAVES.get(), b -> createLeavesDrops(b, Blocks.FLOWERING_AZALEA, NORMAL_LEAVES_SAPLING_CHANCES));
         add(SNOWY_VINE.get(), BlockLootSubProvider::createShearsOnlyDrop);
         dropOther(SNOWY_SUGAR_CANE.get(), Blocks.SUGAR_CANE);
         dropOther(SNOWY_CACTUS.get(), Blocks.CACTUS);
         add(SNOWY_BAMBOO.get(), createSingleItemTable(Items.BAMBOO, UniformGenerator.between(0f, 0.8f)));
+        dropOther(SNOWY_LILY_PAD.get(), Blocks.LILY_PAD);
         add(SNOWY_BROWN_MUSHROOM_BLOCK.get(), b -> createMushroomBlockDrop(b, Items.BROWN_MUSHROOM));
         add(SNOWY_RED_MUSHROOM_BLOCK.get(), b -> createMushroomBlockDrop(b, Items.RED_MUSHROOM));
         otherWhenSilkTouch(SNOWY_MUSHROOM_STEM.get(), Blocks.MUSHROOM_STEM);

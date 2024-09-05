@@ -1,17 +1,20 @@
 package com.alcatrazescapee.primalwinter.blocks;
 
 import com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BambooStalkBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 
 public class SnowyBambooBlock extends BambooStalkBlock
 {
@@ -40,6 +43,39 @@ public class SnowyBambooBlock extends BambooStalkBlock
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
     {
         // Prevent growth
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context)
+    {
+        // Override to place normal bamboo - it's the only one that interacts properly with bamboo saplings,
+        // since placing this on top of a sapling won't react properly.
+        final FluidState fluid = context.getLevel().getFluidState(context.getClickedPos());
+        if (fluid.isEmpty())
+        {
+            final BlockState stateBelow = context.getLevel().getBlockState(context.getClickedPos().below());
+            final BlockState defaultState = Blocks.BAMBOO.defaultBlockState();
+            if (stateBelow.is(BlockTags.BAMBOO_PLANTABLE_ON))
+            {
+                if (stateBelow.is(Blocks.BAMBOO_SAPLING))
+                {
+                    return defaultState.setValue(AGE, 0);
+                }
+                else if (stateBelow.is(Blocks.BAMBOO))
+                {
+                    return defaultState.setValue(AGE, stateBelow.getValue(AGE) > 0 ? 1 : 0);
+                }
+                else
+                {
+                    final BlockState aboveState = context.getLevel().getBlockState(context.getClickedPos().above());
+                    return aboveState.is(Blocks.BAMBOO)
+                        ? defaultState.setValue(AGE, aboveState.getValue(AGE))
+                        : Blocks.BAMBOO_SAPLING.defaultBlockState();
+                }
+            }
+        }
+        return null;
     }
 
     @Override

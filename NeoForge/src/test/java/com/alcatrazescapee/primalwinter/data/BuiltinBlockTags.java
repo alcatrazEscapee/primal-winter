@@ -142,7 +142,12 @@ public final class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_DARK_OAK_LEAVES.get(),
             SNOWY_ACACIA_LEAVES.get(),
             SNOWY_CHERRY_LEAVES.get(),
-            SNOWY_MANGROVE_LEAVES.get());
+            SNOWY_MANGROVE_LEAVES.get(),
+            SNOWY_AZALEA_LEAVES.get(),
+            SNOWY_FLOWERING_AZALEA_LEAVES.get());
+        tag(BlockTags.FLOWERS).add(
+            SNOWY_AZALEA_LEAVES.get(),
+            SNOWY_FLOWERING_AZALEA_LEAVES.get());
         tag(BlockTags.CLIMBABLE).add(SNOWY_VINE.get());
         tag(BlockTags.REPLACEABLE_BY_TREES).add(SNOWY_VINE.get());
 
@@ -150,9 +155,11 @@ public final class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_MANGROVE_ROOTS.get(),
             SNOWY_VINE.get(),
             SNOWY_SUGAR_CANE.get(),
+            SNOWY_BAMBOO.get(),
             SNOWY_BROWN_MUSHROOM_BLOCK.get(),
             SNOWY_RED_MUSHROOM_BLOCK.get(),
-            SNOWY_MUSHROOM_STEM.get());
+            SNOWY_MUSHROOM_STEM.get(),
+            SNOWY_LILY_PAD.get());
         tag(BlockTags.MINEABLE_WITH_SHOVEL).add(
             SNOWY_DIRT.get(),
             SNOWY_COARSE_DIRT.get(),
@@ -182,9 +189,14 @@ public final class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_DARK_OAK_LEAVES.get(),
             SNOWY_ACACIA_LEAVES.get(),
             SNOWY_CHERRY_LEAVES.get(),
-            SNOWY_MANGROVE_LEAVES.get());
+            SNOWY_MANGROVE_LEAVES.get(),
+            SNOWY_AZALEA_LEAVES.get(),
+            SNOWY_FLOWERING_AZALEA_LEAVES.get());
         tag(BlockTags.SWORD_EFFICIENT).add(
             SNOWY_VINE.get(),
-            SNOWY_SUGAR_CANE.get());
+            SNOWY_SUGAR_CANE.get(),
+            SNOWY_LILY_PAD.get());
+        tag(BlockTags.INSIDE_STEP_SOUND_BLOCKS).add(SNOWY_LILY_PAD.get());
+        tag(BlockTags.FROG_PREFER_JUMP_TO).add(SNOWY_LILY_PAD.get());
     }
 }

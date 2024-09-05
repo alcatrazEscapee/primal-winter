@@ -1,0 +1,7 @@
+{
+  "parent": "primalwinter:block/snowy_leaves",
+  "textures": {
+    "all": "minecraft:block/azalea_leaves",
+    "overlay": "primalwinter:block/snowy_leaves_overlay"
+  }
+}

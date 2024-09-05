@@ -37,6 +37,7 @@ public final class ClientEventHandler
         cutout(PrimalWinterBlocks.SNOWY_SUGAR_CANE);
         cutout(PrimalWinterBlocks.SNOWY_CACTUS);
         cutout(PrimalWinterBlocks.SNOWY_BAMBOO);
+        cutout(PrimalWinterBlocks.SNOWY_LILY_PAD);
     }
 
     private static void cutout(Supplier<Block> block)
