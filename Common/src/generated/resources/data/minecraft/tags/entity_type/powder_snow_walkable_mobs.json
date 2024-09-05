@@ -1,11 +1,11 @@
 {
   "values": [
+    "#minecraft:undead",
+    "#minecraft:raiders",
     "minecraft:wolf",
     "minecraft:wandering_trader",
     "minecraft:trader_llama",
-    "minecraft:pillager",
-    "minecraft:illusioner",
-    "minecraft:vindicator",
-    "minecraft:witch"
+    "minecraft:spider",
+    "minecraft:creeper"
   ]
 }
