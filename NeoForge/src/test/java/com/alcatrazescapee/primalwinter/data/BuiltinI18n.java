@@ -1,5 +1,13 @@
 package com.alcatrazescapee.primalwinter.data;
 
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import com.alcatrazescapee.primalwinter.platform.ForgeRegistryInterface;
+import com.google.common.base.Preconditions;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -8,6 +16,11 @@ import static com.alcatrazescapee.primalwinter.blocks.PrimalWinterBlocks.*;
 
 public class BuiltinI18n extends LanguageProvider
 {
+    private final Set<Block> untranslatedBlocks = ((ForgeRegistryInterface<Block>) BLOCKS).deferred.getEntries()
+        .stream()
+        .map(Supplier::get)
+        .collect(Collectors.toSet());
+
     public BuiltinI18n(GatherDataEvent event)
     {
         super(event.getGenerator().getPackOutput(), MOD_ID, "en_us");
@@ -72,9 +85,24 @@ public class BuiltinI18n extends LanguageProvider
         addBlock(SNOWY_SUGAR_CANE, "Frozen Sugar Cane");
         addBlock(SNOWY_CACTUS, "Frozen Cactus");
         addBlock(SNOWY_BAMBOO, "Frozen Bamboo");
+        addBlock(SNOWY_LILY_PAD, "Frozen Lily Pad");
         addBlock(SNOWY_BROWN_MUSHROOM_BLOCK, "Frosted Brown Mushroom Block");
         addBlock(SNOWY_RED_MUSHROOM_BLOCK, "Frosted Red Mushroom Block");
         addBlock(SNOWY_MUSHROOM_STEM, "Frosted Mushroom Stem");
+
+        Preconditions.checkArgument(untranslatedBlocks.isEmpty(), "Missing translations for %s block(s): %s",
+            untranslatedBlocks.size(),
+            untranslatedBlocks.stream()
+                .map(BuiltInRegistries.BLOCK::getKey)
+                .map(ResourceLocation::toString)
+                .collect(Collectors.joining(", ")));
+    }
+
+    @Override
+    public void addBlock(Supplier<? extends Block> key, String name)
+    {
+        untranslatedBlocks.remove(key.get());
+        super.addBlock(key, name);
     }
 
     private void addConfig(String key, String name)

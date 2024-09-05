@@ -1,5 +1,8 @@
 {
   "values": [
+    "#minecraft:leaves",
+    "minecraft:melon",
+    "minecraft:pumpkin",
     "primalwinter:snowy_vine",
     "primalwinter:snowy_sugar_cane",
     "primalwinter:snowy_cactus",

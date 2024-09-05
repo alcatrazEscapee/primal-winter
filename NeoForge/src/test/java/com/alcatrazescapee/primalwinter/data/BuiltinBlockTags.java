@@ -51,11 +51,15 @@ public final class BuiltinBlockTags extends BlockTagsProvider
             SNOWY_SAND.get(),
             SNOWY_RED_SAND.get(),
             SNOWY_GRAVEL.get());
-        tag(REPLACEABLE_WITH_SNOWY_BLOCK_UNDERNEATH).add(
-            SNOWY_VINE.get(),
-            SNOWY_SUGAR_CANE.get(),
-            SNOWY_CACTUS.get(),
-            SNOWY_BAMBOO.get());
+        tag(REPLACEABLE_WITH_SNOWY_BLOCK_UNDERNEATH)
+            .addTag(BlockTags.LEAVES)
+            .add(
+                Blocks.MELON,
+                Blocks.PUMPKIN,
+                SNOWY_VINE.get(),
+                SNOWY_SUGAR_CANE.get(),
+                SNOWY_CACTUS.get(),
+                SNOWY_BAMBOO.get());
 
         tag(SNOWY_SUGAR_CANE_SURVIVES_ON)
             .addTag(BlockTags.DIRT)
