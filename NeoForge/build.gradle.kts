@@ -15,6 +15,11 @@ base {
 
 dependencies {
     implementation(project(":Common"))
+
+    // Biome o Plenty
+    //runtimeOnly(group = "curse.maven", name = "biomes-o-plenty-220318", version = "5726211")
+    //runtimeOnly(group = "curse.maven", name = "glitchcore-955399", version = "5660740")
+    //runtimeOnly(group = "curse.maven", name = "terrablender-neoforge-940057", version = "5685546")
 }
 
 neoForge {

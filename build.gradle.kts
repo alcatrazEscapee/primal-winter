@@ -34,6 +34,10 @@ subprojects {
             forRepository { maven("https://alcatrazescapee.com/maven") }
             filter { includeGroup("com.alcatrazescapee") }
         }
+        exclusiveContent {
+            forRepository { maven("https://cursemaven.com") }
+            filter { includeGroup("curse.maven") }
+        }
     }
 
     tasks {

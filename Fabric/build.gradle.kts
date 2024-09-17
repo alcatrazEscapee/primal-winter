@@ -40,6 +40,14 @@ dependencies {
     compileOnly(project(":Common"))
 
     shadowLibrary(group = "com.alcatrazescapee", name = "epsilon", version = epsilonVersion)
+
+    // Biome o Plenty
+    // modRuntimeOnly(group = "curse.maven", name = "biomes-o-plenty-220318", version = "5726210")
+    // modRuntimeOnly(group = "curse.maven", name = "glitchcore-955399", version = "5660741")
+    // modRuntimeOnly(group = "curse.maven", name = "terrablender-fabric-565956", version = "5685547")
+    // runtimeOnly(group = "com.electronwill.night-config", name = "toml", version = "3.6.7")
+    // runtimeOnly(group = "com.electronwill.night-config", name = "core", version = "3.6.7")
+    // runtimeOnly(group = "net.jodah", name = "typetools", version = "0.6.3")
 }
 
 loom {

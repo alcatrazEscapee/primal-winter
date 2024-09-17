@@ -15,21 +15,12 @@ public final class Helpers
 
     public static BlockState copyProperties(BlockState oldState, BlockState newState)
     {
-        for (Property<?> property : oldState.getProperties())
-        {
-            if (newState.getProperties().contains(property))
-            {
-                newState = copyProperty(property, oldState, newState);
-            }
-        }
-        return newState;
+        return newState.getBlock().withPropertiesOf(oldState);
     }
 
-    /**
-     * This gets around both arguments being a {@code IProperty<?>}
-     */
-    private static <T extends Comparable<T>> BlockState copyProperty(Property<T> property, BlockState original, BlockState replacement)
+    @SuppressWarnings("unchecked")
+    public static <E extends Throwable> void throwAsUnchecked(Throwable exception) throws E
     {
-        return replacement.setValue(property, original.getValue(property));
+        throw (E) exception;
     }
 }
