@@ -56,5 +56,11 @@
   "primalwinter.config.windSounds": "Wind Sounds",
   "primalwinter.config.winterDimensions": "Winter Dimensions",
   "primalwinter.items": "Primal Winter",
-  "primalwinter.subtitle.wind": "Wind Howls"
+  "primalwinter.subtitle.wind": "Wind Howls",
+  "tag.block.primalwinter.replaceable_with_snow": "Replaceable With Snow",
+  "tag.block.primalwinter.replaceable_with_snowy_block_underneath": "Replaceable With Snow Underneath",
+  "tag.block.primalwinter.replaceable_with_snowy_stuff": "Replaceable With Snowy Stuff",
+  "tag.block.primalwinter.snowy_bamboo_survives_on": "Frozen Bamboo Survives On",
+  "tag.block.primalwinter.snowy_cactus_survives_on": "Frozen Cactus Survives On",
+  "tag.block.primalwinter.snowy_sugar_cane_survives_on": "Frozen Sugar Cane Survives On"
 }

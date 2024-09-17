@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import com.alcatrazescapee.primalwinter.platform.ForgeRegistryInterface;
+import com.alcatrazescapee.primalwinter.util.PrimalWinterBlockTags;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -89,6 +90,13 @@ public class BuiltinI18n extends LanguageProvider
         addBlock(SNOWY_BROWN_MUSHROOM_BLOCK, "Frosted Brown Mushroom Block");
         addBlock(SNOWY_RED_MUSHROOM_BLOCK, "Frosted Red Mushroom Block");
         addBlock(SNOWY_MUSHROOM_STEM, "Frosted Mushroom Stem");
+
+        add(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOW, "Replaceable With Snow");
+        add(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOWY_STUFF, "Replaceable With Snowy Stuff");
+        add(PrimalWinterBlockTags.REPLACEABLE_WITH_SNOWY_BLOCK_UNDERNEATH, "Replaceable With Snow Underneath");
+        add(PrimalWinterBlockTags.SNOWY_SUGAR_CANE_SURVIVES_ON, "Frozen Sugar Cane Survives On");
+        add(PrimalWinterBlockTags.SNOWY_CACTUS_SURVIVES_ON, "Frozen Cactus Survives On");
+        add(PrimalWinterBlockTags.SNOWY_BAMBOO_SURVIVES_ON, "Frozen Bamboo Survives On");
 
         Preconditions.checkArgument(untranslatedBlocks.isEmpty(), "Missing translations for %s block(s): %s",
             untranslatedBlocks.size(),
