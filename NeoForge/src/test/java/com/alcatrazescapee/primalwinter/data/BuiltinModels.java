@@ -53,8 +53,8 @@ public final class BuiltinModels extends BlockStateProvider
         snowyBlock(SNOWY_LIGHT_GRAY_TERRACOTTA);
         simpleBlockWithItem(SNOWY_DIRT_PATH, models()
             .withExistingParent(name(SNOWY_DIRT_PATH), "block/dirt_path")
-            .texture("side", mcLoc("block/snow"))
-            .texture("top", modLoc("block/snowy_dirt_path_side")),
+            .texture("top", mcLoc("block/snow"))
+            .texture("side", modLoc("block/snowy_dirt_path_side")),
             model -> ConfiguredModel.allYRotations(model, 0, false));
         logBlock(SNOWY_OAK_LOG);
         logBlock(SNOWY_BIRCH_LOG);
